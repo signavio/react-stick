@@ -81,7 +81,7 @@ export default class StickPortal extends Component {
       this.track()
     }
 
-    const { className, style } = substyle(this.props, 'node').style
+    const { className, style } = substyle(this.props, 'node')
 
     const finalStyle = {
       ...(style || {}),
