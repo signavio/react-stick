@@ -45,7 +45,7 @@ const realSubstyle = defaultStyle({
       },
     },
   },
-}, ({ position }: PropsT) => {
+}, ({ position = 'bottom left' }: PropsT) => {
   const [verticalPos, horizontalPos] = position.split(' ')
   return {
     [`&${verticalPos}`]: true,
