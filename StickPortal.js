@@ -8,15 +8,7 @@ import {
 import shallowCompare from 'react-addons-shallow-compare'
 import defaultStyle from 'substyle'
 
-type PositionT = 'bottom left' | 'bottom center' | 'bottom right' |
-  'middle left' | 'middle center' | 'middle right' |
-  'top left' | 'top center' | 'top right';
-
-type PropsT = {
-  node: React$Element,
-  children?: React$Element,
-  position: PositionT,
-};
+import { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
   top: number,
