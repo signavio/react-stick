@@ -3,7 +3,7 @@
 import React from 'react'
 import defaultStyle from 'substyle'
 
-import { PropsT } from './flowTypes'
+import type { PropsT } from './flowTypes'
 
 const StickInline = ({ node, children, position, ...rest }: PropsT) => (
   <div {...rest}>
