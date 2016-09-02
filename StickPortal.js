@@ -103,7 +103,7 @@ export default class StickPortal extends Component {
   }
 
   track() {
-    this.animationId = requestAnimationFrame(() => this.track)
+    this.animationId = requestAnimationFrame(() => this.track())
     this.measure()
   }
 
