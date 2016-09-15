@@ -8,7 +8,7 @@ import {
 import shallowCompare from 'react-addons-shallow-compare'
 import defaultStyle from 'substyle'
 
-import { PositionT, PropsT } from './flowTypes'
+import type { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
   top: number,
