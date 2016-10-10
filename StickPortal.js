@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, createElement } from 'react'
+import { omit } from 'lodash'
 import {
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer, // eslint-disable-line camelcase
@@ -67,9 +68,12 @@ export default class StickPortal extends Component {
   }
 
   render() {
-    const { node, position, children, ...rest } = this.props
+    const { children, ...rest } = this.props
     return (
-      <div {...rest} ref={(ref: HTMLElement) => { this.element = ref }}>
+      <div
+        {...omit(rest, 'node', 'position')}
+        ref={(ref: HTMLElement) => { this.element = ref }}
+      >
         { children }
       </div>
     )
