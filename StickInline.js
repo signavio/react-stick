@@ -2,11 +2,12 @@
 
 import React from 'react'
 import defaultStyle from 'substyle'
+import { omit } from 'lodash'
 
 import type { PropsT } from './flowTypes'
 
-const StickInline = ({ node, children, position, ...rest }: PropsT) => (
-  <div {...rest}>
+const StickInline = ({ node, children, ...rest }: PropsT) => (
+  <div {...omit(rest, 'position')} {...substyle(rest)}>
     { children }
     <div {...substyle(rest, 'node')}>
       { node }
