@@ -9,6 +9,7 @@ import {
 import shallowCompare from 'react-addons-shallow-compare'
 import defaultStyle from 'substyle'
 
+import radium from '../../radium'
 import type { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
@@ -20,7 +21,7 @@ type StateT = {
 declare function requestAnimationFrame(func: Function): number;
 declare function cancelAnimationFrame(id: number): void;
 
-export default class StickPortal extends Component {
+class StickPortal extends Component {
 
   props: PropsT;
   state: StateT;
@@ -72,6 +73,7 @@ export default class StickPortal extends Component {
     return (
       <div
         {...omit(rest, 'node', 'position')}
+        {...substyle(this.props)}
         ref={(ref: HTMLElement) => { this.element = ref }}
       >
         { children }
@@ -118,8 +120,12 @@ export default class StickPortal extends Component {
 
 }
 
+export default radium(StickPortal)
+
 const realSubstyle = defaultStyle({
   style: {
+    display: 'inline-block',
+
     node: {
       position: 'absolute',
       zIndex: 99,

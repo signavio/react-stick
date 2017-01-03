@@ -4,58 +4,68 @@ import React from 'react'
 import defaultStyle from 'substyle'
 import { omit } from 'lodash'
 
+import radium from '../../radium'
 import type { PropsT } from './flowTypes'
 
 const StickInline = ({ node, children, ...rest }: PropsT) => (
-  <div {...omit(rest, 'position')} {...substyle(rest)}>
+  <div {...omit(rest, 'position')} {...substyle(rest, getModifiers)(rest)}>
     { children }
-    <div {...substyle(rest, 'node')}>
+    <div {...substyle(rest, getModifiers)(rest, 'node')}>
       { node }
     </div>
   </div>
 )
 
-export default StickInline
+export default radium(StickInline)
 
-const realSubstyle = defaultStyle({
+const substyle = defaultStyle({
   style: {
     position: 'relative',
+    display: 'inline-block',
 
     node: {
       position: 'absolute',
       zIndex: 99,
+    },
 
-      '&top': {
+    '&position-top': {
+      node: {
         bottom: '100%',
       },
-      '&middle': {
+    },
+    '&position-middle': {
+      node: {
         top: '50%',
       },
-      '&bottom': {
+    },
+    '&position-bottom': {
+      node: {
         top: '100%',
       },
+    },
 
-      '&right': {
+    '&position-right': {
+      node: {
         left: '100%',
       },
-      '&center': {
+    },
+    '&position-center': {
+      node: {
         left: '50%',
       },
-      '&left': {
+    },
+    '&position-left': {
+      node: {
         right: '100%',
       },
     },
   },
-}, ({ position = 'bottom left' }: PropsT) => {
+})
+
+const getModifiers = ({ position = 'bottom left' }: PropsT) => {
   const [verticalPos, horizontalPos] = position.split(' ')
   return {
-    [`&${verticalPos}`]: true,
-    [`&${horizontalPos}`]: true,
+    [`&position-${verticalPos}`]: true,
+    [`&position-${horizontalPos}`]: true,
   }
-})
-
-// workaround for babel bug: break up substyle chaining and return a plain object
-const substyle = (...args) => ({
-  ...realSubstyle(...args),
-})
-
+}

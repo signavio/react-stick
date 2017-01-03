@@ -7,5 +7,7 @@ export type PositionT = 'bottom left' | 'bottom center' | 'bottom right' |
 export type PropsT = {
   node: React$Element,
   children?: React$Element,
-  position: PositionT,
+  position?: PositionT,
+  align?: PositionT,
+  inline?: boolean,
 };
