@@ -124,8 +124,6 @@ export default radium(StickPortal)
 
 const realSubstyle = defaultStyle({
   style: {
-    display: 'inline-block',
-
     node: {
       position: 'absolute',
       zIndex: 99,
