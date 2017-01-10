@@ -109,6 +109,10 @@ class StickPortal extends Component {
   }
 
   track() {
+    if (typeof window.requestAnimationFrame === 'undefined') {
+      return
+    }
+
     this.animationId = requestAnimationFrame(() => this.track())
     this.measure()
   }
