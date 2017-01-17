@@ -10,4 +10,5 @@ export type PropsT = {
   position?: PositionT,
   align?: PositionT,
   inline?: boolean,
+  nodeWidth?: number | string,
 };

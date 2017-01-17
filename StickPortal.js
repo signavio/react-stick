@@ -87,16 +87,18 @@ class StickPortal extends Component {
       this.track()
     }
 
+    const { node, nodeWidth } = this.props
     const { className, style } = substyle(this.props, 'node')
 
     const finalStyle = {
-      ...(style || {}),
+      ...style,
       ...this.state,
+      ...(nodeWidth != null && { width: nodeWidth }),
     }
 
     unstable_renderSubtreeIntoContainer(
       this,
-      createElement('div', { style: finalStyle, className }, this.props.node),
+      createElement('div', { style: finalStyle, className }, node),
       this.container
     )
   }
@@ -153,7 +155,7 @@ function createContainer() {
   return container
 }
 
-function calculateStyle(position: PositionT, element: HTMLElement) {
+function calculateStyle(position: ?PositionT, element: HTMLElement) {
   switch (position) {
     case 'top left':
       return topLeft(element)
@@ -230,7 +232,7 @@ function middleLeft(element: HTMLElement) {
 function hasPageOffset() {
   return (
     typeof window !== 'undefined' &&
-    typeof window.pageXOffset !== undefined
+    typeof window.pageXOffset !== 'undefined'
   )
 }
 

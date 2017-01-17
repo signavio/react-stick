@@ -7,14 +7,21 @@ import { omit } from 'lodash'
 import radium from '../../radium'
 import type { PropsT } from './flowTypes'
 
-const StickInline = ({ node, children, ...rest }: PropsT) => (
-  <div {...omit(rest, 'position')} {...substyle(rest, getModifiers)(rest)}>
-    { children }
-    <div {...substyle(rest, getModifiers)(rest, 'node')}>
-      { node }
+const StickInline = ({ node, children, nodeWidth, ...rest }: PropsT) => {
+  const { className, style } = substyle(rest, getModifiers)(rest, 'node')
+  const finalStyle = {
+    ...style,
+    ...(nodeWidth != null && { width: nodeWidth }),
+  }
+  return (
+    <div {...omit(rest, 'position')} {...substyle(rest, getModifiers)(rest)}>
+      { children }
+      <div className={className} style={finalStyle}>
+        { node }
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default radium(StickInline)
 
