@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, createElement } from 'react'
+import React, { Component } from 'react'
 import { omit } from 'lodash'
 import {
   unmountComponentAtNode,
@@ -9,7 +9,6 @@ import {
 import shallowCompare from 'react-addons-shallow-compare'
 import defaultStyle from 'substyle'
 
-import radium from '../../radium'
 import type { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
@@ -69,11 +68,11 @@ class StickPortal extends Component {
   }
 
   render() {
-    const { children, ...rest } = this.props
+    const { children, style, ...rest } = this.props
     return (
       <div
         {...omit(rest, 'node', 'position')}
-        {...substyle(this.props)}
+        {...style}
         ref={(ref: HTMLElement) => { this.element = ref }}
       >
         { children }
@@ -87,18 +86,19 @@ class StickPortal extends Component {
       this.track()
     }
 
-    const { node, nodeWidth } = this.props
-    const { className, style } = substyle(this.props, 'node')
+    const { node, style, nodeWidth } = this.props
 
-    const finalStyle = {
-      ...style,
+    const nodeStyle = {
+      ...style('node').style,
       ...this.state,
       ...(nodeWidth != null && { width: nodeWidth }),
     }
 
     unstable_renderSubtreeIntoContainer(
       this,
-      createElement('div', { style: finalStyle, className }, node),
+      <div {...style('node')} style={nodeStyle}>
+        { node }
+      </div>,
       this.container
     )
   }
@@ -126,14 +126,10 @@ class StickPortal extends Component {
 
 }
 
-export default radium(StickPortal)
-
-const realSubstyle = defaultStyle({
-  style: {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-    },
+const styled = defaultStyle({
+  node: {
+    position: 'absolute',
+    zIndex: 99,
   },
 }, ({ position = 'bottom left' }: PropsT) => {
   const [verticalPos, horizontalPos] = position.split(' ')
@@ -143,11 +139,7 @@ const realSubstyle = defaultStyle({
   }
 })
 
-// workaround for babel bug: break up substyle chaining and return a plain object
-const substyle = (...args) => ({
-  ...realSubstyle(...args),
-})
-
+export default styled(StickPortal)
 
 function createContainer() {
   const container = document.createElement('div')

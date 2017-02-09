@@ -8,57 +8,20 @@ import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import type { PropsT } from './flowTypes'
 
-const Stick = ({ inline, node, ...rest }: PropsT) => {
+const Stick = ({ inline, node, style, ...rest }: PropsT) => {
   const SpecificStick = inline ? StickInline : StickPortal
-  const modifiedSubstyle = substyle(rest, getModifiers)
   return (
     <SpecificStick
       node={
-        <div {...modifiedSubstyle(rest, 'nodeContent')}>
+        <div {...style('nodeContent')}>
           { node }
         </div>
       }
       {...omit(rest, 'align')}
+      style={style}
     />
   )
 }
-
-const substyle = defaultStyle({
-  style: {
-
-    nodeContent: {
-      display: 'inline-block',
-      position: 'absolute',
-    },
-
-    '&align-middle': {
-      nodeContent: {
-        transform: 'translateY(-50%)',
-      },
-    },
-    '&align-bottom': {
-      nodeContent: {
-        bottom: '100%',
-      },
-    },
-    '&align-center': {
-      nodeContent: {
-        transform: 'translateX(-50%)',
-      },
-
-      '&align-middle': {
-        nodeContent: {
-          transform: 'translateX(-50%) translateY(-50%)',
-        },
-      },
-    },
-    '&align-right': {
-      nodeContent: {
-        right: '100%',
-      },
-    },
-  },
-})
 
 const getDefaultAlign = (position: string) => (
   position.split(' ').map((positionPart: string) => ({
@@ -79,9 +42,38 @@ const getModifiers = ({ align, position = 'bottom left' }: PropsT) => {
   }
 }
 
-// workaround for babel bug: break up substyle chaining and return a plain object
-// const substyle = (...args) => ({
-//   ...realSubstyle(...args),
-// })
+const styled = defaultStyle({
+  nodeContent: {
+    display: 'inline-block',
+    position: 'absolute',
+  },
 
-export default Stick
+  '&align-middle': {
+    nodeContent: {
+      transform: 'translateY(-50%)',
+    },
+  },
+  '&align-bottom': {
+    nodeContent: {
+      bottom: '100%',
+    },
+  },
+  '&align-center': {
+    nodeContent: {
+      transform: 'translateX(-50%)',
+    },
+
+    '&align-middle': {
+      nodeContent: {
+        transform: 'translateX(-50%) translateY(-50%)',
+      },
+    },
+  },
+  '&align-right': {
+    nodeContent: {
+      right: '100%',
+    },
+  },
+}, getModifiers)
+
+export default styled(Stick)

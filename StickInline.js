@@ -4,70 +4,22 @@ import React from 'react'
 import defaultStyle from 'substyle'
 import { omit } from 'lodash'
 
-import radium from '../../radium'
 import type { PropsT } from './flowTypes'
 
-const StickInline = ({ node, children, nodeWidth, ...rest }: PropsT) => {
-  const { className, style } = substyle(rest, getModifiers)(rest, 'node')
-  const finalStyle = {
-    ...style,
+const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
+  const nodeStyle = {
+    ...style('node').style,
     ...(nodeWidth != null && { width: nodeWidth }),
   }
   return (
-    <div {...omit(rest, 'position')} {...substyle(rest, getModifiers)(rest)}>
+    <div {...omit(rest, 'position')} {...style}>
       { children }
-      <div className={className} style={finalStyle}>
+      <div {...style('node')} style={nodeStyle}>
         { node }
       </div>
     </div>
   )
 }
-
-export default radium(StickInline)
-
-const substyle = defaultStyle({
-  style: {
-    position: 'relative',
-    display: 'inline-block',
-
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-    },
-
-    '&position-top': {
-      node: {
-        bottom: '100%',
-      },
-    },
-    '&position-middle': {
-      node: {
-        top: '50%',
-      },
-    },
-    '&position-bottom': {
-      node: {
-        top: '100%',
-      },
-    },
-
-    '&position-right': {
-      node: {
-        left: '100%',
-      },
-    },
-    '&position-center': {
-      node: {
-        left: '50%',
-      },
-    },
-    '&position-left': {
-      node: {
-        right: '100%',
-      },
-    },
-  },
-})
 
 const getModifiers = ({ position = 'bottom left' }: PropsT) => {
   const [verticalPos, horizontalPos] = position.split(' ')
@@ -76,3 +28,48 @@ const getModifiers = ({ position = 'bottom left' }: PropsT) => {
     [`&position-${horizontalPos}`]: true,
   }
 }
+
+const styled = defaultStyle({
+  position: 'relative',
+  display: 'inline-block',
+
+  node: {
+    position: 'absolute',
+    zIndex: 99,
+  },
+
+  '&position-top': {
+    node: {
+      bottom: '100%',
+    },
+  },
+  '&position-middle': {
+    node: {
+      top: '50%',
+    },
+  },
+  '&position-bottom': {
+    node: {
+      top: '100%',
+    },
+  },
+
+  '&position-right': {
+    node: {
+      left: '100%',
+    },
+  },
+  '&position-center': {
+    node: {
+      left: '50%',
+    },
+  },
+  '&position-left': {
+    node: {
+      right: '100%',
+    },
+  },
+}, getModifiers)
+
+export default styled(StickInline)
+
