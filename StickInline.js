@@ -14,9 +14,11 @@ const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
   return (
     <div {...omit(rest, 'position')} {...style}>
       { children }
-      <div {...style('node')} style={nodeStyle}>
-        { node }
-      </div>
+      { node && (
+        <div {...style('node')} style={nodeStyle}>
+          { node }
+        </div>
+      ) }
     </div>
   )
 }
