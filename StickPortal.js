@@ -7,7 +7,7 @@ import {
   unstable_renderSubtreeIntoContainer, // eslint-disable-line camelcase
 } from 'react-dom'
 import shallowCompare from 'react-addons-shallow-compare'
-import defaultStyle from 'substyle'
+import { defaultStyle } from 'substyle'
 
 import type { PositionT, PropsT } from './flowTypes'
 

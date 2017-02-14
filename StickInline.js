@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import defaultStyle from 'substyle'
+import { defaultStyle } from 'substyle'
 import { omit } from 'lodash'
 
 import type { PropsT } from './flowTypes'

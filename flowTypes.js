@@ -1,5 +1,5 @@
 // @flow
-import type { SubstyleT } from 'substyle'
+import type { Substyle } from 'substyle'
 
 export type PositionT = 'bottom left' | 'bottom center' | 'bottom right' |
   'middle left' | 'middle center' | 'middle right' |
@@ -12,5 +12,5 @@ export type PropsT = {
   align?: PositionT,
   inline?: boolean,
   nodeWidth?: number | string,
-  style: SubstyleT,
+  style: Substyle,
 };
