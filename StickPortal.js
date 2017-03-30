@@ -1,12 +1,12 @@
 // @flow
 
-import React, { Component } from 'react'
+import 'requestidlecallback'
+import React, { PureComponent } from 'react'
 import { omit } from 'lodash'
 import {
   unmountComponentAtNode,
   unstable_renderSubtreeIntoContainer, // eslint-disable-line camelcase
 } from 'react-dom'
-import shallowCompare from 'react-addons-shallow-compare'
 import { defaultStyle } from 'substyle'
 
 import type { PositionT, PropsT } from './flowTypes'
@@ -19,8 +19,10 @@ type StateT = {
 
 declare function requestAnimationFrame(func: Function): number;
 declare function cancelAnimationFrame(id: number): void;
+declare function requestIdleCallback(func: Function): number;
+declare function cancelIdleCallback(id: number): void;
 
-class StickPortal extends Component {
+class StickPortal extends PureComponent {
 
   props: PropsT;
   state: StateT;
@@ -28,6 +30,7 @@ class StickPortal extends Component {
   element: HTMLElement;
   container: HTMLElement;
   animationId: number;
+  lastCallbackAsAnimationFrame: bool;
 
   static defaultProps = {
     position: 'bottom left',
@@ -43,15 +46,12 @@ class StickPortal extends Component {
   }
 
   componentDidMount() {
-    this.measure()
-  }
-
-  shouldComponentUpdate(nextProps: PropsT, nextState: StateT) {
-    return shallowCompare(this, nextProps, nextState)
+    if (this.props.node) {
+      this.renderNode()
+    }
   }
 
   componentDidUpdate() {
-    this.measure()
     if (this.props.node) {
       this.renderNode()
     }
@@ -71,7 +71,7 @@ class StickPortal extends Component {
     const { children, style, ...rest } = this.props
     return (
       <div
-        {...omit(rest, 'node', 'position')}
+        {...omit(rest, 'node', 'position', 'nodeWidth', 'updateOnAnimationFrame')}
         {...style}
         ref={(ref: HTMLElement) => { this.element = ref }}
       >
@@ -104,7 +104,11 @@ class StickPortal extends Component {
   }
 
   unmountNode() {
-    cancelAnimationFrame(this.animationId)
+    const cancelCallback = this.lastCallbackAsAnimationFrame ?
+      cancelAnimationFrame :
+      cancelIdleCallback
+
+    cancelCallback(this.animationId)
     unmountComponentAtNode(this.container)
     document.body.removeChild(this.container)
     delete this.container
@@ -112,16 +116,24 @@ class StickPortal extends Component {
 
   track() {
     if (typeof window.requestAnimationFrame === 'undefined') {
+      // do not track in node
       return
     }
 
-    this.animationId = requestAnimationFrame(() => this.track())
+    const requestCallback = this.props.updateOnAnimationFrame ?
+      requestAnimationFrame :
+      requestIdleCallback
+    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
+
+    this.animationId = requestCallback(() => this.track())
     this.measure()
   }
 
   measure() {
     const newStyle = calculateStyle(this.props.position, this.element)
-    this.setState(newStyle)
+    if (!stylesEqual(newStyle, this.state)) {
+      this.setState(newStyle)
+    }
   }
 
 }
@@ -214,6 +226,14 @@ function middleCenter(element: HTMLElement) {
 function middleLeft(element: HTMLElement) {
   const { width, height, left, top } = element.getBoundingClientRect()
   return { width, left: left + scrollX(), top: top + scrollY() + (height / 2) }
+}
+
+function stylesEqual(style1 = {}, style2 = {}) {
+  return (
+    style1.width === style2.width &&
+    style1.left === style2.left &&
+    style1.top === style2.top
+  )
 }
 
 /*

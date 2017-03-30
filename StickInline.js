@@ -12,7 +12,7 @@ const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
     ...(nodeWidth != null && { width: nodeWidth }),
   }
   return (
-    <div {...omit(rest, 'position')} {...style}>
+    <div {...omit(rest, 'position', 'updateOnAnimationFrame')} {...style}>
       { children }
       { node && (
         <div {...style('node')} style={nodeStyle}>

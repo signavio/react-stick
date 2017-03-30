@@ -11,6 +11,7 @@ export type PropsT = {
   position?: PositionT,
   align?: PositionT,
   inline?: boolean,
+  updateOnAnimationFrame?: boolean,
   nodeWidth?: number | string,
   style: Substyle,
 };

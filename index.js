@@ -12,11 +12,11 @@ const Stick = ({ inline, node, style, ...rest }: PropsT) => {
   const SpecificStick = inline ? StickInline : StickPortal
   return (
     <SpecificStick
-      node={
+      node={node && (
         <div {...style('nodeContent')}>
           { node }
         </div>
-      }
+      )}
       {...omit(rest, 'align')}
       style={style}
     />
