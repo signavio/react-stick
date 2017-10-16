@@ -15,26 +15,25 @@ type StateT = {
   top: number,
   left: number,
   width: number,
-};
+}
 
-declare function requestAnimationFrame(func: Function): number;
-declare function cancelAnimationFrame(id: number): void;
-declare function requestIdleCallback(func: Function): number;
-declare function cancelIdleCallback(id: number): void;
+declare function requestAnimationFrame(func: Function): number
+declare function cancelAnimationFrame(id: number): void
+declare function requestIdleCallback(func: Function): number
+declare function cancelIdleCallback(id: number): void
 
 class StickPortal extends PureComponent {
+  props: PropsT
+  state: StateT
 
-  props: PropsT;
-  state: StateT;
-
-  element: HTMLElement;
-  container: HTMLElement;
-  animationId: number;
-  lastCallbackAsAnimationFrame: bool;
+  element: HTMLElement
+  container: HTMLElement
+  animationId: number
+  lastCallbackAsAnimationFrame: boolean
 
   static defaultProps = {
     position: 'bottom left',
-  };
+  }
 
   constructor(props: PropsT) {
     super(props)
@@ -71,11 +70,19 @@ class StickPortal extends PureComponent {
     const { children, style, ...rest } = this.props
     return (
       <div
-        {...omit(rest, 'node', 'position', 'nodeWidth', 'updateOnAnimationFrame')}
+        {...omit(
+          rest,
+          'node',
+          'position',
+          'nodeWidth',
+          'updateOnAnimationFrame'
+        )}
         {...style}
-        ref={(ref: HTMLElement) => { this.element = ref }}
+        ref={(ref: HTMLElement) => {
+          this.element = ref
+        }}
       >
-        { children }
+        {children}
       </div>
     )
   }
@@ -97,16 +104,16 @@ class StickPortal extends PureComponent {
     unstable_renderSubtreeIntoContainer(
       this,
       <div {...style('node')} style={nodeStyle}>
-        { node }
+        {node}
       </div>,
       this.container
     )
   }
 
   unmountNode() {
-    const cancelCallback = this.lastCallbackAsAnimationFrame ?
-      cancelAnimationFrame :
-      cancelIdleCallback
+    const cancelCallback = this.lastCallbackAsAnimationFrame
+      ? cancelAnimationFrame
+      : cancelIdleCallback
 
     cancelCallback(this.animationId)
     unmountComponentAtNode(this.container)
@@ -120,9 +127,9 @@ class StickPortal extends PureComponent {
       return
     }
 
-    const requestCallback = this.props.updateOnAnimationFrame ?
-      requestAnimationFrame :
-      requestIdleCallback
+    const requestCallback = this.props.updateOnAnimationFrame
+      ? requestAnimationFrame
+      : requestIdleCallback
     this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
 
     this.animationId = requestCallback(() => this.track())
@@ -135,21 +142,23 @@ class StickPortal extends PureComponent {
       this.setState(newStyle)
     }
   }
-
 }
 
-const styled = defaultStyle({
-  node: {
-    position: 'absolute',
-    zIndex: 99,
+const styled = defaultStyle(
+  {
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+    },
   },
-}, ({ position = 'bottom left' }: PropsT) => {
-  const [verticalPos, horizontalPos] = position.split(' ')
-  return {
-    [`&${verticalPos}`]: true,
-    [`&${horizontalPos}`]: true,
+  ({ position = 'bottom left' }: PropsT) => {
+    const [verticalPos, horizontalPos] = position.split(' ')
+    return {
+      [`&${verticalPos}`]: true,
+      [`&${horizontalPos}`]: true,
+    }
   }
-})
+)
 
 export default styled(StickPortal)
 
@@ -195,7 +204,7 @@ function topRight(element: HTMLElement) {
 
 function topCenter(element: HTMLElement) {
   const { width, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX() + (width / 2), top: top + scrollY() }
+  return { width, left: left + scrollX() + width / 2, top: top + scrollY() }
 }
 
 function bottomLeft(element: HTMLElement) {
@@ -210,22 +219,26 @@ function bottomRight(element: HTMLElement) {
 
 function bottomCenter(element: HTMLElement) {
   const { width, left, bottom } = element.getBoundingClientRect()
-  return { width, left: left + scrollX() + (width / 2), top: bottom + scrollY() }
+  return { width, left: left + scrollX() + width / 2, top: bottom + scrollY() }
 }
 
 function middleRight(element: HTMLElement) {
   const { width, height, right, top } = element.getBoundingClientRect()
-  return { width, left: right + scrollX(), top: top + scrollY() + (height / 2) }
+  return { width, left: right + scrollX(), top: top + scrollY() + height / 2 }
 }
 
 function middleCenter(element: HTMLElement) {
   const { width, height, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX() + (width / 2), top: top + scrollY() + (height / 2) }
+  return {
+    width,
+    left: left + scrollX() + width / 2,
+    top: top + scrollY() + height / 2,
+  }
 }
 
 function middleLeft(element: HTMLElement) {
   const { width, height, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX(), top: top + scrollY() + (height / 2) }
+  return { width, left: left + scrollX(), top: top + scrollY() + height / 2 }
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {
@@ -243,16 +256,15 @@ function stylesEqual(style1 = {}, style2 = {}) {
  */
 function hasPageOffset() {
   return (
-    typeof window !== 'undefined' &&
-    typeof window.pageXOffset !== 'undefined'
+    typeof window !== 'undefined' && typeof window.pageXOffset !== 'undefined'
   )
 }
 
 function isCSS1Compat() {
-  const compatMode = (
-    typeof document !== 'undefined' &&
-    typeof document.compatMode === 'string'
-  ) ? document.compatMode : ''
+  const compatMode =
+    typeof document !== 'undefined' && typeof document.compatMode === 'string'
+      ? document.compatMode
+      : ''
 
   return compatMode === 'CSS1Compat'
 }

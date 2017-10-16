@@ -13,12 +13,11 @@ const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
   }
   return (
     <div {...omit(rest, 'position', 'updateOnAnimationFrame')} {...style}>
-      { children }
-      { node && (
+      {children}
+      {node &&
         <div {...style('node')} style={nodeStyle}>
-          { node }
-        </div>
-      ) }
+          {node}
+        </div>}
     </div>
   )
 }
@@ -31,47 +30,49 @@ const getModifiers = ({ position = 'bottom left' }: PropsT) => {
   }
 }
 
-const styled = defaultStyle({
-  position: 'relative',
-  display: 'inline-block',
+const styled = defaultStyle(
+  {
+    position: 'relative',
+    display: 'inline-block',
 
-  node: {
-    position: 'absolute',
-    zIndex: 99,
-  },
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+    },
 
-  '&position-top': {
-    node: {
-      bottom: '100%',
+    '&position-top': {
+      node: {
+        bottom: '100%',
+      },
     },
-  },
-  '&position-middle': {
-    node: {
-      top: '50%',
+    '&position-middle': {
+      node: {
+        top: '50%',
+      },
     },
-  },
-  '&position-bottom': {
-    node: {
-      top: '100%',
+    '&position-bottom': {
+      node: {
+        top: '100%',
+      },
     },
-  },
 
-  '&position-right': {
-    node: {
-      left: '100%',
+    '&position-right': {
+      node: {
+        left: '100%',
+      },
+    },
+    '&position-center': {
+      node: {
+        left: '50%',
+      },
+    },
+    '&position-left': {
+      node: {
+        right: '100%',
+      },
     },
   },
-  '&position-center': {
-    node: {
-      left: '50%',
-    },
-  },
-  '&position-left': {
-    node: {
-      right: '100%',
-    },
-  },
-}, getModifiers)
+  getModifiers
+)
 
 export default styled(StickInline)
-
