@@ -1,27 +1,65 @@
 // @flow
 
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import { omit } from 'lodash'
+import { omit, uniqueId, compact } from 'lodash'
 
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import type { PropsT } from './flowTypes'
 
-const Stick = ({ inline, node, style, ...rest }: PropsT) => {
-  const SpecificStick = inline ? StickInline : StickPortal
-  return (
-    <SpecificStick
-      node={
-        node &&
-        <div {...style('nodeContent')}>
-          {node}
-        </div>
-      }
-      {...omit(rest, 'align')}
-      style={style}
-    />
-  )
+const ContextTypes = {
+  parentStickNestingKey: PropTypes.string,
+}
+
+class Stick extends Component<PropsT> {
+  containerNestingKeyExtension: number
+
+  static contextTypes = ContextTypes
+  static childContextTypes = ContextTypes
+
+  constructor(...args) {
+    super(...args)
+    this.containerNestingKeyExtension = uniqueId()
+  }
+
+  render() {
+    const { inline, node, style, ...rest } = this.props
+
+    const wrappedNode =
+      node &&
+      <div {...style('nodeContent')}>
+        {node}
+      </div>
+
+    return inline
+      ? <StickInline
+          node={wrappedNode}
+          {...omit(rest, 'align')}
+          style={style}
+          nestingKey={this.getNestingKey()}
+        />
+      : <StickPortal
+          node={wrappedNode}
+          {...omit(rest, 'align')}
+          style={style}
+          nestingKey={this.getNestingKey()}
+        />
+  }
+
+  getChildContext() {
+    return {
+      parentStickNestingKey: this.getNestingKey(),
+    }
+  }
+
+  getNestingKey() {
+    return compact([
+      this.context.parentStickNestingKey,
+      this.containerNestingKeyExtension,
+    ]).join('_')
+  }
 }
 
 const getDefaultAlign = (position: string) =>

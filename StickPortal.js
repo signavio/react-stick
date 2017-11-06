@@ -1,12 +1,9 @@
 // @flow
 
 import 'requestidlecallback'
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { omit } from 'lodash'
-import {
-  unmountComponentAtNode,
-  unstable_renderSubtreeIntoContainer, // eslint-disable-line camelcase
-} from 'react-dom'
+import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
 import type { PositionT, PropsT } from './flowTypes'
@@ -17,15 +14,26 @@ type StateT = {
   width: number,
 }
 
+type FinalPropsT = PropsT & {
+  nestingKey: string,
+  transportTo?: HTMLElement,
+  updateOnAnimationFrame?: boolean,
+}
+
 declare function requestAnimationFrame(func: Function): number
 declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
-class StickPortal extends PureComponent {
-  props: PropsT
-  state: StateT
+const Portal = ({ container, containerRef, children, ...rest }) =>
+  createPortal(
+    <div ref={containerRef} {...rest}>
+      {children}
+    </div>,
+    container
+  )
 
+class StickPortal extends Component<FinalPropsT, StateT> {
   element: HTMLElement
   container: HTMLElement
   animationId: number
@@ -35,34 +43,45 @@ class StickPortal extends PureComponent {
     position: 'bottom left',
   }
 
-  constructor(props: PropsT) {
+  state = {
+    top: 0,
+    left: 0,
+    width: 0,
+  }
+
+  constructor(props) {
     super(props)
-    this.state = {
-      top: 0,
-      left: 0,
-      width: 0,
-    }
+    this.container = document.createElement('div')
   }
 
   componentDidMount() {
     if (this.props.node) {
-      this.renderNode()
+      this.mountContainer()
+      this.startTracking()
     }
   }
 
-  componentDidUpdate() {
-    if (this.props.node) {
-      this.renderNode()
+  componentDidUpdate(prevProps: FinalPropsT) {
+    if (this.props.node && !prevProps.node) {
+      this.mountContainer()
+      this.startTracking()
     }
 
-    if (!this.props.node && this.container) {
-      this.unmountNode()
+    if (this.props.transportTo !== prevProps.transportTo && this.props.node) {
+      // re-call mountContainer, which will also move the node to the new container
+      this.mountContainer()
+    }
+
+    if (!this.props.node && prevProps.node) {
+      this.stopTracking()
+      this.unmountContainer()
     }
   }
 
   componentWillUnmount() {
     if (this.container) {
-      this.unmountNode()
+      this.stopTracking()
+      this.unmountContainer()
     }
   }
 
@@ -75,7 +94,10 @@ class StickPortal extends PureComponent {
           'node',
           'position',
           'nodeWidth',
-          'updateOnAnimationFrame'
+          'updateOnAnimationFrame',
+          'transportTo',
+          'containerRef',
+          'nestingKey'
         )}
         {...style}
         ref={(ref: HTMLElement) => {
@@ -83,45 +105,43 @@ class StickPortal extends PureComponent {
         }}
       >
         {children}
+        {this.renderNode()}
       </div>
     )
   }
 
   renderNode() {
-    if (!this.container) {
-      this.container = createContainer()
-      this.track()
-    }
-
-    const { node, style, nodeWidth } = this.props
-
+    const { node, style, nestingKey, containerRef, nodeWidth } = this.props
     const nodeStyle = {
       ...style('node').style,
+      position: 'absolute',
+      zIndex: 99,
       ...this.state,
-      ...(nodeWidth != null && { width: nodeWidth }),
+      ...(nodeWidth != null ? { width: nodeWidth } : {}),
     }
 
-    unstable_renderSubtreeIntoContainer(
-      this,
-      <div {...style('node')} style={nodeStyle}>
+    return (
+      <Portal
+        container={this.container}
+        containerRef={containerRef}
+        data-sticknestingkey={nestingKey}
+        style={nodeStyle}
+      >
         {node}
-      </div>,
-      this.container
+      </Portal>
     )
   }
 
-  unmountNode() {
-    const cancelCallback = this.lastCallbackAsAnimationFrame
-      ? cancelAnimationFrame
-      : cancelIdleCallback
-
-    cancelCallback(this.animationId)
-    unmountComponentAtNode(this.container)
+  unmountContainer() {
     document.body.removeChild(this.container)
-    delete this.container
   }
 
-  track() {
+  mountContainer() {
+    const parent = this.props.transportTo || document.body
+    parent.appendChild(this.container)
+  }
+
+  startTracking() {
     if (typeof window.requestAnimationFrame === 'undefined') {
       // do not track in node
       return
@@ -132,8 +152,15 @@ class StickPortal extends PureComponent {
       : requestIdleCallback
     this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
 
-    this.animationId = requestCallback(() => this.track())
+    this.animationId = requestCallback(() => this.startTracking())
     this.measure()
+  }
+
+  stopTracking() {
+    const cancelCallback = this.lastCallbackAsAnimationFrame
+      ? cancelAnimationFrame
+      : cancelIdleCallback
+    cancelCallback(this.animationId)
   }
 
   measure() {
@@ -161,12 +188,6 @@ const styled = defaultStyle(
 )
 
 export default styled(StickPortal)
-
-function createContainer() {
-  const container = document.createElement('div')
-  document.body.appendChild(container)
-  return container
-}
 
 function calculateStyle(position: ?PositionT, element: HTMLElement) {
   switch (position) {
@@ -254,31 +275,24 @@ function stylesEqual(style1 = {}, style2 = {}) {
  * ok.
  * https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollY#Notes
  */
-function hasPageOffset() {
-  return (
-    typeof window !== 'undefined' && typeof window.pageXOffset !== 'undefined'
-  )
-}
+const hasPageOffset =
+  typeof window !== 'undefined' && typeof window.pageXOffset !== 'undefined'
 
-function isCSS1Compat() {
-  const compatMode =
-    typeof document !== 'undefined' && typeof document.compatMode === 'string'
-      ? document.compatMode
-      : ''
-
-  return compatMode === 'CSS1Compat'
-}
+const compatMode =
+  typeof document !== 'undefined' && typeof document.compatMode === 'string'
+    ? document.compatMode
+    : ''
 
 function scrollY() {
   if (typeof window !== 'undefined' && typeof window.scrollY === 'number') {
     return window.scrollY
   }
 
-  if (hasPageOffset() === true) {
+  if (hasPageOffset === true) {
     return window.pageYOffset
   }
 
-  if (isCSS1Compat() === true) {
+  if (compatMode === 'CSS1Compat') {
     return document.documentElement.scrollTop
   }
 
@@ -302,7 +316,7 @@ function scrollX() {
     return window.pageXOffset
   }
 
-  if (isCSS1Compat === true) {
+  if (compatMode === 'CSS1Compat') {
     return document.documentElement.scrollLeft
   }
 

@@ -6,13 +6,31 @@ import { omit } from 'lodash'
 
 import type { PropsT } from './flowTypes'
 
-const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
+type FinalPropsT = PropsT & {
+  nestingKey: string,
+}
+
+const StickInline = ({
+  node,
+  children,
+  nodeWidth,
+  style,
+  containerRef,
+  nestingKey,
+  ...rest
+}: FinalPropsT) => {
   const nodeStyle = {
     ...style('node').style,
     ...(nodeWidth != null && { width: nodeWidth }),
   }
+
   return (
-    <div {...omit(rest, 'position', 'updateOnAnimationFrame')} {...style}>
+    <div
+      ref={containerRef}
+      data-sticknestingkey={nestingKey}
+      {...omit(rest, 'position', 'updateOnAnimationFrame')}
+      {...style}
+    >
       {children}
       {node &&
         <div {...style('node')} style={nodeStyle}>
@@ -22,7 +40,7 @@ const StickInline = ({ node, children, nodeWidth, style, ...rest }: PropsT) => {
   )
 }
 
-const getModifiers = ({ position = 'bottom left' }: PropsT) => {
+const getModifiers = ({ position = 'bottom left' }: FinalPropsT) => {
   const [verticalPos, horizontalPos] = position.split(' ')
   return {
     [`&position-${verticalPos}`]: true,
