@@ -51,7 +51,6 @@ const getModifiers = ({ position = 'bottom left' }: FinalPropsT) => {
 const styled = defaultStyle(
   {
     position: 'relative',
-    display: 'inline-block',
 
     node: {
       position: 'absolute',
