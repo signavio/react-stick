@@ -133,7 +133,9 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   unmountContainer() {
-    document.body.removeChild(this.container)
+    if (this.container.parentNode) {
+      this.container.parentNode.removeChild(this.container)
+    }
   }
 
   mountContainer() {
