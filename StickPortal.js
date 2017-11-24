@@ -112,8 +112,9 @@ class StickPortal extends Component<FinalPropsT, StateT> {
 
   renderNode() {
     const { node, style, nestingKey, containerRef, nodeWidth } = this.props
+    const { style: inlineStyles, ...stylingAttrs } = style('node')
     const nodeStyle = {
-      ...style('node').style,
+      ...inlineStyles,
       position: 'absolute',
       zIndex: 99,
       ...this.state,
@@ -122,10 +123,11 @@ class StickPortal extends Component<FinalPropsT, StateT> {
 
     return (
       <Portal
+        {...stylingAttrs}
+        style={nodeStyle}
         container={this.container}
         containerRef={containerRef}
         data-sticknestingkey={nestingKey}
-        style={nodeStyle}
       >
         {node}
       </Portal>

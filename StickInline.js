@@ -55,11 +55,13 @@ const styled = defaultStyle(
     node: {
       position: 'absolute',
       zIndex: 99,
+      width: '100%',
+      textAlign: 'left',
     },
 
     '&position-top': {
       node: {
-        bottom: '100%',
+        top: 0,
       },
     },
     '&position-middle': {
@@ -69,13 +71,13 @@ const styled = defaultStyle(
     },
     '&position-bottom': {
       node: {
-        top: '100%',
+        bottom: 0,
       },
     },
 
     '&position-right': {
       node: {
-        left: '100%',
+        right: 0,
       },
     },
     '&position-center': {
@@ -85,7 +87,7 @@ const styled = defaultStyle(
     },
     '&position-left': {
       node: {
-        right: '100%',
+        left: 0,
       },
     },
   },
