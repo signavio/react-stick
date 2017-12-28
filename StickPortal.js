@@ -114,9 +114,9 @@ class StickPortal extends Component<FinalPropsT, StateT> {
     const { node, style, nestingKey, containerRef, nodeWidth } = this.props
     const { style: inlineStyles, ...stylingAttrs } = style('node')
     const nodeStyle = {
-      ...inlineStyles,
       position: 'absolute',
       zIndex: 99,
+      ...inlineStyles,
       ...this.state,
       ...(nodeWidth != null ? { width: nodeWidth } : {}),
     }
