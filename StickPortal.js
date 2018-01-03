@@ -6,6 +6,7 @@ import { omit } from 'lodash'
 import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
+import PortalHostElementContextTypes from '../portalHostElementContextTypes'
 import type { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
@@ -25,19 +26,24 @@ declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
-const Portal = ({ container, containerRef, children, ...rest }) =>
+const Portal = ({ host, containerRef, children, ...rest }) =>
   createPortal(
     <div ref={containerRef} {...rest}>
       {children}
     </div>,
-    container
+    host
   )
 
 class StickPortal extends Component<FinalPropsT, StateT> {
-  element: HTMLElement
-  container: HTMLElement
+  element: ?HTMLElement // the element whose position is tracked
+  container: ?HTMLElement // the container for the sticked node (has z-index)
+  host: ?HTMLElement // the host element to which we portal the container (has no styles)
+
   animationId: number
   lastCallbackAsAnimationFrame: boolean
+
+  static contextTypes = PortalHostElementContextTypes
+  static childContextTypes = PortalHostElementContextTypes
 
   static defaultProps = {
     position: 'bottom left',
@@ -51,37 +57,43 @@ class StickPortal extends Component<FinalPropsT, StateT> {
 
   constructor(props) {
     super(props)
-    this.container = document.createElement('div')
+    this.host = document.createElement('div')
   }
 
   componentDidMount() {
     if (this.props.node) {
-      this.mountContainer()
+      this.mountHost()
       this.startTracking()
     }
   }
 
   componentDidUpdate(prevProps: FinalPropsT) {
     if (this.props.node && !prevProps.node) {
-      this.mountContainer()
+      this.mountHost()
       this.startTracking()
     }
 
     if (this.props.transportTo !== prevProps.transportTo && this.props.node) {
-      // re-call mountContainer, which will also move the node to the new container
-      this.mountContainer()
+      // re-call mountHost, which will also move the node to the new host
+      this.mountHost()
     }
 
     if (!this.props.node && prevProps.node) {
       this.stopTracking()
-      this.unmountContainer()
+      this.unmountHost()
     }
   }
 
   componentWillUnmount() {
-    if (this.container) {
+    if (this.host) {
       this.stopTracking()
-      this.unmountContainer()
+      this.unmountHost()
+    }
+  }
+
+  getChildContext() {
+    return {
+      portalHostElement: this.container,
     }
   }
 
@@ -111,38 +123,53 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   renderNode() {
-    const { node, style, nestingKey, containerRef, nodeWidth } = this.props
-    const { style: inlineStyles, ...stylingAttrs } = style('node')
-    const nodeStyle = {
-      position: 'absolute',
-      zIndex: 99,
-      ...inlineStyles,
-      ...this.state,
-      ...(nodeWidth != null ? { width: nodeWidth } : {}),
-    }
-
+    const { node, style, nestingKey, nodeWidth } = this.props
+    // Do not render `this.props.node` before the container ref is set. This ensures that
+    // all descendant portals will be mounted to the right host element straight away.
+    // We must not rely on context updates!
     return (
       <Portal
-        {...stylingAttrs}
-        style={nodeStyle}
-        container={this.container}
-        containerRef={containerRef}
+        {...style('node')}
+        host={this.host}
+        containerRef={this.storeContainerRef}
         data-sticknestingkey={nestingKey}
       >
-        {node}
+        <div
+          style={{
+            position: 'absolute',
+            ...this.state,
+            ...(nodeWidth != null ? { width: nodeWidth } : {}),
+          }}
+        >
+          {this.container && node}
+        </div>
       </Portal>
     )
   }
 
-  unmountContainer() {
-    if (this.container.parentNode) {
-      this.container.parentNode.removeChild(this.container)
+  storeContainerRef = (ref: HTMLElement) => {
+    const { containerRef } = this.props
+
+    if (containerRef) {
+      containerRef(ref)
+    }
+
+    if (this.container !== ref) {
+      this.container = ref
+      this.forceUpdate()
     }
   }
 
-  mountContainer() {
-    const parent = this.props.transportTo || document.body
-    parent.appendChild(this.container)
+  mountHost() {
+    const hostParent =
+      this.props.transportTo || this.context.portalHostElement || document.body
+    hostParent.appendChild(this.host)
+  }
+
+  unmountHost() {
+    if (this.host.parentNode) {
+      this.host.parentNode.removeChild(this.host)
+    }
   }
 
   startTracking() {
@@ -179,6 +206,8 @@ const styled = defaultStyle(
   {
     node: {
       position: 'absolute',
+      top: 0,
+      left: 0,
       zIndex: 99,
     },
   },
@@ -217,53 +246,102 @@ function calculateStyle(position: ?PositionT, element: HTMLElement) {
   }
 }
 
+function hasFixedAncestors(element: HTMLElement) {
+  let elem = element
+  do {
+    if (getComputedStyle(elem).position == 'fixed') return true
+  } while ((elem = elem.offsetParent))
+  return false
+}
+
 function topLeft(element: HTMLElement) {
   const { width, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX(), top: top + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: left + (isFixed ? 0 : scrollX()),
+    top: top + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function topRight(element: HTMLElement) {
   const { width, right, top } = element.getBoundingClientRect()
-  return { width, left: right + scrollX(), top: top + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: right + (isFixed ? 0 : scrollX()),
+    top: top + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function topCenter(element: HTMLElement) {
   const { width, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX() + width / 2, top: top + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: left + width / 2 + (isFixed ? 0 : scrollX()),
+    top: top + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function bottomLeft(element: HTMLElement) {
   const { width, left, bottom } = element.getBoundingClientRect()
-  return { width, left: left + scrollX(), top: bottom + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: left + (isFixed ? 0 : scrollX()),
+    top: bottom + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function bottomRight(element: HTMLElement) {
   const { width, right, bottom } = element.getBoundingClientRect()
-  return { width, left: right + scrollX(), top: bottom + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: right + (isFixed ? 0 : scrollX()),
+    top: bottom + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function bottomCenter(element: HTMLElement) {
   const { width, left, bottom } = element.getBoundingClientRect()
-  return { width, left: left + scrollX() + width / 2, top: bottom + scrollY() }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: left + width / 2 + (isFixed ? 0 : scrollX()),
+    top: bottom + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function middleRight(element: HTMLElement) {
   const { width, height, right, top } = element.getBoundingClientRect()
-  return { width, left: right + scrollX(), top: top + scrollY() + height / 2 }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: right + (isFixed ? 0 : scrollX()),
+    top: top + height / 2 + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function middleCenter(element: HTMLElement) {
   const { width, height, left, top } = element.getBoundingClientRect()
+  const isFixed = hasFixedAncestors(element)
   return {
     width,
-    left: left + scrollX() + width / 2,
-    top: top + scrollY() + height / 2,
+    left: left + width / 2 + (isFixed ? 0 : scrollX()),
+    top: top + height / 2 + (isFixed ? 0 : scrollY()),
   }
 }
 
 function middleLeft(element: HTMLElement) {
   const { width, height, left, top } = element.getBoundingClientRect()
-  return { width, left: left + scrollX(), top: top + scrollY() + height / 2 }
+  const isFixed = hasFixedAncestors(element)
+  return {
+    width,
+    left: left + (isFixed ? 0 : scrollX()),
+    top: top + height / 2 + (isFixed ? 0 : scrollY()),
+  }
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {
