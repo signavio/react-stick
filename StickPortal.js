@@ -209,6 +209,7 @@ const styled = defaultStyle(
       top: 0,
       left: 0,
       zIndex: 99,
+      width: '100%',
     },
   },
   ({ position = 'bottom left' }: PropsT) => {
