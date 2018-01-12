@@ -71,13 +71,13 @@ const styled = defaultStyle(
     },
     '&position-bottom': {
       node: {
-        bottom: 0,
+        top: '100%',
       },
     },
 
     '&position-right': {
       node: {
-        right: 0,
+        left: '100%',
       },
     },
     '&position-center': {
