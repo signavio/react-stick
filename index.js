@@ -99,11 +99,13 @@ const styled = defaultStyle(
         transform: 'translateY(-50%)',
       },
     },
+
     '&align-bottom': {
       nodeContent: {
         bottom: '100%',
       },
     },
+
     '&align-center': {
       nodeContent: {
         transform: 'translateX(-50%)',
@@ -115,9 +117,16 @@ const styled = defaultStyle(
         },
       },
     },
+
     '&align-right': {
       nodeContent: {
-        right: '100%',
+        transform: 'translateX(-100%)',
+      },
+
+      '&align-middle': {
+        nodeContent: {
+          transform: 'translateX(-100%) translateY(-50%)',
+        },
       },
     },
   },
