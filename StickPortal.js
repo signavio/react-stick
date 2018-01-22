@@ -2,11 +2,12 @@
 
 import 'requestidlecallback'
 import React, { Component } from 'react'
-import { omit } from 'lodash'
+import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
 import PortalHostElementContextTypes from '../portalHostElementContextTypes'
+import getModifiers from './getModifiers'
 import type { PositionT, PropsT } from './flowTypes'
 
 type StateT = {
@@ -123,7 +124,8 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   renderNode() {
-    const { node, style, nestingKey, nodeWidth } = this.props
+    const { node, style, nestingKey, nodeWidth, position } = this.props
+
     // Do not render `this.props.node` before the container ref is set. This ensures that
     // all descendant portals will be mounted to the right host element straight away.
     // We must not rely on context updates!
@@ -137,6 +139,8 @@ class StickPortal extends Component<FinalPropsT, StateT> {
         <div
           style={{
             position: 'absolute',
+            display: 'flex',
+            justifyContent: calculateJustifyContent(position),
             ...this.state,
             ...(nodeWidth != null ? { width: nodeWidth } : {}),
           }}
@@ -195,7 +199,16 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   measure() {
-    const newStyle = calculateStyle(this.props.position, this.element)
+    const boundingRect = this.element.getBoundingClientRect()
+    const isFixed = hasFixedAncestors(this.element)
+
+    const newStyle = {
+      width: boundingRect.width,
+
+      top: calculateTop(this.props.position, boundingRect, isFixed),
+      left: boundingRect.left + (isFixed ? 0 : scrollX()),
+    }
+
     if (!stylesEqual(newStyle, this.state)) {
       this.setState(newStyle)
     }
@@ -212,39 +225,37 @@ const styled = defaultStyle(
       width: '100%',
     },
   },
-  ({ position = 'bottom left' }: PropsT) => {
-    const [verticalPos, horizontalPos] = position.split(' ')
-    return {
-      [`&${verticalPos}`]: true,
-      [`&${horizontalPos}`]: true,
-    }
-  }
+  getModifiers
 )
 
 export default styled(StickPortal)
 
-function calculateStyle(position: ?PositionT, element: HTMLElement) {
-  switch (position) {
-    case 'top left':
-      return topLeft(element)
-    case 'top right':
-      return topRight(element)
-    case 'top center':
-      return topCenter(element)
-    case 'bottom center':
-      return bottomCenter(element)
-    case 'bottom right':
-      return bottomRight(element)
-    case 'middle right':
-      return middleRight(element)
-    case 'middle center':
-      return middleCenter(element)
-    case 'middle left':
-      return middleLeft(element)
-    case 'bottom left':
-    default:
-      return bottomLeft(element)
+function calculateTop(
+  position: ?PositionT,
+  { top, height, bottom },
+  isFixed: boolean
+) {
+  if (includes(position, 'top')) {
+    return top + (isFixed ? 0 : scrollY())
   }
+
+  if (includes(position, 'middle')) {
+    return top + height / 2 + (isFixed ? 0 : scrollY())
+  }
+
+  return bottom + (isFixed ? 0 : scrollY())
+}
+
+function calculateJustifyContent(position: ?PositionT) {
+  if (includes(position, 'right')) {
+    return 'flex-end'
+  }
+
+  if (includes(position, 'center')) {
+    return 'center'
+  }
+
+  return 'flex-start'
 }
 
 function hasFixedAncestors(element: HTMLElement) {
@@ -253,96 +264,6 @@ function hasFixedAncestors(element: HTMLElement) {
     if (getComputedStyle(elem).position == 'fixed') return true
   } while ((elem = elem.offsetParent))
   return false
-}
-
-function topLeft(element: HTMLElement) {
-  const { width, left, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + (isFixed ? 0 : scrollX()),
-    top: top + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function topRight(element: HTMLElement) {
-  const { width, right, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: right + (isFixed ? 0 : scrollX()),
-    top: top + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function topCenter(element: HTMLElement) {
-  const { width, left, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + width / 2 + (isFixed ? 0 : scrollX()),
-    top: top + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function bottomLeft(element: HTMLElement) {
-  const { width, left, bottom } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + (isFixed ? 0 : scrollX()),
-    top: bottom + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function bottomRight(element: HTMLElement) {
-  const { width, right, bottom } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: right + (isFixed ? 0 : scrollX()),
-    top: bottom + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function bottomCenter(element: HTMLElement) {
-  const { width, left, bottom } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + width / 2 + (isFixed ? 0 : scrollX()),
-    top: bottom + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function middleRight(element: HTMLElement) {
-  const { width, height, right, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: right + (isFixed ? 0 : scrollX()),
-    top: top + height / 2 + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function middleCenter(element: HTMLElement) {
-  const { width, height, left, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + width / 2 + (isFixed ? 0 : scrollX()),
-    top: top + height / 2 + (isFixed ? 0 : scrollY()),
-  }
-}
-
-function middleLeft(element: HTMLElement) {
-  const { width, height, left, top } = element.getBoundingClientRect()
-  const isFixed = hasFixedAncestors(element)
-  return {
-    width,
-    left: left + (isFixed ? 0 : scrollX()),
-    top: top + height / 2 + (isFixed ? 0 : scrollY()),
-  }
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {

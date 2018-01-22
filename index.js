@@ -3,8 +3,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact } from 'lodash'
+import { omit, uniqueId, compact, flatten } from 'lodash'
 
+import getModifiers from './getModifiers'
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import type { PropsT } from './flowTypes'
@@ -62,73 +63,76 @@ class Stick extends Component<PropsT> {
   }
 }
 
-const getDefaultAlign = (position: string) =>
-  position
-    .split(' ')
-    .map(
-      (positionPart: string) =>
-        ({
-          top: 'bottom',
-          middle: 'middle',
-          bottom: 'top',
-          left: position.indexOf('middle') ? 'left' : 'right',
-          center: 'center',
-          right: position.indexOf('middle') ? 'right' : 'left',
-        }[positionPart])
-    )
-    .join(' ')
+const verticals = ['top', 'middle', 'bottom']
+const horizontals = ['left', 'center', 'right']
 
-const getModifiers = ({ align, position = 'bottom left' }: PropsT) => {
-  const [verticalAlign, horizontalAlign] = (align || getDefaultAlign(position))
-    .split(' ')
-  return {
-    [`&align-${verticalAlign}`]: true,
-    [`&align-${horizontalAlign}`]: true,
+const aligns = flatten(
+  verticals.map(vertical =>
+    horizontals.map(horizontal => [vertical, horizontal])
+  )
+)
+
+const translateX = (position, align) => {
+  if (position === align) {
+    return 0
   }
+
+  const absoluteValue = position === 'center' || align === 'center' ? 50 : 100
+  let factor = 1
+
+  if (position === 'center' && align === 'right') {
+    factor = -1
+  }
+
+  if (position === 'left') {
+    factor = -1
+  }
+
+  return factor * absoluteValue
+}
+
+const translateY = align => {
+  if (align === 'top') {
+    return 0
+  }
+
+  if (align === 'middle') {
+    return -50
+  }
+
+  return -100
 }
 
 const styled = defaultStyle(
   {
     nodeContent: {
       display: 'inline-block',
-      position: 'absolute',
     },
 
-    '&align-middle': {
-      nodeContent: {
-        transform: 'translateY(-50%)',
-      },
-    },
+    ...horizontals.reduce(
+      (positionStyles, horizontalPosition) => ({
+        ...positionStyles,
 
-    '&align-bottom': {
-      nodeContent: {
-        bottom: '100%',
-      },
-    },
+        [`&position-${horizontalPosition}`]: {
+          ...aligns.reduce(
+            (alignStyles, [verticalAlign, horizontalAlign]) => ({
+              ...alignStyles,
 
-    '&align-center': {
-      nodeContent: {
-        transform: 'translateX(-50%)',
-      },
-
-      '&align-middle': {
-        nodeContent: {
-          transform: 'translateX(-50%) translateY(-50%)',
+              [`&align-${verticalAlign}-${horizontalAlign}`]: {
+                nodeContent: {
+                  transform: `translate(${translateX(
+                    horizontalPosition,
+                    horizontalAlign
+                  )}%, ${translateY(verticalAlign)}%)`,
+                },
+              },
+            }),
+            {}
+          ),
         },
-      },
-    },
-
-    '&align-right': {
-      nodeContent: {
-        transform: 'translateX(-100%)',
-      },
-
-      '&align-middle': {
-        nodeContent: {
-          transform: 'translateX(-100%) translateY(-50%)',
-        },
-      },
-    },
+      }),
+      {}
+    ),
   },
   getModifiers
 )

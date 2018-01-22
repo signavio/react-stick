@@ -4,6 +4,7 @@ import React from 'react'
 import { defaultStyle } from 'substyle'
 import { omit } from 'lodash'
 
+import getModifiers from './getModifiers'
 import type { PropsT } from './flowTypes'
 
 type FinalPropsT = PropsT & {
@@ -40,14 +41,6 @@ const StickInline = ({
   )
 }
 
-const getModifiers = ({ position = 'bottom left' }: FinalPropsT) => {
-  const [verticalPos, horizontalPos] = position.split(' ')
-  return {
-    [`&position-${verticalPos}`]: true,
-    [`&position-${horizontalPos}`]: true,
-  }
-}
-
 const styled = defaultStyle(
   {
     position: 'relative',
@@ -57,6 +50,8 @@ const styled = defaultStyle(
       zIndex: 99,
       width: '100%',
       textAlign: 'left',
+
+      display: 'flex',
     },
 
     '&position-top': {
@@ -77,17 +72,12 @@ const styled = defaultStyle(
 
     '&position-right': {
       node: {
-        left: '100%',
+        justifyContent: 'flex-end',
       },
     },
     '&position-center': {
       node: {
-        left: '50%',
-      },
-    },
-    '&position-left': {
-      node: {
-        left: 0,
+        justifyContent: 'center',
       },
     },
   },
