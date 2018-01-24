@@ -27,13 +27,26 @@ declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
-const Portal = ({ host, containerRef, children, ...rest }) =>
-  createPortal(
-    <div ref={containerRef} {...rest}>
-      {children}
-    </div>,
-    host
-  )
+class Portal extends Component {
+  static childContextTypes = PortalHostElementContextTypes
+
+  render() {
+    const { host, containerRef, children, ...rest } = this.props
+
+    return createPortal(
+      <div ref={containerRef} {...rest}>
+        {children}
+      </div>,
+      host
+    )
+  }
+
+  getChildContext() {
+    return {
+      portalHostElement: this.props.host.parentNode,
+    }
+  }
+}
 
 class StickPortal extends Component<FinalPropsT, StateT> {
   element: ?HTMLElement // the element whose position is tracked
@@ -44,7 +57,6 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   lastCallbackAsAnimationFrame: boolean
 
   static contextTypes = PortalHostElementContextTypes
-  static childContextTypes = PortalHostElementContextTypes
 
   static defaultProps = {
     position: 'bottom left',
@@ -89,12 +101,6 @@ class StickPortal extends Component<FinalPropsT, StateT> {
     if (this.host) {
       this.stopTracking()
       this.unmountHost()
-    }
-  }
-
-  getChildContext() {
-    return {
-      portalHostElement: this.container,
     }
   }
 
