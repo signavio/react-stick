@@ -106,6 +106,10 @@ const translateY = align => {
 const styled = defaultStyle(
   {
     nodeContent: {
+      // absolute position is need as the sticked node would otherwise
+      // cover up the base node and, for instance, make it impossible to
+      // click buttons
+      position: 'absolute',
       display: 'inline-block',
     },
 
