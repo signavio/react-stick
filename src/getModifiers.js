@@ -1,5 +1,5 @@
 // @flow
-import type { PositionT } from './flowTypes'
+import type { PositionT, PropsT } from './flowTypes'
 
 const getDefaultAlign = (position: PositionT) =>
   position
@@ -21,8 +21,9 @@ const DEFAULT_POSITION = 'bottom left'
 
 const getModifiers = ({ align, position = DEFAULT_POSITION }: PropsT) => {
   const [verticalPosition, horizontalPosition] = position.split(' ')
-  const [verticalAlign, horizontalAlign] = (align || getDefaultAlign(position))
-    .split(' ')
+  const [verticalAlign, horizontalAlign] = (
+    align || getDefaultAlign(position)
+  ).split(' ')
   return {
     [`&position-${horizontalPosition}`]: true,
     [`&position-${verticalPosition}`]: true,

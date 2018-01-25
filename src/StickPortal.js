@@ -2,11 +2,11 @@
 
 import 'requestidlecallback'
 import React, { Component } from 'react'
+import PT from 'prop-types'
 import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
-import PortalHostElementContextTypes from '../portalHostElementContextTypes'
 import getModifiers from './getModifiers'
 import type { PositionT, PropsT } from './flowTypes'
 
@@ -22,13 +22,17 @@ type FinalPropsT = PropsT & {
   updateOnAnimationFrame?: boolean,
 }
 
+const ContextTypes = {
+  portalHostElement: window ? PT.instanceOf(window.Element) : PT.any,
+}
+
 declare function requestAnimationFrame(func: Function): number
 declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
 class Portal extends Component {
-  static childContextTypes = PortalHostElementContextTypes
+  static childContextTypes = ContextTypes
 
   render() {
     const { host, containerRef, children, ...rest } = this.props
@@ -56,7 +60,7 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   animationId: number
   lastCallbackAsAnimationFrame: boolean
 
-  static contextTypes = PortalHostElementContextTypes
+  static contextTypes = ContextTypes
 
   static defaultProps = {
     position: 'bottom left',

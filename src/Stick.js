@@ -28,25 +28,23 @@ class Stick extends Component<PropsT> {
   render() {
     const { inline, node, style, ...rest } = this.props
 
-    const wrappedNode =
-      node &&
-      <div {...style('nodeContent')}>
-        {node}
-      </div>
+    const wrappedNode = node && <div {...style('nodeContent')}>{node}</div>
 
-    return inline
-      ? <StickInline
-          node={wrappedNode}
-          {...omit(rest, 'align')}
-          style={style}
-          nestingKey={this.getNestingKey()}
-        />
-      : <StickPortal
-          node={wrappedNode}
-          {...omit(rest, 'align')}
-          style={style}
-          nestingKey={this.getNestingKey()}
-        />
+    return inline ? (
+      <StickInline
+        node={wrappedNode}
+        {...omit(rest, 'align')}
+        style={style}
+        nestingKey={this.getNestingKey()}
+      />
+    ) : (
+      <StickPortal
+        node={wrappedNode}
+        {...omit(rest, 'align')}
+        style={style}
+        nestingKey={this.getNestingKey()}
+      />
+    )
   }
 
   getChildContext() {

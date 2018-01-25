@@ -20,6 +20,6 @@ export type PropsT = {
   inline?: boolean,
   updateOnAnimationFrame?: boolean,
   nodeWidth?: number | string,
-  containerRef: (element: HTMLElement | null) => void,  
+  containerRef: (element: HTMLElement | null) => void,
   style: Substyle,
 }

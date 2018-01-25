@@ -33,10 +33,11 @@ const StickInline = ({
       {...style}
     >
       {children}
-      {node &&
+      {node && (
         <div {...style('node')} style={nodeStyle}>
           {node}
-        </div>}
+        </div>
+      )}
     </div>
   )
 }
