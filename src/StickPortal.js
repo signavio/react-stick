@@ -172,13 +172,13 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   storeContainerRef = (ref: HTMLElement) => {
     const { containerRef } = this.props
 
-    if (containerRef) {
-      containerRef(ref)
-    }
-
     if (this.container !== ref) {
       this.container = ref
       this.forceUpdate()
+    }
+
+    if (containerRef) {
+      containerRef(ref)
     }
   }
 

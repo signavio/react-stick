@@ -16,14 +16,11 @@ const formPairs = (listA: Array<string>, listB: Array<string>) =>
     )
   )
 
-const positionGroups = formPairs(
-  ['top', 'middle', 'bottom'],
-  ['left', 'center', 'right']
-)
-const alignmentGroups = formPairs(
-  ['top', 'middle', 'bottom'],
-  ['left', 'center', 'right']
-)
+const verticals = ['top', 'middle', 'bottom']
+const horizontals = ['left', 'center', 'right']
+
+const positionGroups = formPairs(verticals, horizontals)
+const alignmentGroups = formPairs(verticals, horizontals)
 
 const Anchor = () => (
   <div
