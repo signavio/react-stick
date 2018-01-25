@@ -1,0 +1,12 @@
+[ignore]
+<PROJECT_ROOT>/test.*
+<PROJECT_ROOT>/reports.*
+<PROJECT_ROOT>/lib.*
+<PROJECT_ROOT>/lib-es6.*
+
+[include]
+
+[libs]
+
+[options]
+esproposal.class_instance_fields=enable
