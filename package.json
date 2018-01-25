@@ -8,7 +8,9 @@
   "author": "Jan-Felix Schwarz <jan-felix.schwarz@signavio.com>",
   "license": "MIT",
   "scripts": {
-    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\""
+    "flow": "flow",
+    "format":
+      "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\""
   },
   "dependencies": {
     "prop-types": "^15.6.0",

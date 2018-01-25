@@ -13,8 +13,8 @@ export type PositionT =
   | 'top right'
 
 export type PropsT = {
-  node?: React$Element,
-  children?: React$Element,
+  node?: React$Element<any>,
+  children?: React$Element<any>,
   position?: PositionT,
   align?: PositionT,
   inline?: boolean,

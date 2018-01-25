@@ -10,28 +10,22 @@ import { defaultStyle } from 'substyle'
 import getModifiers from './getModifiers'
 import type { PositionT, PropsT } from './flowTypes'
 
-type StateT = {
-  top: number,
-  left: number,
-  width: number,
-}
-
-type FinalPropsT = PropsT & {
-  nestingKey: string,
-  transportTo?: HTMLElement,
-  updateOnAnimationFrame?: boolean,
-}
-
-const ContextTypes = {
-  portalHostElement: window ? PT.instanceOf(window.Element) : PT.any,
-}
-
 declare function requestAnimationFrame(func: Function): number
 declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
-class Portal extends Component {
+const ContextTypes = {
+  portalHostElement: window ? PT.instanceOf(window.Element) : PT.any,
+}
+
+type PortalPropsT = {
+  host: HTMLElement,
+  containerRef: (element: HTMLElement | null) => void,
+  children?: React$Element<any>,
+}
+
+class Portal extends Component<PortalPropsT> {
   static childContextTypes = ContextTypes
 
   render() {
@@ -52,13 +46,25 @@ class Portal extends Component {
   }
 }
 
+type StateT = {
+  top: number,
+  left: number,
+  width: number,
+}
+
+type FinalPropsT = PropsT & {
+  nestingKey: string,
+  transportTo?: HTMLElement,
+  updateOnAnimationFrame?: boolean,
+}
+
 class StickPortal extends Component<FinalPropsT, StateT> {
-  element: ?HTMLElement // the element whose position is tracked
-  container: ?HTMLElement // the container for the sticked node (has z-index)
-  host: ?HTMLElement // the host element to which we portal the container (has no styles)
+  element: HTMLElement // the element whose position is tracked
+  container: HTMLElement // the container for the sticked node (has z-index)
+  host: HTMLElement // the host element to which we portal the container (has no styles)
 
   animationId: number
-  lastCallbackAsAnimationFrame: boolean
+  lastCallbackAsAnimationFrame: ?boolean
 
   static contextTypes = ContextTypes
 
@@ -177,7 +183,9 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   mountHost() {
     const hostParent =
       this.props.transportTo || this.context.portalHostElement || document.body
-    hostParent.appendChild(this.host)
+    if (hostParent) {
+      hostParent.appendChild(this.host)
+    }
   }
 
   unmountHost() {
@@ -307,12 +315,12 @@ function scrollY() {
   }
 
   if (compatMode === 'CSS1Compat') {
-    return document.documentElement.scrollTop
+    return document.documentElement && document.documentElement.scrollTop
   }
 
   if (
     typeof document !== 'undefined' &&
-    typeof document.body !== 'undefined' &&
+    !!document.body &&
     typeof document.body.scrollTop === 'number'
   ) {
     return document.body.scrollTop
@@ -331,12 +339,12 @@ function scrollX() {
   }
 
   if (compatMode === 'CSS1Compat') {
-    return document.documentElement.scrollLeft
+    return document.documentElement && document.documentElement.scrollLeft
   }
 
   if (
     typeof document !== 'undefined' &&
-    typeof document.body !== 'undefined' &&
+    !!document.body &&
     typeof document.body.scrollLeft === 'number'
   ) {
     return document.body.scrollLeft
