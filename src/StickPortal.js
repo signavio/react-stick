@@ -15,8 +15,10 @@ declare function cancelAnimationFrame(id: number): void
 declare function requestIdleCallback(func: Function): number
 declare function cancelIdleCallback(id: number): void
 
+const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
+
 const ContextTypes = {
-  portalHostElement: window ? PT.instanceOf(window.Element) : PT.any,
+  [PORTAL_HOST_ELEMENT]: window ? PT.instanceOf(window.Element) : PT.any,
 }
 
 type PortalPropsT = {
@@ -41,7 +43,7 @@ class Portal extends Component<PortalPropsT> {
 
   getChildContext() {
     return {
-      portalHostElement: this.props.host.parentNode,
+      [PORTAL_HOST_ELEMENT]: this.props.host.parentNode,
     }
   }
 }
@@ -182,7 +184,9 @@ class StickPortal extends Component<FinalPropsT, StateT> {
 
   mountHost() {
     const hostParent =
-      this.props.transportTo || this.context.portalHostElement || document.body
+      this.props.transportTo ||
+      this.context[PORTAL_HOST_ELEMENT] ||
+      document.body
     if (hostParent) {
       hostParent.appendChild(this.host)
     }

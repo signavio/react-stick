@@ -51,7 +51,6 @@ const styled = defaultStyle(
       zIndex: 99,
       width: '100%',
       textAlign: 'left',
-
       display: 'flex',
     },
 

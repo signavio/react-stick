@@ -10,8 +10,10 @@ import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import type { PropsT } from './flowTypes'
 
+const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
+
 const ContextTypes = {
-  parentStickNestingKey: PropTypes.string,
+  [PARENT_STICK_NESTING_KEY]: PropTypes.string,
 }
 
 class Stick extends Component<PropsT> {
@@ -49,13 +51,13 @@ class Stick extends Component<PropsT> {
 
   getChildContext() {
     return {
-      parentStickNestingKey: this.getNestingKey(),
+      [PARENT_STICK_NESTING_KEY]: this.getNestingKey(),
     }
   }
 
   getNestingKey() {
     return compact([
-      this.context.parentStickNestingKey,
+      this.context[PARENT_STICK_NESTING_KEY],
       this.containerNestingKeyExtension,
     ]).join('_')
   }
