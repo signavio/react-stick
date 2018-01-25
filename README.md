@@ -1,4 +1,8 @@
-# Stick
+# react-stick
+
+[![Travis][build-badge]][build]
+[![npm package][npm-badge]][npm]
+[![Coveralls][coveralls-badge]][coveralls]
 
 _Stick_ is a component that allows to attach an absolutely positioned node to a statically
 positioned anchor element. Per default, the node will be rendered in a portal as a direct
@@ -27,3 +31,10 @@ import Stick from 'react-stick'
   as the anchor node.
 
 For `position` and `align` props string values of the form `top|middle|bottom left|center|right` are supported.
+
+[build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
+[build]: https://travis-ci.org/user/repo
+[npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
+[npm]: https://www.npmjs.org/package/npm-package
+[coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
+[coveralls]: https://coveralls.io/github/user/repo
