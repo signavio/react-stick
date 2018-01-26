@@ -4,4 +4,7 @@ module.exports = {
     esModules: true,
     umd: false,
   },
+  karma: {
+    browsers: ['ChromeHeadless'],
+  },
 }
