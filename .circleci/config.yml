@@ -72,15 +72,39 @@ jobs:
       - *restore_cache
       - run:
           name: Test
-          command: |
-            yarn test:coverage
+          command: yarn test:coverage
       - run:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
+  publish-demo:
+    <<: *defaults
+    steps:
+      - steps:
+      - *attach_workspace
+      - *restore_cache
+      - run:
+          name: Publish demo
+          command: yarn publish-demo
+
+  release:
+    <<: *defaults
+    steps:
+      - steps:
+      - *attach_workspace
+      - *restore_cache
+      - run:
+          name: Build
+          command: yarn build
+      - run:
+          name: Release
+          command: yarn semantic-release
+
+
+
 workflows:
   version: 2
-  qa:
+  qa-publish-release:
     jobs:
       - install
       - lint:
@@ -92,18 +116,14 @@ workflows:
       - test:
           requires:
             - install
-
-  # On master and if tests passed, parse the commit history to see if a new release should happen
-  # If yes, publish to npm and tag a release on GitHub
-  # release:
-  #   working_directory: ~/react-stick
-  #   docker:
-  #     - image: circleci/node:8
-  #   steps:
-  #     - run: node -v; npm -v
-  #     - checkout
-  #     - *restore_cache
-  #     - run: npm install
-  #     - *save_cache
-  #     - run: npm run build
-  #     - run: npm run semantic-release
+      - publish-demo:
+          requires:
+            - install
+      - release:
+          requires:
+            - lint
+            - flow
+            - test
+          filters:
+            branches:
+              only: master
