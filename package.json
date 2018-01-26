@@ -12,7 +12,7 @@
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
-    "publish-demo": "node scripts/gh-pages-publish.js master",
+    "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
@@ -27,6 +27,7 @@
     "flow-bin": "^0.64.0",
     "gh-pages": "^1.1.0",
     "nwb": "^0.21.2",
+    "nyc": "^11.4.1",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
