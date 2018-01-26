@@ -11,6 +11,14 @@ attach_workspace: &attach_workspace
   attach_workspace:
       at: ~/project
 
+restore_cache: &restore_cache
+  restore_cache:
+    name: Restore node_modules cache
+    keys:
+      - v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v1-node-{{ .Branch }}-
+      - v1-node-
+
 jobs:
   install:
     <<: *defaults
@@ -37,7 +45,7 @@ jobs:
       - persist_to_workspace:
           root: ~/project
           paths:
-            - yarn
+            - react-stick
 
   lint:
     <<: *defaults
