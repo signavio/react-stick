@@ -92,7 +92,6 @@ jobs:
   release:
     <<: *defaults
     steps:
-      - steps:
       - *attach_workspace
       - *restore_cache
       - run:
