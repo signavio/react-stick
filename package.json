@@ -11,7 +11,9 @@
     "build": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow",
-    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
+    "format":
+      "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
+    "lint": "eslint --ext .js src tests demo/src",
     "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
@@ -24,10 +26,16 @@
     "substyle": "^6.1.2"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "4.13.0",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.34.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
     "flow-bin": "^0.64.0",
     "gh-pages": "^1.1.0",
     "nwb": "^0.21.2",
-    "nyc": "^11.4.1",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
