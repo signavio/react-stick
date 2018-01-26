@@ -91,8 +91,7 @@ jobs:
       - run:
           name: Set git name & email
           command: |
-            git --global config user.name "CircleCI" && |
-            git --global config user.email "circleci@signavio.com"
+            git --global config user.name "CircleCI" && git --global config user.email "circleci@signavio.com"
       - run:
           name: Build demo
           command: yarn build-demo
