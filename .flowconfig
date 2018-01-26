@@ -1,12 +1,5 @@
 [ignore]
-<PROJECT_ROOT>/test.*
-<PROJECT_ROOT>/reports.*
+<PROJECT_ROOT>/coverage.*
 <PROJECT_ROOT>/lib.*
-<PROJECT_ROOT>/lib-es6.*
-
-[include]
-
-[libs]
-
-[options]
-esproposal.class_instance_fields=enable
+<PROJECT_ROOT>/es.*
+<PROJECT_ROOT>/node_modules/nwb.*
