@@ -1,6 +1,6 @@
 {
   "name": "react-stick",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "description": "React component to stick a portaled node to an anchor node",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -12,8 +12,7 @@
     "build-demo": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow",
-    "format":
-      "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
+    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --ext .js src tests demo/src",
     "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
     "start": "nwb serve-react-demo",
@@ -29,6 +28,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
+    "condition-circle": "^2.0.1",
     "eslint": "4.13.0",
     "eslint-config-react-app": "^2.1.0",
     "eslint-plugin-flowtype": "^2.34.1",
@@ -46,5 +46,8 @@
   "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }
