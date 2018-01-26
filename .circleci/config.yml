@@ -83,6 +83,9 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - run:
+          name: Build demo
+          command: yarn build-demo
+      - run:
           name: Publish demo
           command: yarn publish-demo
 
