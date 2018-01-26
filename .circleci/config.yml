@@ -42,7 +42,7 @@ jobs:
       - *restore_cache
       - run: npm install
       - *save_cache
-      - run: npm test:coverage
+      - run: npm run test:coverage
       - *codecov
 
   # On master and if tests passed, parse the commit history to see if a new release should happen
