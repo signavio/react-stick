@@ -26,7 +26,7 @@ save_cache: &save_cache
 codecov: &codecov
   run:
     name: Codecov
-    command: node_modules/.bin/nyc report --reporter=json && bash <(curl -s https://codecov.io/bash) -f coverage/coverage-final.json
+    command: bash <(curl -s https://codecov.io/bash)
 
 jobs:
   # Build, lint, run tests
