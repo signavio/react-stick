@@ -83,6 +83,9 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - run:
+          name: Fix host authenticity for github.com
+          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
           name: Build demo
           command: yarn build-demo
       - run:
