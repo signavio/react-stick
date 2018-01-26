@@ -33,8 +33,9 @@ jobs:
   build_node_8:
     working_directory: ~/react-stick
     docker:
-      - image: circleci/node:8
-      - image: yukinying/chrome-headless-browser
+      - image: circleci/node:8-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
     steps:
       - run: node -v; npm -v
       - checkout
