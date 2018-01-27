@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
+    "circle-github-bot": "^0.4.0",
     "condition-circle": "^2.0.1",
     "eslint": "4.13.0",
     "eslint-config-react-app": "^2.1.0",
