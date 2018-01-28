@@ -5,7 +5,7 @@ const { execSync } = require('child_process')
 
 const branchName = process.argv[2]
 const dir = path.resolve(__dirname, '..', 'demo', 'dist')
-const url = `https://signavio.github.io/react-stick/${branchName}`
+const demoUrl = `https://signavio.github.io/react-stick/${branchName}`
 
 if (!fs.existsSync(dir)) {
   throw new Error(`${dir} does not exist. Run \`yarn build\` first.`)
@@ -19,9 +19,9 @@ const exec = (command, options) =>
 
 // Syncronously POST to `url` with `data` content
 const curl = (url, data) =>
-  exec('curl --silent --data @- #{url}', { input: data })
+  exec(`curl --silent --data @- ${url}`, { input: data })
 
-console.log(`Publishing demo/dist to ${url}...`)
+console.log(`Publishing demo/dist to ${demoUrl}...`)
 
 ghpages.publish(
   dir,
@@ -54,7 +54,7 @@ ghpages.publish(
 
     console.log(
       '\x1b[32m%s\x1b[0m',
-      `✓ Demo page successfully published at ${url}`
+      `✓ Demo page successfully published at ${demoUrl}`
     )
   }
 )
