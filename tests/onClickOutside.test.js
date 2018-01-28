@@ -4,7 +4,7 @@ import { render as renderBase, unmountComponentAtNode } from 'react-dom'
 
 import Stick from 'src/'
 
-describe.only('`onClickOutside` event', () => {
+describe('`onClickOutside` event', () => {
   let host
 
   const anchor = <div id="anchor" />
@@ -73,27 +73,37 @@ describe.only('`onClickOutside` event', () => {
     )
   })
 
-  it('should not call `onClickOutside` on click on a nested sticked node', done => {
-    const spy = createSpy()
-    render(
-      <Stick
-        onClickOutside={spy}
-        node={
-          <div id="node">
-            <Stick node={<div id="nested-node" />}>
-              <span>foo</span>
-            </Stick>
-          </div>
-        }
-      >
-        <div />
-      </Stick>,
-      host,
-      () => {
-        document.getElementById('nested-node').click()
-        expect(spy).toNotHaveBeenCalled()
-        done()
-      }
-    )
+  const inlineOptions = [false, true]
+  inlineOptions.forEach(outerInline => {
+    inlineOptions.forEach(innerInline => {
+      describe(`<Stick ${innerInline ? 'inline ' : ''}/> in node of <Stick ${
+        outerInline ? 'inline ' : ''
+      }/>`, () => {
+        it('should not call `onClickOutside` on click on the nested sticked node', done => {
+          const spy = createSpy()
+          render(
+            <Stick
+              inline={outerInline}
+              onClickOutside={spy}
+              node={
+                <div id="node">
+                  <Stick inline={innerInline} node={<div id="nested-node" />}>
+                    <span>foo</span>
+                  </Stick>
+                </div>
+              }
+            >
+              <div />
+            </Stick>,
+            host,
+            () => {
+              document.getElementById('nested-node').click()
+              expect(spy).toNotHaveBeenCalled()
+              done()
+            }
+          )
+        })
+      })
+    })
   })
 })

@@ -50,7 +50,7 @@ class Stick extends Component<PropsT> {
 
     return (
       <SpecificStick
-        {...omit(rest, 'align')}
+        {...omit(rest, 'align', 'onClickOutside')}
         node={wrappedNode}
         style={style}
         nestingKey={this.getNestingKey()}
