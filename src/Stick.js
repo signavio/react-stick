@@ -1,9 +1,10 @@
 // @flow
 
 import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact, flatten } from 'lodash'
+import { omit, uniqueId, compact, flatten, some } from 'lodash'
 
 import getModifiers from './getModifiers'
 import StickPortal from './StickPortal'
@@ -18,6 +19,7 @@ const ContextTypes = {
 
 class Stick extends Component<PropsT> {
   containerNestingKeyExtension: number
+  containerNode: ?HTMLElement
 
   static contextTypes = ContextTypes
   static childContextTypes = ContextTypes
@@ -27,26 +29,12 @@ class Stick extends Component<PropsT> {
     this.containerNestingKeyExtension = uniqueId()
   }
 
-  render() {
-    const { inline, node, style, ...rest } = this.props
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside, true)
+  }
 
-    const wrappedNode = node && <div {...style('nodeContent')}>{node}</div>
-
-    return inline ? (
-      <StickInline
-        node={wrappedNode}
-        {...omit(rest, 'align')}
-        style={style}
-        nestingKey={this.getNestingKey()}
-      />
-    ) : (
-      <StickPortal
-        node={wrappedNode}
-        {...omit(rest, 'align')}
-        style={style}
-        nestingKey={this.getNestingKey()}
-      />
-    )
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside, true)
   }
 
   getChildContext() {
@@ -55,11 +43,65 @@ class Stick extends Component<PropsT> {
     }
   }
 
+  render() {
+    const { inline, node, style, ...rest } = this.props
+    const wrappedNode = node && <div {...style('nodeContent')}>{node}</div>
+    const SpecificStick = inline ? StickInline : StickPortal
+
+    return (
+      <SpecificStick
+        {...omit(rest, 'align')}
+        node={wrappedNode}
+        style={style}
+        nestingKey={this.getNestingKey()}
+        containerRef={this.setContainerRef}
+      />
+    )
+  }
+
+  setContainerRef = (ref: HTMLElement | null) => {
+    this.containerNode = ref
+  }
+
   getNestingKey() {
     return compact([
       this.context[PARENT_STICK_NESTING_KEY],
       this.containerNestingKeyExtension,
     ]).join('_')
+  }
+
+  handleClickOutside = (ev: Event) => {
+    const { onClickOutside } = this.props
+    if (!onClickOutside) {
+      return
+    }
+
+    const { target } = ev
+    if (target instanceof window.HTMLElement && this.isOutside(target)) {
+      onClickOutside(ev)
+    }
+  }
+
+  isOutside(target: HTMLElement) {
+    const anchorNode = findDOMNode(this)
+    if (anchorNode && anchorNode.contains(target)) {
+      return false
+    }
+
+    const nestingKey =
+      this.containerNode &&
+      this.containerNode.getAttribute('data-sticknestingkey')
+
+    if (nestingKey) {
+      // Find all sticked nodes nested inside our own sticked node and check if the click
+      // happened on any of these (our own sticked node will also be part of the query result)
+      const nestedStickNodes = document.querySelectorAll(
+        `[data-stickNestingKey^='${nestingKey}']`
+      )
+      return !some(nestedStickNodes, stickNode => stickNode.contains(target))
+    }
+
+    return true
   }
 }
 
