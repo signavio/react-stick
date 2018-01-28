@@ -34,8 +34,6 @@ describe('positioning', () => {
     document.body.removeChild(host)
   })
 
-  const equalNodePositions = (stick, otherStick, host, callback) => {}
-
   const widthFactor = position => {
     switch (position) {
       case 'left':
@@ -44,6 +42,8 @@ describe('positioning', () => {
         return 0.5
       case 'right':
         return 1
+      default:
+        return
     }
   }
 
@@ -55,6 +55,8 @@ describe('positioning', () => {
         return 0.5
       case 'bottom':
         return 1
+      default:
+        return
     }
   }
 

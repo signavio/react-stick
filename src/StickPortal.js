@@ -283,7 +283,7 @@ function calculateJustifyContent(position: ?PositionT) {
 function hasFixedAncestors(element: HTMLElement) {
   let elem = element
   do {
-    if (getComputedStyle(elem).position == 'fixed') return true
+    if (getComputedStyle(elem).position === 'fixed') return true
   } while ((elem = elem.offsetParent))
   return false
 }
