@@ -89,6 +89,10 @@ jobs:
           name: Fix host authenticity for github.com
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
+          name: Set git name & email
+          command: |
+            git config --global user.name "CircleCI" && git config --global user.email "circleci@signavio.com"
+      - run:
           name: Build demo
           command: yarn build-demo
       - run:
