@@ -35,7 +35,7 @@ For `position` and `align` props string values of the form `top|middle|bottom le
 
 [build-badge]: https://circleci.com/gh/signavio/react-stick/tree/master.svg?style=shield&circle-token=:circle-token
 [build]: https://circleci.com/gh/signavio/react-stick/tree/master
-[npm-badge]: https://img.shields.io/npm/v/npm.svg
+[npm-badge]: https://img.shields.io/npm/v/react-stick.svg
 [npm]: https://www.npmjs.org/package/react-stick
 [codecov-badge]: https://img.shields.io/codecov/c/github/signavio/react-stick.svg
 [codecov]: https://codecov.io/gh/signavio/react-stick
