@@ -17,16 +17,23 @@ export default function OverlaySize() {
       title="Overlay size"
       description="The overlay should not line-break just because the stick target is small."
     >
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <Stick node="This text should stay on one line">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          height: 200,
+        }}
+      >
+        <Stick position="middle right" node="This text should stay on one line">
           <Box width={15} />
         </Stick>
 
-        <Stick node="This text should stay on one line">
+        <Stick position="middle right" node="This text should stay on one line">
           <Box width={50} />
         </Stick>
 
-        <Stick node="This text should stay on one line">
+        <Stick position="middle right" node="This text should stay on one line">
           <Box width={150} />
         </Stick>
       </div>
