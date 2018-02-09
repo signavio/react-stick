@@ -12,8 +12,7 @@
     "build-demo": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow",
-    "format":
-      "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
+    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
     "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
     "start": "nwb serve-react-demo",
@@ -39,6 +38,7 @@
     "eslint-plugin-react": "^7.1.0",
     "flow-bin": "^0.64.0",
     "gh-pages": "^1.1.0",
+    "inferno": "^3.10.1",
     "nwb": "^0.21.2",
     "prettier": "^1.10.2",
     "react": "^16.2.0",

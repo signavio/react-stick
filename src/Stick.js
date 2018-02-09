@@ -45,13 +45,12 @@ class Stick extends Component<PropsT> {
 
   render() {
     const { inline, node, style, ...rest } = this.props
-    const wrappedNode = node && <div {...style('nodeContent')}>{node}</div>
     const SpecificStick = inline ? StickInline : StickPortal
 
     return (
       <SpecificStick
         {...omit(rest, 'align', 'onClickOutside')}
-        node={wrappedNode}
+        node={node && <div {...style('nodeContent')}>{node}</div>}
         style={style}
         nestingKey={this.getNestingKey()}
         containerRef={this.setContainerRef}
