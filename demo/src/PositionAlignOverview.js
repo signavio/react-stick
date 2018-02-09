@@ -109,9 +109,8 @@ class PositionAlignOverview extends Component {
                       fontSize: 11,
                     }}
                   >
-                    <p>
-                      <pre>position="{position}"</pre>
-                    </p>
+                    <pre>position="{position}"</pre>
+                    <br />
                     <div style={{ display: 'inline-block' }}>
                       <Stick
                         inline={inline}
@@ -148,9 +147,8 @@ class PositionAlignOverview extends Component {
                                     fontSize: 11,
                                   }}
                                 >
-                                  <p>
-                                    <pre>align="{alignment}"</pre>
-                                  </p>
+                                  <pre>align="{alignment}"</pre>
+                                  <br />
                                   <div style={{ display: 'inline-block' }}>
                                     <Stick
                                       position={position}

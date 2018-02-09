@@ -8,14 +8,14 @@ const Box = ({ width }) => (
   <div style={{ backgroundColor: 'red', height: 15, width }} />
 )
 
-export default function OverlaySize() {
+export default function StickedNodeWidth() {
   return (
     <Regression
       allBrowsers
       open
       version="1.0.0"
-      title="Overlay size"
-      description="The overlay should not line-break just because the stick target is small."
+      title="Sticked node width"
+      description="The sticked node should not line-break just because the anchor node is small."
     >
       <div
         style={{
