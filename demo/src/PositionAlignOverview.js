@@ -42,6 +42,44 @@ const Node = () => (
   />
 )
 
+class FramesPerSecond extends Component {
+  state = {
+    fps: 0,
+  }
+
+  lastUpdated = Date.now()
+  framesSinceLastUpdate = 0
+
+  startTracking() {
+    const requestCallback = this.props.updateOnAnimationFrame
+      ? requestAnimationFrame
+      : requestIdleCallback
+    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
+
+    this.animationId = requestCallback(() => this.startTracking())
+    this.measure()
+  }
+
+  measure() {
+    this.framesSinceLastUpdate += 1
+    let duration = Date.now() - this.lastUpdated
+    if (duration >= 1000) {
+      this.setState({
+        fps: this.framesSinceLastUpdate,
+      })
+      this.framesSinceLastUpdate = 0
+      this.lastUpdated = Date.now()
+    }
+  }
+
+  componentDidMount() {
+    this.startTracking()
+  }
+
+  render() {
+    return <div>FPS: {this.state.fps}</div>
+  }
+}
 class PositionAlignOverview extends Component {
   state = {
     inline: false,
@@ -84,6 +122,7 @@ class PositionAlignOverview extends Component {
             readOnly
             defaultValue="resize me to check smoothness of Stick"
           />
+          <FramesPerSecond updateOnAnimationFrame={updateOnAnimationFrame} />
         </div>
         <table
           style={{
