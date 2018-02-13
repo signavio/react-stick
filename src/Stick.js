@@ -167,13 +167,16 @@ class Stick extends Component<PropsT> {
 
   measure() {
     const boundingRect = this.containerNode.getBoundingClientRect()
-    this.setState({
-      width: calculateWidth(
-        this.props.position,
-        this.props.align || getDefaultAlign(this.props.position),
-        boundingRect
-      ),
-    })
+    const width = calculateWidth(
+      this.props.position,
+      this.props.align || getDefaultAlign(this.props.position),
+      boundingRect
+    )
+    if (this.state.width !== width) {
+      this.setState({
+        width,
+      })
+    }
   }
 }
 
