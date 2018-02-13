@@ -11,6 +11,7 @@ import getModifiers from './getModifiers'
 import getDefaultAlign from './getDefaultAlign'
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
+import DEFAULT_POSITION from './defaultPosition'
 import type { PropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
@@ -27,7 +28,7 @@ class Stick extends Component<PropsT> {
   static childContextTypes = ContextTypes
 
   static defaultProps = {
-    position: 'bottom left',
+    position: DEFAULT_POSITION,
   }
 
   constructor(...args) {
@@ -261,8 +262,7 @@ const styled = defaultStyle(
     },
 
     '&sameWidth': {
-      nodeContent: {
-        display: 'block',
+      nodeWrapper: {
         width: '100%',
       },
     },
