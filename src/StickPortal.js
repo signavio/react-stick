@@ -34,10 +34,9 @@ class Portal extends Component<PortalPropsT> {
     const { host, containerRef, children, ...rest } = this.props
 
     return createPortal(
-      <div ref={containerRef} {...rest}>
-        {children}
-      </div>,
-      host
+      // <div ref={containerRef} {...rest}>
+      children,
+      /*</div>*/ host
     )
   }
 
@@ -69,10 +68,6 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   lastCallbackAsAnimationFrame: ?boolean
 
   static contextTypes = ContextTypes
-
-  static defaultProps = {
-    position: 'bottom left',
-  }
 
   state = {
     top: 0,
@@ -143,24 +138,23 @@ class StickPortal extends Component<FinalPropsT, StateT> {
 
   renderNode() {
     const { node, style, nestingKey, nodeWidth, position } = this.props
-
+    const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
     // Do not render `this.props.node` before the container ref is set. This ensures that
     // all descendant portals will be mounted to the right host element straight away.
     // We must not rely on context updates!
     return (
-      <Portal
-        {...style('node')}
-        host={this.host}
-        containerRef={this.storeContainerRef}
-        data-sticknestingkey={nestingKey}
-      >
+      <Portal host={this.host}>
         <div
+          ref={this.storeContainerRef}
+          data-sticknestingkey={nestingKey}
+          {...otherNodeStyleProps}
           style={{
             position: 'absolute',
             display: 'flex',
             justifyContent: calculateJustifyContent(position),
+            ...nodeStyle,
             ...this.state,
-            ...(nodeWidth != null ? { width: nodeWidth } : {}),
+            // ...(nodeWidth != null ? { width: nodeWidth } : {}),
           }}
         >
           {this.container && node}
@@ -244,7 +238,7 @@ const styled = defaultStyle(
       top: 0,
       left: 0,
       zIndex: 99,
-      width: '100%',
+      width: '100%', // TODO probably this is not needed anylonger
     },
   },
   getModifiers
