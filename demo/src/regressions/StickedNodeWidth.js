@@ -4,8 +4,25 @@ import Stick from '../../../src'
 
 import Regression from './Regression'
 
-const Box = ({ width }) => (
-  <div style={{ backgroundColor: 'red', height: 15, width }} />
+const Anchor = ({ width }) => (
+  <div
+    style={{
+      height: 15,
+      width,
+      backgroundColor: 'rgb(24, 170, 177)',
+    }}
+  />
+)
+
+const Node = ({ children }) => (
+  <div
+    style={{
+      backgroundColor: '#ae0d5c',
+      color: 'white',
+    }}
+  >
+    {children}
+  </div>
 )
 
 export default function StickedNodeWidth() {
@@ -25,16 +42,25 @@ export default function StickedNodeWidth() {
           height: 200,
         }}
       >
-        <Stick position="middle right" node="This text should stay on one line">
-          <Box width={15} />
+        <Stick
+          position="middle right"
+          node={<Node>This text should stay on one line</Node>}
+        >
+          <Anchor width={15} />
         </Stick>
 
-        <Stick position="middle right" node="This text should stay on one line">
-          <Box width={50} />
+        <Stick
+          position="middle right"
+          node={<Node>This text should stay on one line</Node>}
+        >
+          <Anchor width={50} />
         </Stick>
 
-        <Stick position="middle right" node="This text should stay on one line">
-          <Box width={150} />
+        <Stick
+          position="middle right"
+          node={<Node>This text should stay on one line</Node>}
+        >
+          <Anchor width={150} />
         </Stick>
       </div>
     </Regression>
