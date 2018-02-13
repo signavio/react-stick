@@ -20,9 +20,16 @@ const ContextTypes = {
   [PARENT_STICK_NESTING_KEY]: PropTypes.string,
 }
 
-class Stick extends Component<PropsT> {
+type StateT = {
+  width: ?number,
+}
+
+class Stick extends Component<PropsT, StateT> {
   containerNestingKeyExtension: number
   containerNode: ?HTMLElement
+
+  animationFrameId: ?AnimationFrameID
+  idleCallbackId: ?IdleCallbackID
 
   static contextTypes = ContextTypes
   static childContextTypes = ContextTypes
@@ -149,23 +156,32 @@ class Stick extends Component<PropsT> {
       return
     }
 
-    const requestCallback = this.props.updateOnAnimationFrame
-      ? requestAnimationFrame
-      : requestIdleCallback
-    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
+    const callback = () => this.startTracking()
+    if (this.props.updateOnAnimationFrame) {
+      this.animationFrameId = requestAnimationFrame(callback)
+    } else {
+      this.idleCallbackId = requestIdleCallback(callback)
+    }
 
-    this.animationId = requestCallback(() => this.startTracking())
     this.measure()
   }
 
   stopTracking() {
-    const cancelCallback = this.lastCallbackAsAnimationFrame
-      ? cancelAnimationFrame
-      : cancelIdleCallback
-    cancelCallback(this.animationId)
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = undefined
+    }
+
+    if (this.idleCallbackId) {
+      cancelIdleCallback(this.idleCallbackId)
+      this.idleCallbackId = undefined
+    }
   }
 
   measure() {
+    if (!this.containerNode) {
+      return
+    }
     const boundingRect = this.containerNode.getBoundingClientRect()
     const width = calculateWidth(
       this.props.position,

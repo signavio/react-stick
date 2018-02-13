@@ -15,9 +15,10 @@ export type PositionT =
 export type PropsT = {
   node?: React$Element<any>,
   children?: React$Element<any>,
-  position?: PositionT,
+  position: PositionT,
   align?: PositionT,
   inline?: boolean,
+  sameWidth?: boolean,
   updateOnAnimationFrame?: boolean,
   nodeWidth?: number | string,
   onClickOutside?: (ev: Event) => void,

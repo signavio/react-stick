@@ -1,5 +1,4 @@
 // @flow
-
 import 'requestidlecallback'
 import React, { Component } from 'react'
 import PT from 'prop-types'
@@ -10,11 +9,6 @@ import { defaultStyle } from 'substyle'
 import getModifiers from './getModifiers'
 import type { PositionT, PropsT } from './flowTypes'
 
-declare function requestAnimationFrame(func: Function): number
-declare function cancelAnimationFrame(id: number): void
-declare function requestIdleCallback(func: Function): number
-declare function cancelIdleCallback(id: number): void
-
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
 
 const ContextTypes = {
@@ -23,21 +17,15 @@ const ContextTypes = {
 
 type PortalPropsT = {
   host: HTMLElement,
-  containerRef: (element: HTMLElement | null) => void,
-  children?: React$Element<any>,
+  children: React$Element<any>,
 }
 
 class Portal extends Component<PortalPropsT> {
   static childContextTypes = ContextTypes
 
   render() {
-    const { host, containerRef, children, ...rest } = this.props
-
-    return createPortal(
-      // <div ref={containerRef} {...rest}>
-      children,
-      /*</div>*/ host
-    )
+    const { host, children } = this.props
+    return createPortal(children, host)
   }
 
   getChildContext() {
@@ -64,8 +52,8 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   container: HTMLElement // the container for the sticked node (has z-index)
   host: HTMLElement // the host element to which we portal the container (has no styles)
 
-  animationId: number
-  lastCallbackAsAnimationFrame: ?boolean
+  animationFrameId: ?AnimationFrameID
+  idleCallbackId: ?IdleCallbackID
 
   static contextTypes = ContextTypes
 
@@ -137,7 +125,7 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   renderNode() {
-    const { node, style, nestingKey, nodeWidth, position } = this.props
+    const { node, style, nestingKey, position } = this.props
     const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
     // Do not render `this.props.node` before the container ref is set. This ensures that
     // all descendant portals will be mounted to the right host element straight away.
@@ -198,20 +186,26 @@ class StickPortal extends Component<FinalPropsT, StateT> {
       return
     }
 
-    const requestCallback = this.props.updateOnAnimationFrame
-      ? requestAnimationFrame
-      : requestIdleCallback
-    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
+    const callback = () => this.startTracking()
+    if (this.props.updateOnAnimationFrame) {
+      this.animationFrameId = requestAnimationFrame(callback)
+    } else {
+      this.idleCallbackId = requestIdleCallback(callback)
+    }
 
-    this.animationId = requestCallback(() => this.startTracking())
     this.measure()
   }
 
   stopTracking() {
-    const cancelCallback = this.lastCallbackAsAnimationFrame
-      ? cancelAnimationFrame
-      : cancelIdleCallback
-    cancelCallback(this.animationId)
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = undefined
+    }
+
+    if (this.idleCallbackId) {
+      cancelIdleCallback(this.idleCallbackId)
+      this.idleCallbackId = undefined
+    }
   }
 
   measure() {
