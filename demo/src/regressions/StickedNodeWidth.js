@@ -25,6 +25,48 @@ const Node = ({ children }) => (
   </div>
 )
 
+const Examples = ({ inline }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      height: 100,
+      marginRight: 250,
+    }}
+  >
+    <Stick
+      inline={inline}
+      position="middle right"
+      node={<Node>This text should stay on one line</Node>}
+    >
+      <Anchor width={15} />
+    </Stick>
+
+    <Stick
+      inline={inline}
+      position="middle right"
+      node={<Node>This text should stay on one line</Node>}
+    >
+      <Anchor width={150} />
+    </Stick>
+
+    <div style={{ position: 'absolute', right: 150 }}>
+      <Stick
+        inline={inline}
+        position="middle right"
+        node={
+          <Node>
+            This text must line-break as it would reach off-screen otherwise
+          </Node>
+        }
+      >
+        <Anchor width={100} />
+      </Stick>
+    </div>
+  </div>
+)
+
 export default function StickedNodeWidth() {
   return (
     <Regression
@@ -34,42 +76,9 @@ export default function StickedNodeWidth() {
       title="Sticked node width"
       description="The sticked node should not line-break just because the anchor node is small. The sticked node must only line-break if it would not fit onto the screen otherwise."
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          height: 200,
-          marginRight: 250,
-        }}
-      >
-        <Stick
-          position="middle right"
-          node={<Node>This text should stay on one line</Node>}
-        >
-          <Anchor width={15} />
-        </Stick>
-
-        <Stick
-          position="middle right"
-          node={<Node>This text should stay on one line</Node>}
-        >
-          <Anchor width={150} />
-        </Stick>
-
-        <div style={{ position: 'absolute', right: 150 }}>
-          <Stick
-            position="middle right"
-            node={
-              <Node>
-                This text must line-break as it would reach off-screen otherwise
-              </Node>
-            }
-          >
-            <Anchor width={100} />
-          </Stick>
-        </div>
-      </div>
+      <Examples />
+      <p>with `inline` prop:</p>
+      <Examples inline />
     </Regression>
   )
 }
