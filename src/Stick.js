@@ -265,6 +265,11 @@ const styled = defaultStyle(
       nodeWrapper: {
         width: '100%',
       },
+
+      nodeContent: {
+        display: 'block',
+        width: '100%',
+      },
     },
 
     ...horizontals.reduce(

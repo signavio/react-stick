@@ -4,14 +4,17 @@ import Stick from '../../../src'
 
 import Regression from './Regression'
 
-const Anchor = ({ width }) => (
+const Anchor = ({ width, children }) => (
   <div
     style={{
-      height: 15,
+      height: 18,
+      color: 'white',
       width,
       backgroundColor: 'rgb(24, 170, 177)',
     }}
-  />
+  >
+    {children}
+  </div>
 )
 
 const Node = ({ children }) => (
@@ -19,6 +22,7 @@ const Node = ({ children }) => (
     style={{
       backgroundColor: '#ae0d5c',
       color: 'white',
+      minHeight: 18,
     }}
   >
     {children}
@@ -42,19 +46,17 @@ export default function SameWidth() {
           marginRight: 250,
         }}
       >
-        <Stick sameWidth position="middle right" node={<Node />}>
-          <Anchor width={150} />
+        <Stick sameWidth position="bottom center" node={<Node />}>
+          <Anchor>The sticked node below should have the same width</Anchor>
         </Stick>
         <Stick
-          position="middle right"
+          position="bottom center"
           sameWidth
           node={
-            <Node>
-              This text should break to respect the sticked node width
-            </Node>
+            <Node>This text should break to respect the anchor's width</Node>
           }
         >
-          <Anchor width={50} />
+          <Anchor width={100} />
         </Stick>
       </div>
     </Regression>
