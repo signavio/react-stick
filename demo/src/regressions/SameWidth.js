@@ -35,7 +35,7 @@ export default function SameWidth() {
       allBrowsers
       fixed
       title="Same width"
-      description="Sticked node must have the same width as the anchor element, if `sameWidth` prop is set"
+      description="Stick node must have the same width as the anchor element, if `sameWidth` prop is set"
     >
       <div
         style={{
@@ -47,7 +47,7 @@ export default function SameWidth() {
         }}
       >
         <Stick sameWidth position="bottom center" node={<Node />}>
-          <Anchor>The sticked node below should have the same width</Anchor>
+          <Anchor>The stick node below should have the same width</Anchor>
         </Stick>
         <Stick
           position="bottom center"

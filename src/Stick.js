@@ -163,8 +163,8 @@ class Stick extends Component<PrivatePropsT, StateT> {
       this.containerNode.getAttribute('data-sticknestingkey')
 
     if (nestingKey) {
-      // Find all sticked nodes nested inside our own sticked node and check if the click
-      // happened on any of these (our own sticked node will also be part of the query result)
+      // Find all stick nodes nested inside our own stick node and check if the click
+      // happened on any of these (our own stick node will also be part of the query result)
       const nestedStickNodes = document.querySelectorAll(
         `[data-stickNestingKey^='${nestingKey}']`
       )
@@ -297,7 +297,7 @@ const styled = defaultStyle(
     },
 
     nodeContent: {
-      // absolute position is need as the sticked node would otherwise
+      // absolute position is need as the stick node would otherwise
       // cover up the base node and, for instance, make it impossible to
       // click buttons
       position: 'absolute',

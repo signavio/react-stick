@@ -2,7 +2,7 @@ import React from 'react'
 
 import ButtonOverlay from './ButtonOverlay'
 import SameWidth from './SameWidth'
-import StickedNodeWidth from './StickedNodeWidth'
+import StickNodeWidth from './StickNodeWidth'
 
 export default function Regressions() {
   return (
@@ -11,7 +11,7 @@ export default function Regressions() {
 
       <ButtonOverlay />
       <SameWidth />
-      <StickedNodeWidth />
+      <StickNodeWidth />
     </div>
   )
 }

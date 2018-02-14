@@ -67,14 +67,14 @@ const Examples = ({ inline }) => (
   </div>
 )
 
-export default function StickedNodeWidth() {
+export default function StickNodeWidth() {
   return (
     <Regression
       allBrowsers
       fixed
       version="1.0.0"
-      title="Sticked node width"
-      description="The sticked node should not line-break just because the anchor node is small. The sticked node must only line-break if it would not fit onto the screen otherwise."
+      title="Stick node width"
+      description="The stick node should not line-break just because the anchor node is small. The stick node must only line-break if it would not fit onto the screen otherwise."
     >
       <Examples />
       <p>with `inline` prop:</p>

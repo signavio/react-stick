@@ -12,7 +12,7 @@ export default function ButtonOverlay() {
       title="Button overlay"
       description="Stick created an element that prevented clicks to wrapped elements"
     >
-      <Stick node="This is the sticked text">
+      <Stick node="This is the stick text">
         <button>You should be able to click me</button>
       </Stick>
     </Regression>

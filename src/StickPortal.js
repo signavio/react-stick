@@ -43,7 +43,7 @@ type StateT = {
 
 class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   element: HTMLElement // the element whose position is tracked
-  container: HTMLElement // the container for the sticked node (has z-index)
+  container: HTMLElement // the container for the stick node (has z-index)
   host: HTMLElement // the host element to which we portal the container (has no styles)
 
   animationFrameId: ?AnimationFrameID
