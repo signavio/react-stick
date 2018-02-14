@@ -1,4 +1,4 @@
-import expect, { createSpy } from 'expect'
+import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
 import { times } from 'lodash'
