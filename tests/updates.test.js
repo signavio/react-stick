@@ -1,4 +1,4 @@
-import expect, { createSpy } from 'expect'
+import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
 
@@ -6,8 +6,6 @@ import Stick from 'src/'
 
 describe('updates', () => {
   let host
-
-  const BODY_PADDING = 8
 
   const anchor = <div id="anchor" />
   const node = <div id="node" />
