@@ -58,7 +58,7 @@ describe('stick node width', () => {
           host,
           () => {
             const nodeElement = document.getElementById('node')
-            const { right, left, width } = nodeElement.getBoundingClientRect()
+            const { right } = nodeElement.getBoundingClientRect()
             expect(right).toEqual(scrollWidth)
             done()
           }
