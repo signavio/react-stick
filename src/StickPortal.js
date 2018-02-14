@@ -94,7 +94,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   render() {
-    const { children, style, ...rest } = this.props
+    const { children, style, anchorRef, ...rest } = this.props
     return (
       <div
         {...omit(
@@ -108,6 +108,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
         )}
         {...style}
         ref={(ref: HTMLElement) => {
+          anchorRef(ref)
           this.element = ref
         }}
       >
@@ -146,13 +147,13 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   storeContainerRef = (ref: HTMLElement) => {
     const { containerRef } = this.props
 
+    if (containerRef) {
+      containerRef(ref)
+    }
+
     if (this.container !== ref) {
       this.container = ref
       this.forceUpdate()
-    }
-
-    if (containerRef) {
-      containerRef(ref)
     }
   }
 
