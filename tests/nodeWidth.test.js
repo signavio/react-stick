@@ -53,20 +53,48 @@ describe('stick node width', () => {
           host,
           () => {
             const nodeElement = document.getElementById('node')
-            const {
-              width,
-              left,
-              top,
-              right,
-            } = nodeElement.getBoundingClientRect()
-            console.log('width', width)
-            console.log('left', left)
-            console.log('top', top)
-            console.log('right', right)
+            const { right } = nodeElement.getBoundingClientRect()
             expect(right).toEqual(document.documentElement.clientWidth)
             done()
           }
         )
+      })
+
+      it('should make sure that a right aligned node stretches to the left screen border', done => {
+        render(
+          <Stick
+            inline={inline}
+            position="middle left"
+            align="middle right"
+            node={node}
+          >
+            {anchor}
+          </Stick>,
+          host,
+          () => {
+            const nodeElement = document.getElementById('node')
+            const { left } = nodeElement.getBoundingClientRect()
+            expect(left).toEqual(0)
+            done()
+          }
+        )
+      })
+
+      describe('sameWidth={true}', () => {
+        it('should make sure that the stick node has the same width as the anchor', done => {
+          render(
+            <Stick inline={inline} sameWidth node={node}>
+              {anchor}
+            </Stick>,
+            host,
+            () => {
+              const nodeElement = document.getElementById('node')
+              const { width } = nodeElement.getBoundingClientRect()
+              expect(width).toEqual(100)
+              done()
+            }
+          )
+        })
       })
     })
   })
