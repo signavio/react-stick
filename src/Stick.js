@@ -269,7 +269,7 @@ const translateY = align => {
 function calculateWidth(
   position: PositionT,
   align: PositionT,
-  { left, width, right }: ClientRect // bbox - how to avoid double call? is there actually a performance penalty?
+  { left, width, right }: ClientRect
 ) {
   const scrollWidth = document.documentElement
     ? document.documentElement.scrollWidth

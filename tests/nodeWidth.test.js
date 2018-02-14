@@ -16,21 +16,25 @@ describe('stick node width', () => {
   const render = (stick, host, callback) => {
     let called = false
     renderBase(
-      <div style={{ position: 'absolute', width: 100, left: 100 }}>
-        {cloneElement(stick, {
-          node: cloneElement(stick.props.node, {
-            ref: el => !!el && !called && window.setTimeout(callback, 1),
-          }),
-        })}
+      // set documentElement's the scroll width to 1008
+      <div style={{ width: 1000, height: 9999 }}>
+        <span>asd</span>
+        <div style={{ position: 'absolute', width: 100, left: 100 }}>
+          {cloneElement(stick, {
+            node: cloneElement(stick.props.node, {
+              ref: el => !!el && !called && window.setTimeout(callback, 1),
+            }),
+          })}
+        </div>
       </div>,
       host
     )
+    scrollWidth = document.documentElement.scrollWidth
   }
 
   beforeEach(() => {
     host = document.createElement('div')
     document.body.appendChild(host)
-    scrollWidth = document.documentElement.scrollWidth
   })
 
   afterEach(() => {
@@ -54,7 +58,7 @@ describe('stick node width', () => {
           host,
           () => {
             const nodeElement = document.getElementById('node')
-            const { right } = nodeElement.getBoundingClientRect()
+            const { right, left, width } = nodeElement.getBoundingClientRect()
             expect(right).toEqual(scrollWidth)
             done()
           }
