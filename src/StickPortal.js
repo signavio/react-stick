@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
 import getModifiers from './getModifiers'
-import type { PositionT, PropsT } from './flowTypes'
+import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
 
@@ -41,13 +41,7 @@ type StateT = {
   width: number,
 }
 
-type FinalPropsT = PropsT & {
-  nestingKey: string,
-  transportTo?: HTMLElement,
-  updateOnAnimationFrame?: boolean,
-}
-
-class StickPortal extends Component<FinalPropsT, StateT> {
+class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   element: HTMLElement // the element whose position is tracked
   container: HTMLElement // the container for the sticked node (has z-index)
   host: HTMLElement // the host element to which we portal the container (has no styles)
@@ -75,7 +69,7 @@ class StickPortal extends Component<FinalPropsT, StateT> {
     }
   }
 
-  componentDidUpdate(prevProps: FinalPropsT) {
+  componentDidUpdate(prevProps: PrivateSpecificPropsT) {
     if (this.props.node && !prevProps.node) {
       this.mountHost()
       this.startTracking()
@@ -107,7 +101,6 @@ class StickPortal extends Component<FinalPropsT, StateT> {
           rest,
           'node',
           'position',
-          'nodeWidth',
           'updateOnAnimationFrame',
           'transportTo',
           'containerRef',
@@ -142,7 +135,6 @@ class StickPortal extends Component<FinalPropsT, StateT> {
             justifyContent: calculateJustifyContent(position),
             ...nodeStyle,
             ...this.state,
-            // ...(nodeWidth != null ? { width: nodeWidth } : {}),
           }}
         >
           {this.container && node}
@@ -242,7 +234,7 @@ export default styled(StickPortal)
 
 function calculateTop(
   position: ?PositionT,
-  { top, height, bottom },
+  { top, height, bottom }: ClientRect,
   isFixed: boolean
 ) {
   if (includes(position, 'top')) {

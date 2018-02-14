@@ -12,7 +12,7 @@ import getDefaultAlign from './getDefaultAlign'
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import DEFAULT_POSITION from './defaultPosition'
-import type { PropsT, PositionT } from './flowTypes'
+import type { PrivatePropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
 
@@ -24,12 +24,36 @@ type StateT = {
   width: ?number,
 }
 
-class Stick extends Component<PropsT, StateT> {
+const PositionPropType = PropTypes.oneOf([
+  'bottom left',
+  'bottom center',
+  'bottom right',
+  'middle left',
+  'middle center',
+  'middle right',
+  'top left',
+  'top center',
+  'top right',
+])
+
+class Stick extends Component<PrivatePropsT, StateT> {
   containerNestingKeyExtension: number
   containerNode: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
+
+  static propTypes = {
+    node: PropTypes.node,
+    children: PropTypes.node,
+    position: PositionPropType,
+    align: PositionPropType,
+    inline: PropTypes.bool,
+    sameWidth: PropTypes.bool,
+    updateOnAnimationFrame: PropTypes.bool,
+    onClickOutside: PropTypes.func,
+    transportTo: PropTypes.instanceOf(HTMLElement),
+  }
 
   static contextTypes = ContextTypes
   static childContextTypes = ContextTypes
@@ -59,7 +83,7 @@ class Stick extends Component<PropsT, StateT> {
     this.stopTracking()
   }
 
-  componentDidUpdate(prevProps: PropsT) {
+  componentDidUpdate(prevProps: PrivatePropsT) {
     if (this.props.sameWidth && !prevProps.sameWidth) {
       this.startTracking()
     }
@@ -239,7 +263,7 @@ const translateY = align => {
 function calculateWidth(
   position: PositionT,
   align: PositionT,
-  { left, width, right } // bbox - how to avoid double call? is there actually a performance penalty?
+  { left, width, right }: ClientRect // bbox - how to avoid double call? is there actually a performance penalty?
 ) {
   const clientWidth = document.documentElement
     ? document.documentElement.clientWidth

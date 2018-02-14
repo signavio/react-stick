@@ -12,16 +12,36 @@ export type PositionT =
   | 'top center'
   | 'top right'
 
-export type PropsT = {
+type CommonPropsT = {
   node?: React$Element<any>,
   children?: React$Element<any>,
   position: PositionT,
+  inline?: boolean,
+  updateOnAnimationFrame?: boolean,
+  transportTo?: HTMLElement,
+  style: Substyle,
+}
+
+// the props we are dealing with in Stick
+export type PrivatePropsT = CommonPropsT & {
+  // props handled by Stick and not passed further down to specific stick components
   align?: PositionT,
   inline?: boolean,
   sameWidth?: boolean,
-  updateOnAnimationFrame?: boolean,
-  nodeWidth?: number | string,
   onClickOutside?: (ev: Event) => void,
+}
+
+// the props we are dealing with in StickInline and StickPortal
+export type PrivateSpecificPropsT = CommonPropsT & {
+  // props injected by Stick
   containerRef: (element: HTMLElement | null) => void,
-  style: Substyle,
+  nestingKey: string,
+}
+
+// the props the user has to pass to the Stick
+export type PublicPropsT = PrivatePropsT & {
+  // position is optional, but has a default value
+  position?: PositionT,
+  // style is optional, but will be injected by substyle
+  style?: Substyle,
 }
