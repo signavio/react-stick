@@ -271,8 +271,8 @@ function calculateWidth(
   align: PositionT,
   { left, width, right }: ClientRect // bbox - how to avoid double call? is there actually a performance penalty?
 ) {
-  const clientWidth = document.documentElement
-    ? document.documentElement.clientWidth
+  const scrollWidth = document.documentElement
+    ? document.documentElement.scrollWidth
     : right // this should never be used in a browser env where documentElement will be available
 
   const absLeft = {
@@ -282,7 +282,7 @@ function calculateWidth(
   }[position.split(' ')[1]]
 
   if (includes(align, 'left')) {
-    return clientWidth - absLeft
+    return scrollWidth - absLeft
   }
 
   if (includes(align, 'right')) {
@@ -290,7 +290,7 @@ function calculateWidth(
   }
 
   if (includes(align, 'center')) {
-    return Math.min(absLeft, clientWidth - absLeft) * 2
+    return Math.min(absLeft, scrollWidth - absLeft) * 2
   }
 }
 

@@ -6,7 +6,7 @@ import { times } from 'lodash'
 import Stick from 'src/'
 
 describe('stick node width', () => {
-  let host, clientWidth
+  let host, scrollWidth
 
   const longText = times(50, () => 'Lorem ipsum dolor sit amet.').join(' ')
   const anchor = <div id="anchor" />
@@ -30,7 +30,7 @@ describe('stick node width', () => {
   beforeEach(() => {
     host = document.createElement('div')
     document.body.appendChild(host)
-    clientWidth = document.documentElement.clientWidth
+    scrollWidth = document.documentElement.scrollWidth
   })
 
   afterEach(() => {
@@ -55,7 +55,7 @@ describe('stick node width', () => {
           () => {
             const nodeElement = document.getElementById('node')
             const { right } = nodeElement.getBoundingClientRect()
-            expect(right).toEqual(clientWidth)
+            expect(right).toEqual(scrollWidth)
             done()
           }
         )
