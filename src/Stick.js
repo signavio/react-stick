@@ -12,6 +12,7 @@ import getDefaultAlign from './getDefaultAlign'
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import DEFAULT_POSITION from './defaultPosition'
+import { scrollX } from './scroll'
 import type { PrivatePropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
@@ -275,11 +276,13 @@ function calculateWidth(
     ? document.documentElement.scrollWidth
     : right // this should never be used in a browser env where documentElement will be available
 
-  const absLeft = {
-    left,
-    center: left + width / 2,
-    right,
-  }[position.split(' ')[1]]
+  const absLeft =
+    scrollX() +
+    {
+      left,
+      center: left + width / 2,
+      right,
+    }[position.split(' ')[1]]
 
   if (includes(align, 'left')) {
     return scrollWidth - absLeft

@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
 import getModifiers from './getModifiers'
+import { scrollX, scrollY } from './scroll'
 import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
@@ -275,65 +276,4 @@ function stylesEqual(style1 = {}, style2 = {}) {
     style1.left === style2.left &&
     style1.top === style2.top
   )
-}
-
-/*
- * Don't believe me dog?
- * ok.
- * https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollY#Notes
- */
-const hasPageOffset =
-  typeof window !== 'undefined' && typeof window.pageXOffset !== 'undefined'
-
-const compatMode =
-  typeof document !== 'undefined' && typeof document.compatMode === 'string'
-    ? document.compatMode
-    : ''
-
-function scrollY() {
-  if (typeof window !== 'undefined' && typeof window.scrollY === 'number') {
-    return window.scrollY
-  }
-
-  if (hasPageOffset === true) {
-    return window.pageYOffset
-  }
-
-  if (compatMode === 'CSS1Compat') {
-    return document.documentElement && document.documentElement.scrollTop
-  }
-
-  if (
-    typeof document !== 'undefined' &&
-    !!document.body &&
-    typeof document.body.scrollTop === 'number'
-  ) {
-    return document.body.scrollTop
-  }
-
-  return 0
-}
-
-function scrollX() {
-  if (typeof window !== 'undefined' && typeof window.scrollX === 'number') {
-    return window.scrollX
-  }
-
-  if (hasPageOffset === true) {
-    return window.pageXOffset
-  }
-
-  if (compatMode === 'CSS1Compat') {
-    return document.documentElement && document.documentElement.scrollLeft
-  }
-
-  if (
-    typeof document !== 'undefined' &&
-    !!document.body &&
-    typeof document.body.scrollLeft === 'number'
-  ) {
-    return document.body.scrollLeft
-  }
-
-  return 0
 }
