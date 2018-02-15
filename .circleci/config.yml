@@ -104,7 +104,9 @@ jobs:
     steps:
       - *attach_workspace
       - *restore_cache
-      - "[[ $CI_PULL_REQUEST != '' ]] && yarn semantic-release-preview || exit 0"
+      - run:
+          name: Post release preview
+          command: "[[ $CI_PULL_REQUEST != '' ]] && yarn semantic-release-preview || exit 0"
 
   release:
     <<: *defaults
@@ -142,7 +144,7 @@ workflows:
             - lint
             - flow
             - test
-          filter:
+          filters:
             branches:
               ignore: master
       - release:
