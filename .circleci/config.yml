@@ -99,6 +99,13 @@ jobs:
           name: Publish demo
           command: yarn publish-demo
 
+  release-preview:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - *restore_cache
+      - "[[ $CI_PULL_REQUEST != '' ]] && yarn semantic-release-preview || exit 0"
+
   release:
     <<: *defaults
     steps:
@@ -130,6 +137,14 @@ workflows:
       - publish-demo:
           requires:
             - install
+      - release-preview:
+          requires:
+            - lint
+            - flow
+            - test
+          filter:
+            branches:
+              ignore: master
       - release:
           requires:
             - lint
