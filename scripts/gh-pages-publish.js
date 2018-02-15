@@ -38,7 +38,7 @@ ghpages.publish(
     // post PR comment with link to demo page
     const {
       CI_PULL_REQUEST,
-      GH_AUTH_TOKEN,
+      GH_TOKEN,
       CIRCLE_PROJECT_USERNAME,
       CIRCLE_PROJECT_REPONAME,
     } = process.env
@@ -48,7 +48,7 @@ ghpages.publish(
     ).replace(/\\"/g, '\\\\"')
     const body = `Demo page for commit <code>${commitMessage}</code> has been published at:<br /><strong>https://signavio.github.io/react-stick/${branchName}</strong>`
     curl(
-      `https://${GH_AUTH_TOKEN}:x-oauth-basic@api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/issues/${prNumber}/comments`,
+      `https://${GH_TOKEN}:x-oauth-basic@api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/issues/${prNumber}/comments`,
       JSON.stringify({ body })
     )
 
