@@ -16,7 +16,7 @@ export default function Demo() {
 
       <PositionAlignOverview />
 
-      <Regressions />
+      {/* <Regressions /> */}
     </div>
   )
 }

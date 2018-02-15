@@ -68,7 +68,7 @@ class Stick extends Component<PrivatePropsT, StateT> {
     super(...args)
     this.containerNestingKeyExtension = uniqueId()
     this.state = {
-      width: undefined,
+      width: 0,
     }
   }
 
@@ -214,57 +214,20 @@ class Stick extends Component<PrivatePropsT, StateT> {
       return
     }
     const boundingRect = this.anchorNode.getBoundingClientRect()
-    const width = calculateWidth(
-      this.props.position,
-      this.props.align || getDefaultAlign(this.props.position),
-      boundingRect
+    const width = Math.floor(
+      calculateWidth(
+        this.props.position,
+        this.props.align || getDefaultAlign(this.props.position),
+        boundingRect
+      )
     )
     if (this.state.width !== width) {
+      // console.log(document.documentElement.scrollWidth, width)
       this.setState({
         width,
       })
     }
   }
-}
-
-const verticals = ['top', 'middle', 'bottom']
-const horizontals = ['left', 'center', 'right']
-
-const aligns = flatten(
-  verticals.map(vertical =>
-    horizontals.map(horizontal => [vertical, horizontal])
-  )
-)
-
-const translateX = (position, align) => {
-  if (position === align) {
-    return 0
-  }
-
-  const absoluteValue = position === 'center' || align === 'center' ? 50 : 100
-  let factor = 1
-
-  if (position === 'center' && align === 'right') {
-    factor = -1
-  }
-
-  if (position === 'left') {
-    factor = -1
-  }
-
-  return factor * absoluteValue
-}
-
-const translateY = align => {
-  if (align === 'top') {
-    return 0
-  }
-
-  if (align === 'middle') {
-    return -50
-  }
-
-  return -100
 }
 
 function calculateWidth(
@@ -297,16 +260,36 @@ function calculateWidth(
   }
 }
 
+const verticals = ['top', 'middle', 'bottom']
+const horizontals = ['left', 'center', 'right']
+
+const aligns = flatten(
+  verticals.map(vertical =>
+    horizontals.map(horizontal => [vertical, horizontal])
+  )
+)
+const translateX = (horizontalAlign: 'left' | 'center' | 'right') =>
+  ({
+    left: 0,
+    center: -50,
+    right: -100,
+  }[horizontalAlign])
+
+const translateY = (verticalAlign: 'top' | 'middle' | 'bottom') =>
+  ({
+    top: 0,
+    middle: -50,
+    bottom: -100,
+  }[verticalAlign])
+
 const styled = defaultStyle(
   {
     nodeWrapper: {
       position: 'absolute',
-      display: 'flex',
-      justifyContent: 'inherit',
     },
 
     nodeContent: {
-      // absolute position is need as the stick node would otherwise
+      // absolute position is needed as the stick node would otherwise
       // cover up the base node and, for instance, make it impossible to
       // click buttons
       position: 'absolute',
@@ -336,7 +319,6 @@ const styled = defaultStyle(
               [`&align-${verticalAlign}-${horizontalAlign}`]: {
                 nodeContent: {
                   transform: `translate(${translateX(
-                    horizontalPosition,
                     horizontalAlign
                   )}%, ${translateY(verticalAlign)}%)`,
                 },

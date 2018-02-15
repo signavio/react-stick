@@ -39,7 +39,6 @@ const styled = defaultStyle(
       zIndex: 99,
       width: '100%',
       textAlign: 'left',
-      display: 'flex',
     },
 
     '&position-top': {
@@ -58,14 +57,19 @@ const styled = defaultStyle(
       },
     },
 
-    '&position-right': {
+    '&position-left': {
       node: {
-        justifyContent: 'flex-end',
+        left: 0,
       },
     },
     '&position-center': {
       node: {
-        justifyContent: 'center',
+        left: '50%',
+      },
+    },
+    '&position-right': {
+      node: {
+        left: '100%',
       },
     },
   },

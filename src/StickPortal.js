@@ -120,7 +120,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   renderNode() {
-    const { node, style, nestingKey, position } = this.props
+    const { node, style, nestingKey } = this.props
     const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
     // Do not render `this.props.node` before the container ref is set. This ensures that
     // all descendant portals will be mounted to the right host element straight away.
@@ -133,8 +133,6 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
           {...otherNodeStyleProps}
           style={{
             position: 'absolute',
-            display: 'flex',
-            justifyContent: calculateJustifyContent(position),
             ...nodeStyle,
             ...this.state,
           }}
@@ -210,7 +208,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
       width: boundingRect.width,
 
       top: calculateTop(this.props.position, boundingRect, isFixed),
-      left: boundingRect.left + (isFixed ? 0 : scrollX()),
+      left: calculateLeft(this.props.position, boundingRect, isFixed),
     }
 
     if (!stylesEqual(newStyle, this.state)) {
@@ -235,31 +233,39 @@ const styled = defaultStyle(
 export default styled(StickPortal)
 
 function calculateTop(
-  position: ?PositionT,
+  position: PositionT,
   { top, height, bottom }: ClientRect,
   isFixed: boolean
 ) {
+  let result = 0
   if (includes(position, 'top')) {
-    return top + (isFixed ? 0 : scrollY())
+    result = top
   }
-
   if (includes(position, 'middle')) {
-    return top + height / 2 + (isFixed ? 0 : scrollY())
+    result = top + height / 2
   }
-
-  return bottom + (isFixed ? 0 : scrollY())
+  if (includes(position, 'bottom')) {
+    result = bottom
+  }
+  return result + (isFixed ? 0 : scrollY())
 }
 
-function calculateJustifyContent(position: ?PositionT) {
-  if (includes(position, 'right')) {
-    return 'flex-end'
+function calculateLeft(
+  position: PositionT,
+  { left, width, right }: ClientRect,
+  isFixed: boolean
+) {
+  let result = 0
+  if (includes(position, 'left')) {
+    result = left
   }
-
   if (includes(position, 'center')) {
-    return 'center'
+    result = left + width / 2
   }
-
-  return 'flex-start'
+  if (includes(position, 'right')) {
+    result = right
+  }
+  return result + (isFixed ? 0 : scrollX())
 }
 
 function hasFixedAncestors(element: HTMLElement) {
