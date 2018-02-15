@@ -83,6 +83,9 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - run:
+          name: Fix host authenticity for github.com
+          command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
           name: Set git name & email
           command: |
             git config --global user.name "Workflow Bot" && git config --global user.email "dev@effektif.com"
