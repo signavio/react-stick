@@ -4,9 +4,7 @@ import React, { Component } from 'react'
 import PT from 'prop-types'
 import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
-import { defaultStyle } from 'substyle'
 
-import getModifiers from './getModifiers'
 import { scrollX, scrollY } from './scroll'
 import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
@@ -214,17 +212,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 }
 
-const styled = defaultStyle(
-  {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-    },
-  },
-  getModifiers
-)
-
-export default styled(StickPortal)
+export default StickPortal
 
 function calculateTop(
   position: PositionT,

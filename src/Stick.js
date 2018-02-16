@@ -5,7 +5,7 @@ import { findDOMNode } from 'react-dom'
 import { includes } from 'lodash'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact, flatten, some } from 'lodash'
+import { omit, uniqueId, compact, some } from 'lodash'
 
 import getModifiers from './getModifiers'
 import getDefaultAlign from './getDefaultAlign'
@@ -273,6 +273,12 @@ function calculateWidth(
 
 const styled = defaultStyle(
   {
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+      textAlign: 'left',
+    },
+
     nodeWrapper: {
       position: 'absolute',
       right: 0,

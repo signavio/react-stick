@@ -34,13 +34,6 @@ const styled = defaultStyle(
   {
     position: 'relative',
 
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      width: '100%',
-      textAlign: 'left',
-    },
-
     '&position-top': {
       node: {
         top: 0,
