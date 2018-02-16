@@ -74,25 +74,12 @@ class Stick extends Component<PrivatePropsT, StateT> {
 
   componentDidMount() {
     document.addEventListener('click', this.handleClickOutside, true)
-
-    if (!this.props.sameWidth) {
-      this.startTracking()
-    }
+    this.startTracking()
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClickOutside, true)
     this.stopTracking()
-  }
-
-  componentDidUpdate(prevProps: PrivatePropsT) {
-    if (this.props.sameWidth && !prevProps.sameWidth) {
-      this.startTracking()
-    }
-
-    if (!this.props.sameWidth && prevProps.sameWidth) {
-      this.stopTracking()
-    }
   }
 
   getChildContext() {
@@ -114,10 +101,9 @@ class Stick extends Component<PrivatePropsT, StateT> {
               {...wrapperStylingProps}
               style={{
                 ...wrapperStyle,
-                width:
-                  sameWidth || wrapperStyle.width
-                    ? wrapperStyle.width
-                    : this.state.width,
+                width: wrapperStyle.width
+                  ? wrapperStyle.width
+                  : this.state.width,
               }}
             >
               <div {...style('nodeContent')}>{node}</div>
@@ -214,11 +200,13 @@ class Stick extends Component<PrivatePropsT, StateT> {
       return
     }
     const boundingRect = this.anchorNode.getBoundingClientRect()
-    const width = calculateWidth(
-      this.props.position,
-      this.props.align || getDefaultAlign(this.props.position),
-      boundingRect
-    )
+    const width = this.props.sameWidth
+      ? boundingRect.width
+      : calculateWidth(
+          this.props.position,
+          this.props.align || getDefaultAlign(this.props.position),
+          boundingRect
+        )
     if (width !== this.state.width) {
       this.setState({ width })
     }
@@ -283,10 +271,6 @@ const styled = defaultStyle(
     },
 
     '&sameWidth': {
-      nodeWrapper: {
-        width: '100%',
-      },
-
       nodeContent: {
         display: 'block',
         width: '100%',
