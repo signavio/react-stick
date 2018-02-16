@@ -55,7 +55,6 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   state = {
     top: 0,
     left: 0,
-    width: 0,
   }
 
   constructor(props) {
@@ -205,8 +204,6 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
     const isFixed = hasFixedAncestors(this.element)
 
     const newStyle = {
-      width: boundingRect.width,
-
       top: calculateTop(this.props.position, boundingRect, isFixed),
       left: calculateLeft(this.props.position, boundingRect, isFixed),
     }
@@ -221,10 +218,7 @@ const styled = defaultStyle(
   {
     node: {
       position: 'absolute',
-      top: 0,
-      left: 0,
       zIndex: 99,
-      width: '100%', // TODO probably this is not needed anylonger
     },
   },
   getModifiers
@@ -277,9 +271,5 @@ function hasFixedAncestors(element: HTMLElement) {
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {
-  return (
-    style1.width === style2.width &&
-    style1.left === style2.left &&
-    style1.top === style2.top
-  )
+  return style1.left === style2.left && style1.top === style2.top
 }

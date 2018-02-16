@@ -12,7 +12,8 @@ const getModifiers = ({ align, position, sameWidth }: PublicPropsT) => {
   return {
     [`&position-${horizontalPosition}`]: true,
     [`&position-${verticalPosition}`]: true,
-    [`&align-${verticalAlign}-${horizontalAlign}`]: true,
+    [`&align-${horizontalAlign}`]: true,
+    [`&align-${verticalAlign}`]: true,
     '&sameWidth': sameWidth,
   }
 }

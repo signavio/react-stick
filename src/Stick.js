@@ -214,20 +214,23 @@ class Stick extends Component<PrivatePropsT, StateT> {
       return
     }
     const boundingRect = this.anchorNode.getBoundingClientRect()
-    const width = Math.floor(
-      calculateWidth(
-        this.props.position,
-        this.props.align || getDefaultAlign(this.props.position),
-        boundingRect
-      )
+    const newStyle = calculateWidth(
+      this.props.position,
+      this.props.align || getDefaultAlign(this.props.position),
+      boundingRect
     )
-    if (this.state.width !== width) {
-      // console.log(document.documentElement.scrollWidth, width)
-      this.setState({
-        width,
-      })
+    if (!stylesEqual(this.state, newStyle)) {
+      this.setState(newStyle)
     }
   }
+}
+
+function stylesEqual(style1 = {}, style2 = {}) {
+  return (
+    style1.width === style2.width &&
+    style1.left === style2.left &&
+    style1.right === style2.right
+  )
 }
 
 function calculateWidth(
@@ -248,44 +251,32 @@ function calculateWidth(
     }[position.split(' ')[1]]
 
   if (includes(align, 'left')) {
-    return scrollWidth - absLeft
+    return {
+      width: scrollWidth - absLeft,
+      left: 0,
+    }
   }
 
   if (includes(align, 'right')) {
-    return absLeft
+    return {
+      width: absLeft,
+      right: 0,
+    }
   }
 
   if (includes(align, 'center')) {
-    return Math.min(absLeft, scrollWidth - absLeft) * 2
+    return {
+      width: Math.min(absLeft, scrollWidth - absLeft) * 2,
+    }
   }
 }
-
-const verticals = ['top', 'middle', 'bottom']
-const horizontals = ['left', 'center', 'right']
-
-const aligns = flatten(
-  verticals.map(vertical =>
-    horizontals.map(horizontal => [vertical, horizontal])
-  )
-)
-const translateX = (horizontalAlign: 'left' | 'center' | 'right') =>
-  ({
-    left: 0,
-    center: -50,
-    right: -100,
-  }[horizontalAlign])
-
-const translateY = (verticalAlign: 'top' | 'middle' | 'bottom') =>
-  ({
-    top: 0,
-    middle: -50,
-    bottom: -100,
-  }[verticalAlign])
 
 const styled = defaultStyle(
   {
     nodeWrapper: {
       position: 'absolute',
+      right: 0,
+      bottom: 0,
     },
 
     nodeContent: {
@@ -294,6 +285,11 @@ const styled = defaultStyle(
       // click buttons
       position: 'absolute',
       display: 'inline-block',
+
+      left: 'inherit',
+      right: 'inherit',
+      top: 'inherit',
+      bottom: 'inherit',
     },
 
     '&sameWidth': {
@@ -307,29 +303,34 @@ const styled = defaultStyle(
       },
     },
 
-    ...horizontals.reduce(
-      (positionStyles, horizontalPosition) => ({
-        ...positionStyles,
+    '&align-left': {
+      nodeWrapper: {
+        right: 'auto',
+        left: 0,
+      },
+    },
+    '&align-top': {
+      nodeWrapper: {
+        bottom: 'auto',
+        top: 0,
+      },
+    },
 
-        [`&position-${horizontalPosition}`]: {
-          ...aligns.reduce(
-            (alignStyles, [verticalAlign, horizontalAlign]) => ({
-              ...alignStyles,
-
-              [`&align-${verticalAlign}-${horizontalAlign}`]: {
-                nodeContent: {
-                  transform: `translate(${translateX(
-                    horizontalAlign
-                  )}%, ${translateY(verticalAlign)}%)`,
-                },
-              },
-            }),
-            {}
-          ),
+    '&align-middle': {
+      nodeContent: {
+        transform: 'translate(0, 50%)',
+      },
+    },
+    '&align-center': {
+      nodeContent: {
+        transform: 'translate(50%, 0)',
+      },
+      '&align-middle': {
+        nodeContent: {
+          transform: 'translate(50%, 50%)',
         },
-      }),
-      {}
-    ),
+      },
+    },
   },
   getModifiers
 )
