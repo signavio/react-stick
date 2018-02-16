@@ -214,23 +214,15 @@ class Stick extends Component<PrivatePropsT, StateT> {
       return
     }
     const boundingRect = this.anchorNode.getBoundingClientRect()
-    const newStyle = calculateWidth(
+    const width = calculateWidth(
       this.props.position,
       this.props.align || getDefaultAlign(this.props.position),
       boundingRect
     )
-    if (!stylesEqual(this.state, newStyle)) {
-      this.setState(newStyle)
+    if (width !== this.state.width) {
+      this.setState({ width })
     }
   }
-}
-
-function stylesEqual(style1 = {}, style2 = {}) {
-  return (
-    style1.width === style2.width &&
-    style1.left === style2.left &&
-    style1.right === style2.right
-  )
 }
 
 function calculateWidth(
@@ -251,23 +243,15 @@ function calculateWidth(
     }[position.split(' ')[1]]
 
   if (includes(align, 'left')) {
-    return {
-      width: scrollWidth - absLeft,
-      left: 0,
-    }
+    return scrollWidth - absLeft
   }
 
   if (includes(align, 'right')) {
-    return {
-      width: absLeft,
-      right: 0,
-    }
+    return absLeft
   }
 
   if (includes(align, 'center')) {
-    return {
-      width: Math.min(absLeft, scrollWidth - absLeft) * 2,
-    }
+    return Math.min(absLeft, scrollWidth - absLeft) * 2
   }
 }
 

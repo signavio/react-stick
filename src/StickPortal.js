@@ -37,7 +37,6 @@ class Portal extends Component<PortalPropsT> {
 type StateT = {
   top: number,
   left: number,
-  width: number,
 }
 
 class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
@@ -55,7 +54,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
     left: 0,
   }
 
-  constructor(props) {
+  constructor(props: PrivateSpecificPropsT) {
     super(props)
     this.host = document.createElement('div')
   }
