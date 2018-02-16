@@ -34,7 +34,7 @@ export default function FitOnPage() {
     <Regression
       allBrowsers
       version="1.0.0"
-      open
+      fixed
       title="Fit on page"
       description="Stick nodes should always fit into the page and never cause a horizontal scrollbar to appear, even after resize"
     >
