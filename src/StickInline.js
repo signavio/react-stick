@@ -12,14 +12,12 @@ const StickInline = ({
   children,
   style,
   containerRef,
-  anchorRef,
   nestingKey,
   ...rest
 }: PrivateSpecificPropsT) => (
   <div
     ref={ref => {
       containerRef(ref)
-      anchorRef(ref)
     }}
     data-sticknestingkey={nestingKey}
     {...omit(rest, 'position', 'updateOnAnimationFrame')}

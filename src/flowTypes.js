@@ -35,7 +35,6 @@ export type PrivatePropsT = CommonPropsT & {
 export type PrivateSpecificPropsT = CommonPropsT & {
   // props injected by Stick
   containerRef: (element: HTMLElement | null) => void,
-  anchorRef: (element: HTMLElement | null) => void,
   nestingKey: string,
 }
 

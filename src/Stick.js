@@ -40,7 +40,6 @@ const PositionPropType = PropTypes.oneOf([
 class Stick extends Component<PrivatePropsT, StateT> {
   containerNestingKeyExtension: number
   containerNode: ?HTMLElement
-  anchorNode: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
@@ -113,17 +112,12 @@ class Stick extends Component<PrivatePropsT, StateT> {
         style={style}
         nestingKey={this.getNestingKey()}
         containerRef={this.setContainerRef}
-        anchorRef={this.setAnchorRef}
       />
     )
   }
 
   setContainerRef = (ref: HTMLElement | null) => {
     this.containerNode = ref
-  }
-
-  setAnchorRef = (ref: HTMLElement | null) => {
-    this.anchorNode = ref
   }
 
   getNestingKey() {
@@ -196,10 +190,12 @@ class Stick extends Component<PrivatePropsT, StateT> {
   }
 
   measure() {
-    if (!this.anchorNode) {
+    const anchorNode = findDOMNode(this)
+    if (!anchorNode || anchorNode instanceof Text) {
+      // TODO throw error on Text or get it's parent
       return
     }
-    const boundingRect = this.anchorNode.getBoundingClientRect()
+    const boundingRect = anchorNode.getBoundingClientRect()
     const width = this.props.sameWidth
       ? boundingRect.width
       : calculateWidth(

@@ -80,7 +80,7 @@ describe('updates', () => {
             const { width } = nodeElement.getBoundingClientRect()
             expect(width).toEqual(10)
             done()
-          }, 10)
+          }, 100)
       )
     })
   })

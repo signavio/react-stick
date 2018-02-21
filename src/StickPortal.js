@@ -3,7 +3,7 @@ import 'requestidlecallback'
 import React, { Component } from 'react'
 import PT from 'prop-types'
 import { omit, includes } from 'lodash'
-import { createPortal } from 'react-dom'
+import { createPortal, findDOMNode } from 'react-dom'
 
 import { scrollX, scrollY } from './scroll'
 import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
@@ -91,7 +91,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   render() {
-    const { children, style, anchorRef, ...rest } = this.props
+    const { children, style, ...rest } = this.props
     return (
       <div
         {...omit(
@@ -104,10 +104,6 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
           'nestingKey'
         )}
         {...style}
-        ref={(ref: HTMLElement) => {
-          anchorRef(ref)
-          this.element = ref
-        }}
       >
         {children}
         {this.renderNode()}
@@ -197,8 +193,13 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   measure() {
-    const boundingRect = this.element.getBoundingClientRect()
-    const isFixed = hasFixedAncestors(this.element)
+    const domNode = findDOMNode(this)
+    if (!domNode || domNode instanceof Text) {
+      return
+    }
+
+    const boundingRect = domNode.getBoundingClientRect()
+    const isFixed = hasFixedAncestors(domNode)
 
     const newStyle = {
       top: calculateTop(this.props.position, boundingRect, isFixed),
@@ -249,11 +250,11 @@ function calculateLeft(
   return result + (isFixed ? 0 : scrollX())
 }
 
-function hasFixedAncestors(element: HTMLElement) {
+function hasFixedAncestors(element: Element) {
   let elem = element
   do {
     if (getComputedStyle(elem).position === 'fixed') return true
-  } while ((elem = elem.offsetParent))
+  } while ((elem = elem.offsetParent || elem.parentElement))
   return false
 }
 
