@@ -73,12 +73,14 @@ describe('updates', () => {
           {anchor}
         </Stick>,
         host,
-        () => {
-          const nodeElement = document.getElementById('node')
-          const { width } = nodeElement.getBoundingClientRect()
-          expect(width).toEqual(10)
-          done()
-        }
+        () =>
+          window.setTimeout(() => {
+            // we have to wait for first measure to be applied
+            const nodeElement = document.getElementById('node')
+            const { width } = nodeElement.getBoundingClientRect()
+            expect(width).toEqual(10)
+            done()
+          }, 10)
       )
     })
   })
@@ -93,7 +95,7 @@ describe('updates', () => {
         render(<Stick node={node}>{anchor}</Stick>, host, () => {
           const nodeElement = document.getElementById('node')
           const { width } = nodeElement.getBoundingClientRect()
-          expect(width).toEqual(0)
+          expect(width).toEqual(0) // empty content means zero width
           done()
         })
       }
