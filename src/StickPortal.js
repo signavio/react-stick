@@ -1,5 +1,4 @@
 // @flow
-
 import 'requestidlecallback'
 import React, { Component } from 'react'
 import PT from 'prop-types'
@@ -8,12 +7,8 @@ import { createPortal } from 'react-dom'
 import { defaultStyle } from 'substyle'
 
 import getModifiers from './getModifiers'
-import type { PositionT, PropsT } from './flowTypes'
-
-declare function requestAnimationFrame(func: Function): number
-declare function cancelAnimationFrame(id: number): void
-declare function requestIdleCallback(func: Function): number
-declare function cancelIdleCallback(id: number): void
+import { scrollX, scrollY } from './scroll'
+import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
 
@@ -23,22 +18,15 @@ const ContextTypes = {
 
 type PortalPropsT = {
   host: HTMLElement,
-  containerRef: (element: HTMLElement | null) => void,
-  children?: React$Element<any>,
+  children: React$Element<any>,
 }
 
 class Portal extends Component<PortalPropsT> {
   static childContextTypes = ContextTypes
 
   render() {
-    const { host, containerRef, children, ...rest } = this.props
-
-    return createPortal(
-      <div ref={containerRef} {...rest}>
-        {children}
-      </div>,
-      host
-    )
+    const { host, children } = this.props
+    return createPortal(children, host)
   }
 
   getChildContext() {
@@ -54,25 +42,15 @@ type StateT = {
   width: number,
 }
 
-type FinalPropsT = PropsT & {
-  nestingKey: string,
-  transportTo?: HTMLElement,
-  updateOnAnimationFrame?: boolean,
-}
-
-class StickPortal extends Component<FinalPropsT, StateT> {
+class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   element: HTMLElement // the element whose position is tracked
-  container: HTMLElement // the container for the sticked node (has z-index)
+  container: HTMLElement // the container for the stick node (has z-index)
   host: HTMLElement // the host element to which we portal the container (has no styles)
 
-  animationId: number
-  lastCallbackAsAnimationFrame: ?boolean
+  animationFrameId: ?AnimationFrameID
+  idleCallbackId: ?IdleCallbackID
 
   static contextTypes = ContextTypes
-
-  static defaultProps = {
-    position: 'bottom left',
-  }
 
   state = {
     top: 0,
@@ -92,7 +70,7 @@ class StickPortal extends Component<FinalPropsT, StateT> {
     }
   }
 
-  componentDidUpdate(prevProps: FinalPropsT) {
+  componentDidUpdate(prevProps: PrivateSpecificPropsT) {
     if (this.props.node && !prevProps.node) {
       this.mountHost()
       this.startTracking()
@@ -117,14 +95,13 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   render() {
-    const { children, style, ...rest } = this.props
+    const { children, style, anchorRef, ...rest } = this.props
     return (
       <div
         {...omit(
           rest,
           'node',
           'position',
-          'nodeWidth',
           'updateOnAnimationFrame',
           'transportTo',
           'containerRef',
@@ -132,6 +109,7 @@ class StickPortal extends Component<FinalPropsT, StateT> {
         )}
         {...style}
         ref={(ref: HTMLElement) => {
+          anchorRef(ref)
           this.element = ref
         }}
       >
@@ -142,25 +120,23 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   }
 
   renderNode() {
-    const { node, style, nestingKey, nodeWidth, position } = this.props
-
+    const { node, style, nestingKey, position } = this.props
+    const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
     // Do not render `this.props.node` before the container ref is set. This ensures that
     // all descendant portals will be mounted to the right host element straight away.
     // We must not rely on context updates!
     return (
-      <Portal
-        {...style('node')}
-        host={this.host}
-        containerRef={this.storeContainerRef}
-        data-sticknestingkey={nestingKey}
-      >
+      <Portal host={this.host}>
         <div
+          ref={this.storeContainerRef}
+          data-sticknestingkey={nestingKey}
+          {...otherNodeStyleProps}
           style={{
             position: 'absolute',
             display: 'flex',
             justifyContent: calculateJustifyContent(position),
+            ...nodeStyle,
             ...this.state,
-            ...(nodeWidth != null ? { width: nodeWidth } : {}),
           }}
         >
           {this.container && node}
@@ -172,13 +148,13 @@ class StickPortal extends Component<FinalPropsT, StateT> {
   storeContainerRef = (ref: HTMLElement) => {
     const { containerRef } = this.props
 
+    if (containerRef) {
+      containerRef(ref)
+    }
+
     if (this.container !== ref) {
       this.container = ref
       this.forceUpdate()
-    }
-
-    if (containerRef) {
-      containerRef(ref)
     }
   }
 
@@ -204,20 +180,26 @@ class StickPortal extends Component<FinalPropsT, StateT> {
       return
     }
 
-    const requestCallback = this.props.updateOnAnimationFrame
-      ? requestAnimationFrame
-      : requestIdleCallback
-    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
+    const callback = () => this.startTracking()
+    if (this.props.updateOnAnimationFrame) {
+      this.animationFrameId = requestAnimationFrame(callback)
+    } else {
+      this.idleCallbackId = requestIdleCallback(callback)
+    }
 
-    this.animationId = requestCallback(() => this.startTracking())
     this.measure()
   }
 
   stopTracking() {
-    const cancelCallback = this.lastCallbackAsAnimationFrame
-      ? cancelAnimationFrame
-      : cancelIdleCallback
-    cancelCallback(this.animationId)
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = undefined
+    }
+
+    if (this.idleCallbackId) {
+      cancelIdleCallback(this.idleCallbackId)
+      this.idleCallbackId = undefined
+    }
   }
 
   measure() {
@@ -244,7 +226,7 @@ const styled = defaultStyle(
       top: 0,
       left: 0,
       zIndex: 99,
-      width: '100%',
+      width: '100%', // TODO probably this is not needed anylonger
     },
   },
   getModifiers
@@ -254,7 +236,7 @@ export default styled(StickPortal)
 
 function calculateTop(
   position: ?PositionT,
-  { top, height, bottom },
+  { top, height, bottom }: ClientRect,
   isFixed: boolean
 ) {
   if (includes(position, 'top')) {
@@ -294,65 +276,4 @@ function stylesEqual(style1 = {}, style2 = {}) {
     style1.left === style2.left &&
     style1.top === style2.top
   )
-}
-
-/*
- * Don't believe me dog?
- * ok.
- * https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollY#Notes
- */
-const hasPageOffset =
-  typeof window !== 'undefined' && typeof window.pageXOffset !== 'undefined'
-
-const compatMode =
-  typeof document !== 'undefined' && typeof document.compatMode === 'string'
-    ? document.compatMode
-    : ''
-
-function scrollY() {
-  if (typeof window !== 'undefined' && typeof window.scrollY === 'number') {
-    return window.scrollY
-  }
-
-  if (hasPageOffset === true) {
-    return window.pageYOffset
-  }
-
-  if (compatMode === 'CSS1Compat') {
-    return document.documentElement && document.documentElement.scrollTop
-  }
-
-  if (
-    typeof document !== 'undefined' &&
-    !!document.body &&
-    typeof document.body.scrollTop === 'number'
-  ) {
-    return document.body.scrollTop
-  }
-
-  return 0
-}
-
-function scrollX() {
-  if (typeof window !== 'undefined' && typeof window.scrollX === 'number') {
-    return window.scrollX
-  }
-
-  if (hasPageOffset === true) {
-    return window.pageXOffset
-  }
-
-  if (compatMode === 'CSS1Compat') {
-    return document.documentElement && document.documentElement.scrollLeft
-  }
-
-  if (
-    typeof document !== 'undefined' &&
-    !!document.body &&
-    typeof document.body.scrollLeft === 'number'
-  ) {
-    return document.body.scrollLeft
-  }
-
-  return 0
 }

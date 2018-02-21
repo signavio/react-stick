@@ -1,33 +1,19 @@
 // @flow
-import type { PositionT, PropsT } from './flowTypes'
+import getDefaultAlign from './getDefaultAlign'
+import DEFAULT_POSITION from './defaultPosition'
+import type { PublicPropsT } from './flowTypes'
 
-const getDefaultAlign = (position: PositionT) =>
-  position
-    .split(' ')
-    .map(
-      (positionPart: string) =>
-        ({
-          top: 'bottom',
-          middle: 'middle',
-          bottom: 'top',
-          left: position.indexOf('middle') ? 'left' : 'right',
-          center: 'center',
-          right: position.indexOf('middle') ? 'right' : 'left',
-        }[positionPart])
-    )
-    .join(' ')
-
-const DEFAULT_POSITION = 'bottom left'
-
-const getModifiers = ({ align, position = DEFAULT_POSITION }: PropsT) => {
-  const [verticalPosition, horizontalPosition] = position.split(' ')
+const getModifiers = ({ align, position, sameWidth }: PublicPropsT) => {
+  const finalPosition = position || DEFAULT_POSITION
+  const [verticalPosition, horizontalPosition] = finalPosition.split(' ')
   const [verticalAlign, horizontalAlign] = (
-    align || getDefaultAlign(position)
+    align || getDefaultAlign(finalPosition)
   ).split(' ')
   return {
     [`&position-${horizontalPosition}`]: true,
     [`&position-${verticalPosition}`]: true,
     [`&align-${verticalAlign}-${horizontalAlign}`]: true,
+    '&sameWidth': sameWidth,
   }
 }
 

@@ -33,7 +33,7 @@ describe('`onClickOutside` event', () => {
     document.body.removeChild(host)
   })
 
-  it('should call `onClickOutside` on click on any element outside of the sticked node an anchor element', done => {
+  it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', done => {
     const spy = createSpy()
     render(
       <Stick onClickOutside={spy} node={node}>
@@ -54,7 +54,7 @@ describe('`onClickOutside` event', () => {
     )
   })
 
-  it('should not call `onClickOutside` on click on the anchor element or sticked node', done => {
+  it('should not call `onClickOutside` on click on the anchor element or stick node', done => {
     const spy = createSpy()
     render(
       <Stick onClickOutside={spy} node={node}>
@@ -79,7 +79,7 @@ describe('`onClickOutside` event', () => {
       describe(`<Stick ${innerInline ? 'inline ' : ''}/> in node of <Stick ${
         outerInline ? 'inline ' : ''
       }/>`, () => {
-        it('should not call `onClickOutside` on click on the nested sticked node', done => {
+        it('should not call `onClickOutside` on click on the nested stick node', done => {
           const spy = createSpy()
           render(
             <Stick

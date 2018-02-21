@@ -5,42 +5,30 @@ import { defaultStyle } from 'substyle'
 import { omit } from 'lodash'
 
 import getModifiers from './getModifiers'
-import type { PropsT } from './flowTypes'
-
-type FinalPropsT = PropsT & {
-  nestingKey: string,
-}
+import type { PrivateSpecificPropsT } from './flowTypes'
 
 const StickInline = ({
   node,
   children,
-  nodeWidth,
   style,
   containerRef,
+  anchorRef,
   nestingKey,
   ...rest
-}: FinalPropsT) => {
-  const nodeStyle = {
-    ...style('node').style,
-    ...(nodeWidth != null && { width: nodeWidth }),
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      data-sticknestingkey={nestingKey}
-      {...omit(rest, 'position', 'updateOnAnimationFrame')}
-      {...style}
-    >
-      {children}
-      {node && (
-        <div {...style('node')} style={nodeStyle}>
-          {node}
-        </div>
-      )}
-    </div>
-  )
-}
+}: PrivateSpecificPropsT) => (
+  <div
+    ref={ref => {
+      containerRef(ref)
+      anchorRef(ref)
+    }}
+    data-sticknestingkey={nestingKey}
+    {...omit(rest, 'position', 'updateOnAnimationFrame')}
+    {...style}
+  >
+    {children}
+    {node && <div {...style('node')}>{node}</div>}
+  </div>
+)
 
 const styled = defaultStyle(
   {

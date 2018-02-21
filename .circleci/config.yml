@@ -82,22 +82,28 @@ jobs:
     steps:
       - *attach_workspace
       - *restore_cache
-      - add_ssh_keys:
-          fingerprints:
-            - "df:4b:a9:b9:c8:f3:65:7d:1a:64:0f:f8:a8:93:28:81"
       - run:
           name: Fix host authenticity for github.com
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Set git name & email
           command: |
-            git config --global user.name "CircleCI" && git config --global user.email "circleci@signavio.com"
+            git config --global user.name "Workflow Bot" && git config --global user.email "dev@effektif.com"
       - run:
           name: Build demo
           command: yarn build-demo
       - run:
           name: Publish demo
           command: yarn publish-demo
+
+  release-preview:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - *restore_cache
+      - run:
+          name: Post release preview
+          command: "[[ $CI_PULL_REQUEST != '' ]] && yarn semantic-release-preview || exit 0"
 
   release:
     <<: *defaults
@@ -130,6 +136,14 @@ workflows:
       - publish-demo:
           requires:
             - install
+      - release-preview:
+          requires:
+            - lint
+            - flow
+            - test
+          filters:
+            branches:
+              ignore: master
       - release:
           requires:
             - lint
