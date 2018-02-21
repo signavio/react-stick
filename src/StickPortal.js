@@ -3,7 +3,7 @@ import 'requestidlecallback'
 import React, { Component } from 'react'
 import PT from 'prop-types'
 import { omit, includes } from 'lodash'
-import { createPortal, findDOMNode } from 'react-dom'
+import { createPortal } from 'react-dom'
 
 import { scrollX, scrollY } from './scroll'
 import getBoundingClientRect from './getBoundingClientRect'
@@ -92,9 +92,10 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   render() {
-    const { children, style, ...rest } = this.props
+    const { children, style, component, ...rest } = this.props
+    const Comp = component || 'div'
     return (
-      <div
+      <Comp
         {...omit(
           rest,
           'node',
@@ -108,7 +109,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
       >
         {children}
         {this.renderNode()}
-      </div>
+      </Comp>
     )
   }
 

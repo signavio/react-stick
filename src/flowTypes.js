@@ -19,6 +19,7 @@ type CommonPropsT = {
   inline?: boolean,
   updateOnAnimationFrame?: boolean,
   transportTo?: HTMLElement,
+  component?: string,
   style: Substyle,
 }
 

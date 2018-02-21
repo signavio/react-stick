@@ -8,7 +8,9 @@ const getBoundingClientRect = (instance: Component<any, any>): ClientRect => {
     element = element.parentElement
   }
   if (!element) {
-    throw new Error('Children of <Stick /> must render something!')
+    throw new Error(
+      'The `component` passed to <Stick /> must render a DOM node!'
+    )
   }
   return element.getBoundingClientRect()
 }
