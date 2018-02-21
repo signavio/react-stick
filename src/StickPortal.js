@@ -6,6 +6,7 @@ import { omit, includes } from 'lodash'
 import { createPortal, findDOMNode } from 'react-dom'
 
 import { scrollX, scrollY } from './scroll'
+import getBoundingClientRect from './getBoundingClientRect'
 import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
@@ -193,12 +194,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   measure() {
-    const domNode = findDOMNode(this)
-    if (!domNode || domNode instanceof Text) {
-      return
-    }
-
-    const boundingRect = domNode.getBoundingClientRect()
+    const boundingRect = getBoundingClientRect(this)
 
     const newStyle = {
       top: calculateTop(this.props.position, boundingRect),

@@ -13,6 +13,7 @@ import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import DEFAULT_POSITION from './defaultPosition'
 import { scrollX } from './scroll'
+import getBoundingClientRect from './getBoundingClientRect'
 import type { PrivatePropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
@@ -190,12 +191,8 @@ class Stick extends Component<PrivatePropsT, StateT> {
   }
 
   measure() {
-    const anchorNode = findDOMNode(this)
-    if (!anchorNode || anchorNode instanceof Text) {
-      // TODO throw error on Text or get it's parent
-      return
-    }
-    const boundingRect = anchorNode.getBoundingClientRect()
+    const boundingRect = getBoundingClientRect(this)
+
     const width = this.props.sameWidth
       ? boundingRect.width
       : calculateWidth(
@@ -203,6 +200,7 @@ class Stick extends Component<PrivatePropsT, StateT> {
           this.props.align || getDefaultAlign(this.props.position),
           boundingRect
         )
+
     if (width !== this.state.width) {
       this.setState({ width })
     }
