@@ -199,11 +199,10 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
     }
 
     const boundingRect = domNode.getBoundingClientRect()
-    const isFixed = hasFixedAncestors(domNode)
 
     const newStyle = {
-      top: calculateTop(this.props.position, boundingRect, isFixed),
-      left: calculateLeft(this.props.position, boundingRect, isFixed),
+      top: calculateTop(this.props.position, boundingRect),
+      left: calculateLeft(this.props.position, boundingRect),
     }
 
     if (!stylesEqual(newStyle, this.state)) {
@@ -216,8 +215,7 @@ export default StickPortal
 
 function calculateTop(
   position: PositionT,
-  { top, height, bottom }: ClientRect,
-  isFixed: boolean
+  { top, height, bottom }: ClientRect
 ) {
   let result = 0
   if (includes(position, 'top')) {
@@ -229,13 +227,12 @@ function calculateTop(
   if (includes(position, 'bottom')) {
     result = bottom
   }
-  return result + (isFixed ? 0 : scrollY())
+  return result + scrollY()
 }
 
 function calculateLeft(
   position: PositionT,
-  { left, width, right }: ClientRect,
-  isFixed: boolean
+  { left, width, right }: ClientRect
 ) {
   let result = 0
   if (includes(position, 'left')) {
@@ -247,15 +244,7 @@ function calculateLeft(
   if (includes(position, 'right')) {
     result = right
   }
-  return result + (isFixed ? 0 : scrollX())
-}
-
-function hasFixedAncestors(element: Element) {
-  let elem = element
-  do {
-    if (getComputedStyle(elem).position === 'fixed') return true
-  } while ((elem = elem.offsetParent || elem.parentElement))
-  return false
+  return result + scrollX()
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {
