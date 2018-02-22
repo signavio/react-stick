@@ -8,9 +8,10 @@ export default function SameWidth() {
   return (
     <Regression
       allBrowsers
+      version="1.0.0"
       fixed
-      title="Stick in SVG"
-      description="Stick should also be usable for SVG elements"
+      title="SVG node as anchor"
+      description="Stick should also be usable inside an SVG"
     >
       <svg width="400" height="200">
         <Stick
