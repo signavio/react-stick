@@ -49,6 +49,11 @@ export default function SameWidth() {
         <Stick sameWidth position="bottom center" node={<Node />}>
           <Anchor>The stick node below should have the same width</Anchor>
         </Stick>
+        <Stick sameWidth inline position="bottom center" node={<Node />}>
+          <Anchor>
+            The inline stick node below should have the same width
+          </Anchor>
+        </Stick>
         <Stick
           position="bottom center"
           sameWidth

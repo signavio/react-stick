@@ -5,7 +5,7 @@ import { findDOMNode } from 'react-dom'
 import { includes } from 'lodash'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact, flatten, some } from 'lodash'
+import { omit, uniqueId, compact, some } from 'lodash'
 
 import getModifiers from './getModifiers'
 import getDefaultAlign from './getDefaultAlign'
@@ -68,31 +68,18 @@ class Stick extends Component<PrivatePropsT, StateT> {
     super(...args)
     this.containerNestingKeyExtension = uniqueId()
     this.state = {
-      width: undefined,
+      width: 0,
     }
   }
 
   componentDidMount() {
     document.addEventListener('click', this.handleClickOutside, true)
-
-    if (!this.props.sameWidth) {
-      this.startTracking()
-    }
+    this.startTracking()
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClickOutside, true)
     this.stopTracking()
-  }
-
-  componentDidUpdate(prevProps: PrivatePropsT) {
-    if (this.props.sameWidth && !prevProps.sameWidth) {
-      this.startTracking()
-    }
-
-    if (!this.props.sameWidth && prevProps.sameWidth) {
-      this.stopTracking()
-    }
   }
 
   getChildContext() {
@@ -114,10 +101,9 @@ class Stick extends Component<PrivatePropsT, StateT> {
               {...wrapperStylingProps}
               style={{
                 ...wrapperStyle,
-                width:
-                  sameWidth || wrapperStyle.width
-                    ? wrapperStyle.width
-                    : this.state.width,
+                width: wrapperStyle.width
+                  ? wrapperStyle.width
+                  : this.state.width,
               }}
             >
               <div {...style('nodeContent')}>{node}</div>
@@ -214,57 +200,17 @@ class Stick extends Component<PrivatePropsT, StateT> {
       return
     }
     const boundingRect = this.anchorNode.getBoundingClientRect()
-    const width = calculateWidth(
-      this.props.position,
-      this.props.align || getDefaultAlign(this.props.position),
-      boundingRect
-    )
-    if (this.state.width !== width) {
-      this.setState({
-        width,
-      })
+    const width = this.props.sameWidth
+      ? boundingRect.width
+      : calculateWidth(
+          this.props.position,
+          this.props.align || getDefaultAlign(this.props.position),
+          boundingRect
+        )
+    if (width !== this.state.width) {
+      this.setState({ width })
     }
   }
-}
-
-const verticals = ['top', 'middle', 'bottom']
-const horizontals = ['left', 'center', 'right']
-
-const aligns = flatten(
-  verticals.map(vertical =>
-    horizontals.map(horizontal => [vertical, horizontal])
-  )
-)
-
-const translateX = (position, align) => {
-  if (position === align) {
-    return 0
-  }
-
-  const absoluteValue = position === 'center' || align === 'center' ? 50 : 100
-  let factor = 1
-
-  if (position === 'center' && align === 'right') {
-    factor = -1
-  }
-
-  if (position === 'left') {
-    factor = -1
-  }
-
-  return factor * absoluteValue
-}
-
-const translateY = align => {
-  if (align === 'top') {
-    return 0
-  }
-
-  if (align === 'middle') {
-    return -50
-  }
-
-  return -100
 }
 
 function calculateWidth(
@@ -299,55 +245,66 @@ function calculateWidth(
 
 const styled = defaultStyle(
   {
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+      textAlign: 'left',
+    },
+
     nodeWrapper: {
       position: 'absolute',
-      display: 'flex',
-      justifyContent: 'inherit',
+      right: 0,
+      bottom: 0,
     },
 
     nodeContent: {
-      // absolute position is need as the stick node would otherwise
+      // absolute position is needed as the stick node would otherwise
       // cover up the base node and, for instance, make it impossible to
       // click buttons
       position: 'absolute',
       display: 'inline-block',
+
+      left: 'inherit',
+      right: 'inherit',
+      top: 'inherit',
+      bottom: 'inherit',
     },
 
     '&sameWidth': {
-      nodeWrapper: {
-        width: '100%',
-      },
-
       nodeContent: {
         display: 'block',
         width: '100%',
       },
     },
 
-    ...horizontals.reduce(
-      (positionStyles, horizontalPosition) => ({
-        ...positionStyles,
+    '&align-left': {
+      nodeWrapper: {
+        right: 'auto',
+        left: 0,
+      },
+    },
+    '&align-top': {
+      nodeWrapper: {
+        bottom: 'auto',
+        top: 0,
+      },
+    },
 
-        [`&position-${horizontalPosition}`]: {
-          ...aligns.reduce(
-            (alignStyles, [verticalAlign, horizontalAlign]) => ({
-              ...alignStyles,
-
-              [`&align-${verticalAlign}-${horizontalAlign}`]: {
-                nodeContent: {
-                  transform: `translate(${translateX(
-                    horizontalPosition,
-                    horizontalAlign
-                  )}%, ${translateY(verticalAlign)}%)`,
-                },
-              },
-            }),
-            {}
-          ),
+    '&align-middle': {
+      nodeContent: {
+        transform: 'translate(0, 50%)',
+      },
+    },
+    '&align-center': {
+      nodeContent: {
+        transform: 'translate(50%, 0)',
+      },
+      '&align-middle': {
+        nodeContent: {
+          transform: 'translate(50%, 50%)',
         },
-      }),
-      {}
-    ),
+      },
+    },
   },
   getModifiers
 )

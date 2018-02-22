@@ -34,14 +34,6 @@ const styled = defaultStyle(
   {
     position: 'relative',
 
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      width: '100%',
-      textAlign: 'left',
-      display: 'flex',
-    },
-
     '&position-top': {
       node: {
         top: 0,
@@ -58,14 +50,19 @@ const styled = defaultStyle(
       },
     },
 
-    '&position-right': {
+    '&position-left': {
       node: {
-        justifyContent: 'flex-end',
+        left: 0,
       },
     },
     '&position-center': {
       node: {
-        justifyContent: 'center',
+        left: '50%',
+      },
+    },
+    '&position-right': {
+      node: {
+        left: '100%',
       },
     },
   },
