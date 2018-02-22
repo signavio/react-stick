@@ -163,10 +163,8 @@ class Stick extends Component<PrivatePropsT, StateT> {
   }
 
   startTracking() {
-    if (typeof window.requestAnimationFrame === 'undefined') {
-      // do not track in node
-      return
-    }
+    // do not track in node
+    if (typeof window.requestAnimationFrame === 'undefined') return
 
     const callback = () => this.startTracking()
     if (this.props.updateOnAnimationFrame) {
