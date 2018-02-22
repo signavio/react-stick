@@ -3,15 +3,8 @@ import { Component } from 'react'
 import { findDOMNode } from 'react-dom'
 
 const getBoundingClientRect = (instance: Component<any, any>): ClientRect => {
-  let element = findDOMNode(instance)
-  if (element instanceof Text) {
-    element = element.parentElement
-  }
-  if (!element) {
-    throw new Error(
-      'The `component` passed to <Stick /> must render a DOM node!'
-    )
-  }
+  // $FlowIgnore: we only allow string type components, so we will always find an Element
+  const element: Element = findDOMNode(instance)
   return element.getBoundingClientRect()
 }
 
