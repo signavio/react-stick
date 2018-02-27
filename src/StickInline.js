@@ -11,24 +11,26 @@ const StickInline = ({
   node,
   children,
   style,
+  component,
   containerRef,
-  anchorRef,
   nestingKey,
   ...rest
-}: PrivateSpecificPropsT) => (
-  <div
-    ref={ref => {
-      containerRef(ref)
-      anchorRef(ref)
-    }}
-    data-sticknestingkey={nestingKey}
-    {...omit(rest, 'position', 'updateOnAnimationFrame')}
-    {...style}
-  >
-    {children}
-    {node && <div {...style('node')}>{node}</div>}
-  </div>
-)
+}: PrivateSpecificPropsT) => {
+  const Comp = component || 'div'
+  return (
+    <Comp
+      ref={ref => {
+        containerRef(ref)
+      }}
+      data-sticknestingkey={nestingKey}
+      {...omit(rest, 'position', 'updateOnAnimationFrame')}
+      {...style}
+    >
+      {children}
+      {node && <div {...style('node')}>{node}</div>}
+    </Comp>
+  )
+}
 
 const styled = defaultStyle(
   {

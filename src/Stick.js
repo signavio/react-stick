@@ -13,6 +13,7 @@ import StickPortal from './StickPortal'
 import StickInline from './StickInline'
 import DEFAULT_POSITION from './defaultPosition'
 import { scrollX } from './scroll'
+import getBoundingClientRect from './getBoundingClientRect'
 import type { PrivatePropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
@@ -40,7 +41,6 @@ const PositionPropType = PropTypes.oneOf([
 class Stick extends Component<PrivatePropsT, StateT> {
   containerNestingKeyExtension: number
   containerNode: ?HTMLElement
-  anchorNode: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
@@ -113,17 +113,12 @@ class Stick extends Component<PrivatePropsT, StateT> {
         style={style}
         nestingKey={this.getNestingKey()}
         containerRef={this.setContainerRef}
-        anchorRef={this.setAnchorRef}
       />
     )
   }
 
   setContainerRef = (ref: HTMLElement | null) => {
     this.containerNode = ref
-  }
-
-  setAnchorRef = (ref: HTMLElement | null) => {
-    this.anchorNode = ref
   }
 
   getNestingKey() {
@@ -168,10 +163,8 @@ class Stick extends Component<PrivatePropsT, StateT> {
   }
 
   startTracking() {
-    if (typeof window.requestAnimationFrame === 'undefined') {
-      // do not track in node
-      return
-    }
+    // do not track in node
+    if (typeof window.requestAnimationFrame === 'undefined') return
 
     const callback = () => this.startTracking()
     if (this.props.updateOnAnimationFrame) {
@@ -196,10 +189,8 @@ class Stick extends Component<PrivatePropsT, StateT> {
   }
 
   measure() {
-    if (!this.anchorNode) {
-      return
-    }
-    const boundingRect = this.anchorNode.getBoundingClientRect()
+    const boundingRect = getBoundingClientRect(this)
+
     const width = this.props.sameWidth
       ? boundingRect.width
       : calculateWidth(
@@ -207,6 +198,7 @@ class Stick extends Component<PrivatePropsT, StateT> {
           this.props.align || getDefaultAlign(this.props.position),
           boundingRect
         )
+
     if (width !== this.state.width) {
       this.setState({ width })
     }

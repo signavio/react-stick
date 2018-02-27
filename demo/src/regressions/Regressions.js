@@ -4,6 +4,7 @@ import ButtonOverlay from './ButtonOverlay'
 import SameWidth from './SameWidth'
 import StickNodeWidth from './StickNodeWidth'
 import FitOnPage from './FitOnPage'
+import StickInSvg from './StickInSvg'
 
 export default function Regressions() {
   return (
@@ -14,6 +15,7 @@ export default function Regressions() {
       <SameWidth />
       <StickNodeWidth />
       <FitOnPage />
+      <StickInSvg />
     </div>
   )
 }

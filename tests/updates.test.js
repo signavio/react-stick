@@ -38,7 +38,7 @@ describe('updates', () => {
   })
 
   it('should work if the node is only provided after the initial mount', done => {
-    render(<Stick position="middle right">{anchor}</Stick>, host)
+    render(<Stick>{anchor}</Stick>, host)
     render(
       <Stick position="middle right" node={node}>
         {anchor}
@@ -80,7 +80,7 @@ describe('updates', () => {
             const { width } = nodeElement.getBoundingClientRect()
             expect(width).toEqual(10)
             done()
-          }, 10)
+          }, 100)
       )
     })
   })
@@ -98,6 +98,54 @@ describe('updates', () => {
           expect(width).toEqual(0) // empty content means zero width
           done()
         })
+      }
+    )
+  })
+
+  it('should handle switching to `updateOnAnimationFrame` correctly', done => {
+    render(
+      <Stick node={node} position="middle right">
+        {anchor}
+      </Stick>,
+      host,
+      () => {
+        render(
+          <Stick node={node} position="middle right" updateOnAnimationFrame>
+            {anchor}
+          </Stick>,
+          host,
+          () => {
+            const nodeElement = document.getElementById('node')
+            const { left, top } = nodeElement.getBoundingClientRect()
+            expect(left).toEqual(18)
+            expect(top).toEqual(8)
+            done()
+          }
+        )
+      }
+    )
+  })
+
+  it('should handle switching back from `updateOnAnimationFrame` correctly', done => {
+    render(
+      <Stick node={node} position="middle right" updateOnAnimationFrame>
+        {anchor}
+      </Stick>,
+      host,
+      () => {
+        render(
+          <Stick node={node} position="middle right">
+            {anchor}
+          </Stick>,
+          host,
+          () => {
+            const nodeElement = document.getElementById('node')
+            const { left, top } = nodeElement.getBoundingClientRect()
+            expect(left).toEqual(18)
+            expect(top).toEqual(8)
+            done()
+          }
+        )
       }
     )
   })

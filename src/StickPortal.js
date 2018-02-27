@@ -6,6 +6,7 @@ import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
 
 import { scrollX, scrollY } from './scroll'
+import getBoundingClientRect from './getBoundingClientRect'
 import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
@@ -91,9 +92,10 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   render() {
-    const { children, style, anchorRef, ...rest } = this.props
+    const { children, style, component, ...rest } = this.props
+    const Comp = component || 'div'
     return (
-      <div
+      <Comp
         {...omit(
           rest,
           'node',
@@ -104,14 +106,10 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
           'nestingKey'
         )}
         {...style}
-        ref={(ref: HTMLElement) => {
-          anchorRef(ref)
-          this.element = ref
-        }}
       >
         {children}
         {this.renderNode()}
-      </div>
+      </Comp>
     )
   }
 
@@ -169,10 +167,8 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   startTracking() {
-    if (typeof window.requestAnimationFrame === 'undefined') {
-      // do not track in node
-      return
-    }
+    // do not track in node
+    if (typeof window.requestAnimationFrame === 'undefined') return
 
     const callback = () => this.startTracking()
     if (this.props.updateOnAnimationFrame) {
@@ -197,12 +193,11 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
   }
 
   measure() {
-    const boundingRect = this.element.getBoundingClientRect()
-    const isFixed = hasFixedAncestors(this.element)
+    const boundingRect = getBoundingClientRect(this)
 
     const newStyle = {
-      top: calculateTop(this.props.position, boundingRect, isFixed),
-      left: calculateLeft(this.props.position, boundingRect, isFixed),
+      top: calculateTop(this.props.position, boundingRect),
+      left: calculateLeft(this.props.position, boundingRect),
     }
 
     if (!stylesEqual(newStyle, this.state)) {
@@ -215,8 +210,7 @@ export default StickPortal
 
 function calculateTop(
   position: PositionT,
-  { top, height, bottom }: ClientRect,
-  isFixed: boolean
+  { top, height, bottom }: ClientRect
 ) {
   let result = 0
   if (includes(position, 'top')) {
@@ -228,13 +222,12 @@ function calculateTop(
   if (includes(position, 'bottom')) {
     result = bottom
   }
-  return result + (isFixed ? 0 : scrollY())
+  return result + scrollY()
 }
 
 function calculateLeft(
   position: PositionT,
-  { left, width, right }: ClientRect,
-  isFixed: boolean
+  { left, width, right }: ClientRect
 ) {
   let result = 0
   if (includes(position, 'left')) {
@@ -246,15 +239,7 @@ function calculateLeft(
   if (includes(position, 'right')) {
     result = right
   }
-  return result + (isFixed ? 0 : scrollX())
-}
-
-function hasFixedAncestors(element: HTMLElement) {
-  let elem = element
-  do {
-    if (getComputedStyle(elem).position === 'fixed') return true
-  } while ((elem = elem.offsetParent))
-  return false
+  return result + scrollX()
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {

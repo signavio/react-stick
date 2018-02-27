@@ -23,6 +23,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+    "flow-bin": "^0.66.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "requestidlecallback": "^0.3.0",
@@ -38,7 +39,6 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "flow-bin": "^0.64.0",
     "gh-pages": "^1.1.0",
     "inferno": "^3.10.1",
     "nwb": "^0.21.2",
