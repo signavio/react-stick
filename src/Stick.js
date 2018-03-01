@@ -91,7 +91,7 @@ class Stick extends Component<PrivatePropsT, StateT> {
   render() {
     const { inline, node, style, align, sameWidth, ...rest } = this.props
     const SpecificStick = inline ? StickInline : StickPortal
-    const { style: wrapperStyle, ...wrapperStylingProps } = style('nodeWrapper')
+    const { style: wrapperStyle = {}, ...wrapperStylingProps } = style('nodeWrapper')
     return (
       <SpecificStick
         {...omit(rest, 'onClickOutside')}
