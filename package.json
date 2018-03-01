@@ -40,13 +40,15 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "gh-pages": "^1.1.0",
+    "glamor": "^2.20.40",
     "inferno": "^3.10.1",
     "nwb": "^0.21.2",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "semantic-release": "^12.2.5",
-    "semantic-release-github-pr": "^3.1.2"
+    "semantic-release-github-pr": "^3.1.2",
+    "substyle-glamor": "^1.0.5"
   },
   "peerDependencies": {
     "react": "^16.0.0",
