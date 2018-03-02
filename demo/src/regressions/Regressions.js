@@ -5,6 +5,7 @@ import SameWidth from './SameWidth'
 import StickNodeWidth from './StickNodeWidth'
 import FitOnPage from './FitOnPage'
 import StickInSvg from './StickInSvg'
+import StyledWithDataAttributes from './StyledWithDataAttributes'
 
 export default function Regressions() {
   return (
@@ -16,6 +17,7 @@ export default function Regressions() {
       <StickNodeWidth />
       <FitOnPage />
       <StickInSvg />
+      <StyledWithDataAttributes />
     </div>
   )
 }
