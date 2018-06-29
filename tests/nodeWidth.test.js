@@ -16,9 +16,8 @@ describe('stick node width', () => {
   const render = (stick, host, callback) => {
     let called = false
     renderBase(
-      // set documentElement's the scroll width to 1008
+      // sets documentElement's scroll width to 1008
       <div style={{ width: 1000, height: 9999 }}>
-        <span>asd</span>
         <div style={{ position: 'absolute', width: 100, left: 100 }}>
           {cloneElement(stick, {
             node: cloneElement(stick.props.node, {
