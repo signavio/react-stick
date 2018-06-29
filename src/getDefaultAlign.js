@@ -1,6 +1,8 @@
+// @flow
 import type { PositionT } from './flowTypes'
 
-const getDefaultAlign = (position: PositionT) =>
+const getDefaultAlign = (position: PositionT): PositionT =>
+  // $FlowIgnore: the resulting string will be one of the PositionT values, trust me ;)
   position
     .split(' ')
     .map(

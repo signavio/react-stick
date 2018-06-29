@@ -194,10 +194,11 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
 
   measure() {
     const boundingRect = getBoundingClientRect(this)
+    const isFixed = hasFixedPosition(this.host)
 
     const newStyle = {
-      top: calculateTop(this.props.position, boundingRect),
-      left: calculateLeft(this.props.position, boundingRect),
+      top: calculateTop(this.props.position, boundingRect, isFixed),
+      left: calculateLeft(this.props.position, boundingRect, isFixed),
     }
 
     if (!stylesEqual(newStyle, this.state)) {
@@ -210,7 +211,8 @@ export default StickPortal
 
 function calculateTop(
   position: PositionT,
-  { top, height, bottom }: ClientRect
+  { top, height, bottom }: ClientRect,
+  isFixed: boolean
 ) {
   let result = 0
   if (includes(position, 'top')) {
@@ -222,12 +224,13 @@ function calculateTop(
   if (includes(position, 'bottom')) {
     result = bottom
   }
-  return result + scrollY()
+  return result + (isFixed ? 0 : scrollY())
 }
 
 function calculateLeft(
   position: PositionT,
-  { left, width, right }: ClientRect
+  { left, width, right }: ClientRect,
+  isFixed: boolean
 ) {
   let result = 0
   if (includes(position, 'left')) {
@@ -239,9 +242,21 @@ function calculateLeft(
   if (includes(position, 'right')) {
     result = right
   }
-  return result + scrollX()
+  return result + (isFixed ? 0 : scrollX())
 }
 
 function stylesEqual(style1 = {}, style2 = {}) {
   return style1.left === style2.left && style1.top === style2.top
+}
+
+function hasFixedPosition(element: Element) {
+  if (element.nodeName === 'BODY' || element.nodeName === 'HTML') {
+    return false
+  }
+  if (getComputedStyle(element).position === 'fixed') {
+    return true
+  }
+  return element.parentNode instanceof Element
+    ? hasFixedPosition(element.parentNode)
+    : false
 }
