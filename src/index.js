@@ -1,3 +1,4 @@
+// @flow
 import Stick from './Stick'
 import type { PublicPropsT } from './flowTypes'
 

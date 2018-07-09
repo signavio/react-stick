@@ -1,19 +1,19 @@
+// @flow
 import type { PositionT } from './flowTypes'
 
-const getDefaultAlign = (position: PositionT) =>
-  position
-    .split(' ')
-    .map(
-      (positionPart: string) =>
-        ({
-          top: 'bottom',
-          middle: 'middle',
-          bottom: 'top',
-          left: position.indexOf('middle') ? 'left' : 'right',
-          center: 'center',
-          right: position.indexOf('middle') ? 'right' : 'left',
-        }[positionPart])
-    )
-    .join(' ')
+const defaultAligns = {
+  'top left': 'bottom left',
+  'top center': 'bottom center',
+  'top right': 'bottom right',
+  'middle left': 'middle right',
+  'middle center': 'middle center',
+  'middle right': 'middle left',
+  'bottom left': 'top left',
+  'bottom center': 'top center',
+  'bottom right': 'top right',
+}
+
+const getDefaultAlign = (position: PositionT): PositionT =>
+  defaultAligns[position]
 
 export default getDefaultAlign
