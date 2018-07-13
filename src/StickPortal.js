@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 
 import { scrollX, scrollY } from './scroll'
 import getBoundingClientRect from './getBoundingClientRect'
-import type { PositionT, PrivateSpecificPropsT } from './flowTypes'
+import type { PositionT, StickPortalPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
 
@@ -40,7 +40,7 @@ type StateT = {
   left: number,
 }
 
-class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
+class StickPortal extends Component<StickPortalPropsT, StateT> {
   element: HTMLElement // the element whose position is tracked
   container: HTMLElement // the container for the stick node (has z-index)
   host: HTMLElement // the host element to which we portal the container (has no styles)
@@ -55,7 +55,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
     left: 0,
   }
 
-  constructor(props: PrivateSpecificPropsT) {
+  constructor(props: StickPortalPropsT) {
     super(props)
     this.host = document.createElement('div')
   }
@@ -67,7 +67,7 @@ class StickPortal extends Component<PrivateSpecificPropsT, StateT> {
     }
   }
 
-  componentDidUpdate(prevProps: PrivateSpecificPropsT) {
+  componentDidUpdate(prevProps: StickPortalPropsT) {
     if (this.props.node && !prevProps.node) {
       this.mountHost()
       this.startTracking()
