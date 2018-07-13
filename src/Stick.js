@@ -14,7 +14,7 @@ import StickInline from './StickInline'
 import DEFAULT_POSITION from './defaultPosition'
 import { scrollX } from './scroll'
 import getBoundingClientRect from './getBoundingClientRect'
-import type { PrivatePropsT, PositionT } from './flowTypes'
+import type { StickPropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
 
@@ -38,7 +38,7 @@ const PositionPropType = PropTypes.oneOf([
   'top right',
 ])
 
-class Stick extends Component<PrivatePropsT, StateT> {
+class Stick extends Component<StickPropsT, StateT> {
   containerNestingKeyExtension: number
   containerNode: ?HTMLElement
 
@@ -91,7 +91,9 @@ class Stick extends Component<PrivatePropsT, StateT> {
   render() {
     const { inline, node, style, align, sameWidth, ...rest } = this.props
     const SpecificStick = inline ? StickInline : StickPortal
-    const { style: wrapperStyle = {}, ...wrapperStylingProps } = style('nodeWrapper')
+    const { style: wrapperStyle = {}, ...wrapperStylingProps } = style(
+      'nodeWrapper'
+    )
     return (
       <SpecificStick
         {...omit(rest, 'onClickOutside')}
@@ -128,7 +130,7 @@ class Stick extends Component<PrivatePropsT, StateT> {
     ]).join('_')
   }
 
-  handleClickOutside = (ev: Event) => {
+  handleClickOutside = (ev: MouseEvent) => {
     const { onClickOutside } = this.props
     if (!onClickOutside) {
       return

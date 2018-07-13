@@ -5,7 +5,7 @@ import { defaultStyle } from 'substyle'
 import { omit } from 'lodash'
 
 import getModifiers from './getModifiers'
-import type { PrivateSpecificPropsT } from './flowTypes'
+import type { StickInlinePropsT } from './flowTypes'
 
 const StickInline = ({
   node,
@@ -15,10 +15,10 @@ const StickInline = ({
   containerRef,
   nestingKey,
   ...rest
-}: PrivateSpecificPropsT) => {
-  const Comp = component || 'div'
+}: StickInlinePropsT) => {
+  const Component = component || 'div'
   return (
-    <Comp
+    <Component
       ref={ref => {
         containerRef(ref)
       }}
@@ -28,7 +28,7 @@ const StickInline = ({
     >
       {children}
       {node && <div {...style('node')}>{node}</div>}
-    </Comp>
+    </Component>
   )
 }
 
