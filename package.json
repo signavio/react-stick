@@ -25,6 +25,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+    "invariant": "^2.2.4",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "requestidlecallback": "^0.3.0",
