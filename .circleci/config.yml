@@ -145,6 +145,7 @@ workflows:
             branches:
               ignore: master
       - release:
+          context: NPM
           requires:
             - lint
             - flow
