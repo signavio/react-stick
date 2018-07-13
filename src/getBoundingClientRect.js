@@ -1,10 +1,17 @@
 // @flow
-import { Component } from 'react'
+import invariant from 'invariant'
+
 import { findDOMNode } from 'react-dom'
 
-const getBoundingClientRect = (instance: Component<any, any>): ClientRect => {
-  // $FlowIgnore: we only allow string type components, so we will always find an Element
-  const element: Element = findDOMNode(instance)
+function getBoundingClientRect(instance: *): ClientRect {
+  const element = findDOMNode(instance)
+
+  invariant(
+    element instanceof window.HTMLElement ||
+      element instanceof window.SVGElement,
+    'Cannot retrieve client rect of text or null elements'
+  )
+
   return element.getBoundingClientRect()
 }
 
