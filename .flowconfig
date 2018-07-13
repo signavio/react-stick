@@ -6,4 +6,3 @@
 <PROJECT_ROOT>/node_modules/config-chain.*.json
 
 [options]
-suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
