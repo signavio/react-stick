@@ -39,7 +39,7 @@ const PositionPropType = PropTypes.oneOf([
 ])
 
 class Stick extends Component<StickPropsT, StateT> {
-  containerNestingKeyExtension: number
+  containerNestingKeyExtension: string
   containerNode: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
