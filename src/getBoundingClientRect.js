@@ -7,8 +7,7 @@ function getBoundingClientRect(instance: *): ClientRect {
   const element = findDOMNode(instance)
 
   invariant(
-    element instanceof window.HTMLElement ||
-      element instanceof window.SVGElement,
+    element instanceof window.Element,
     'Cannot retrieve client rect of text or null elements'
   )
 
