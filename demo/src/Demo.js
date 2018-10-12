@@ -1,7 +1,9 @@
 import React from 'react'
 
-import PositionAlignOverview from './PositionAlignOverview'
 import Regressions from './regressions'
+
+import PositionAlignOverview from './PositionAlignOverview'
+import AutoAlignment from './AutoAlignment'
 
 export default function Demo() {
   return (
@@ -15,6 +17,8 @@ export default function Demo() {
       </p>
 
       <PositionAlignOverview />
+
+      <AutoAlignment />
 
       <Regressions />
     </div>
