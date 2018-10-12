@@ -100,6 +100,7 @@ class StickPortal extends Component<StickPortalPropsT, StateT> {
           rest,
           'node',
           'position',
+          'align',
           'updateOnAnimationFrame',
           'transportTo',
           'containerRef',
