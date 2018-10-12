@@ -55,6 +55,7 @@ const PositionPropType = PropTypes.oneOf([
 class Stick extends Component<StickPropsT, StateT> {
   containerNestingKeyExtension: string
   containerNode: ?HTMLElement
+  nodeRef: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
@@ -74,13 +75,10 @@ class Stick extends Component<StickPropsT, StateT> {
   static contextTypes = ContextTypes
   static childContextTypes = ContextTypes
 
-  static defaultProps = {
-    position: DEFAULT_POSITION,
-  }
-
-  constructor(...args) {
-    super(...args)
+  constructor(props) {
+    super(props)
     this.containerNestingKeyExtension = uniqueId()
+
     this.state = {
       width: 0,
     }
@@ -88,11 +86,13 @@ class Stick extends Component<StickPropsT, StateT> {
 
   componentDidMount() {
     document.addEventListener('click', this.handleClickOutside, true)
+
     this.startTracking()
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClickOutside, true)
+
     this.stopTracking()
   }
 
@@ -103,26 +103,36 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 
   render() {
-    const { inline, node, style, align, sameWidth, ...rest } = this.props
+    const { inline, node, style, sameWidth, ...rest } = this.props
+    const { width } = this.state
     const SpecificStick = inline ? StickInline : StickPortal
+
     const { style: wrapperStyle = {}, ...wrapperStylingProps } = style(
       'nodeWrapper'
     )
+
     return (
       <SpecificStick
-        {...omit(rest, 'onClickOutside')}
+        {...omit(
+          rest,
+          'initialPosition',
+          'onFlipVerticallyIfNeeded',
+          'onFlipHorizontallyIfNeeded',
+          'onClickOutside'
+        )}
+        ref={ref => (this.stickRef = ref)}
         node={
           node && (
             <div
               {...wrapperStylingProps}
               style={{
                 ...wrapperStyle,
-                width: wrapperStyle.width
-                  ? wrapperStyle.width
-                  : this.state.width,
+                width: wrapperStyle.width ? wrapperStyle.width : width,
               }}
             >
-              <div {...style('nodeContent')}>{node}</div>
+              <div {...style('nodeContent')} ref={ref => (this.nodeRef = ref)}>
+                {node}
+              </div>
             </div>
           )
         }
@@ -133,7 +143,7 @@ class Stick extends Component<StickPropsT, StateT> {
     )
   }
 
-  setContainerRef = (ref: HTMLElement | null) => {
+  setContainerRef = (ref: ?HTMLElement) => {
     this.containerNode = ref
   }
 
@@ -205,21 +215,51 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 
   measure() {
+    const {
+      position,
+      align,
+      sameWidth,
+      autoFlipVertically,
+      autoFlipHorizontally,
+      onFlipVerticallyIfNeeded,
+      onFlipHorizontallyIfNeeded,
+    } = this.props
+    const { width } = this.state
+
     const boundingRect = getBoundingClientRect(this)
 
-    const width = this.props.sameWidth
+    const newWidth = sameWidth
       ? boundingRect.width
-      : calculateWidth(
-          this.props.position,
-          this.props.align || getDefaultAlign(this.props.position),
-          boundingRect
-        )
+      : calculateWidth(position, align, boundingRect)
 
-    if (width !== this.state.width) {
-      this.setState({ width })
+    if (newWidth !== width) {
+      this.setState({ width: newWidth })
+    }
+
+    const stickRef = findDOMNode(this.stickRef)
+
+    if (!this.nodeRef || !stickRef) {
+      return
+    }
+
+    if (autoFlipVertically) {
+      onFlipVerticallyIfNeeded(this.nodeRef, stickRef)
+    }
+
+    if (autoFlipHorizontally) {
+      onFlipHorizontallyIfNeeded(this.nodeRef, stickRef)
     }
   }
 }
+
+const switchPosition = (position: PositionT, target: string) =>
+  `${target} ${position.split(' ')[1]}`
+
+const switchToBottom = (position: PositionT) =>
+  switchPosition(position, 'bottom')
+const switchToTop = (position: PositionT) => switchPosition('top')
+const switchToLeft = (position: PositionT) => switchPosition('left')
+const switchToRight = (position: PositionT) => switchPosition('right')
 
 function calculateWidth(
   position: PositionT,
@@ -251,70 +291,162 @@ function calculateWidth(
   }
 }
 
-const styled = defaultStyle(
-  {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      textAlign: 'left',
-    },
+const enhance = compose(
+  withStateHandlers(
+    ({ align, position }) => ({
+      align: align || getDefaultAlign(position || DEFAULT_POSITION),
+      position: position || DEFAULT_POSITION,
+      initialPosition: position || DEFAULT_POSITION,
+    }),
+    {
+      onFlipVerticallyIfNeeded: ({ position, align, initialPosition }) => (
+        nodeRef: HTMLElement,
+        containerRef: HTMLElement
+      ) => {
+        const positionedToBottom = isPositionedToBottom(position)
+        const positionedToTop = isPositionedToTop(position)
 
-    nodeWrapper: {
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-    },
+        if (isPositionedToBottom(initialPosition)) {
+          if (fitsOnBottom(nodeRef, containerRef)) {
+            if (!positionedToBottom) {
+              return {
+                position: switchToBottom(position),
+                align: switchToTop(align),
+              }
+            }
+          } else if (fitsOnTop(nodeRef, containerRef) && !positionedToTop) {
+            return {
+              position: switchToTop(position),
+              align: switchToBottom(align),
+            }
+          }
+        }
 
-    nodeContent: {
-      // absolute position is needed as the stick node would otherwise
-      // cover up the base node and, for instance, make it impossible to
-      // click buttons
-      position: 'absolute',
-      display: 'inline-block',
-
-      left: 'inherit',
-      right: 'inherit',
-      top: 'inherit',
-      bottom: 'inherit',
-    },
-
-    '&sameWidth': {
-      nodeContent: {
-        display: 'block',
-        width: '100%',
+        if (isPositionedToTop(initialPosition)) {
+          if (fitsOnTop(nodeRef, containerRef)) {
+            if (!positionedToTop) {
+              return {
+                position: switchToTop(position),
+                align: switchToBottom(align),
+              }
+            }
+          } else if (
+            fitsOnBottom(nodeRef, containerRef) &&
+            !positionedToBottom
+          ) {
+            return {
+              position: switchToBottom(position),
+              align: switchToTop(align),
+            }
+          }
+        }
       },
-    },
+      onFlipHorizontallyIfNeeded: ({ position, align, initialPosition }) => (
+        nodeRef: HTMLElement,
+        stickRef: HTMLElement
+      ) => {
+        const positionedToLeft = isPositionedToLeft(position)
+        const positionedToRight = isPositionedToRight(position)
 
-    '&align-left': {
+        if (isPositionedToRight(initialPosition)) {
+          if (fitsOnRight(nodeRef, stickRef)) {
+            if (!positionedToRight) {
+              return {
+                position: switchToRight(position),
+                align: switchToLeft(align),
+              }
+            }
+          } else if (fitsOnLeft(nodeRef, stickRef)) {
+            return {
+              position: switchToLeft(position),
+              align: switchToRight(align),
+            }
+          }
+        }
+
+        if (isPositionedToLeft(initialPosition)) {
+          if (fitsOnLeft(nodeRef, stickRef)) {
+            if (!positionedToLeft) {
+              return {
+                position: switchToLeft(position),
+                align: switchToRight(align),
+              }
+            }
+          } else if (fitsOnRight(nodeRef, stickRef)) {
+            return {
+              position: switchToRight(position),
+              align: switchToLeft(align),
+            }
+          }
+        }
+      },
+    }
+  ),
+  defaultStyle(
+    {
+      node: {
+        position: 'absolute',
+        zIndex: 99,
+        textAlign: 'left',
+      },
+
       nodeWrapper: {
-        right: 'auto',
-        left: 0,
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
       },
-    },
-    '&align-top': {
-      nodeWrapper: {
-        bottom: 'auto',
-        top: 0,
-      },
-    },
 
-    '&align-middle': {
       nodeContent: {
-        transform: 'translate(0, 50%)',
+        // absolute position is needed as the stick node would otherwise
+        // cover up the base node and, for instance, make it impossible to
+        // click buttons
+        position: 'absolute',
+        display: 'inline-block',
+
+        left: 'inherit',
+        right: 'inherit',
+        top: 'inherit',
+        bottom: 'inherit',
       },
-    },
-    '&align-center': {
-      nodeContent: {
-        transform: 'translate(50%, 0)',
+
+      '&sameWidth': {
+        nodeContent: {
+          display: 'block',
+          width: '100%',
+        },
       },
+
+      '&align-left': {
+        nodeWrapper: {
+          right: 'auto',
+          left: 0,
+        },
+      },
+      '&align-top': {
+        nodeWrapper: {
+          bottom: 'auto',
+          top: 0,
+        },
+      },
+
       '&align-middle': {
         nodeContent: {
-          transform: 'translate(50%, 50%)',
+          transform: 'translate(0, 50%)',
+        },
+      },
+      '&align-center': {
+        nodeContent: {
+          transform: 'translate(50%, 0)',
+        },
+        '&align-middle': {
+          nodeContent: {
+            transform: 'translate(50%, 50%)',
+          },
         },
       },
     },
-  },
-  getModifiers
+    getModifiers
+  )
 )
 
-export default styled(Stick)
+export default enhance(Stick)
