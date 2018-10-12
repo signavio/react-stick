@@ -1,3 +1,4 @@
+// @flow
 export function scrollX() {
   if (typeof window !== 'undefined') {
     return typeof window.scrollX === 'number'
