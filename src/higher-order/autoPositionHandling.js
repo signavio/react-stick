@@ -1,6 +1,6 @@
 // @flow
 import { find } from 'lodash'
-import { withStateHandlers, type HOC } from 'recompose'
+import { withStateHandlers } from 'recompose'
 import invariant from 'invariant'
 
 import {
@@ -36,7 +36,7 @@ type StateT = {
 }
 
 export default withStateHandlers(
-  ({ align, position }) => ({
+  ({ align, position }: ApiPropsT) => ({
     align: align || getDefaultAlign(position || DEFAULT_POSITION),
     position: position || DEFAULT_POSITION,
     initialPosition: position || DEFAULT_POSITION,
