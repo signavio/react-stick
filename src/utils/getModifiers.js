@@ -1,7 +1,8 @@
 // @flow
+import { type PublicPropsT } from '../flowTypes'
+import DEFAULT_POSITION from '../defaultPosition'
+
 import getDefaultAlign from './getDefaultAlign'
-import DEFAULT_POSITION from './defaultPosition'
-import type { PublicPropsT } from './flowTypes'
 
 const getModifiers = ({ align, position, sameWidth }: PublicPropsT) => {
   const finalPosition = position || DEFAULT_POSITION

@@ -6,15 +6,29 @@ import { includes } from 'lodash'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 import { omit, uniqueId, compact, some } from 'lodash'
+import { compose, withStateHandlers } from 'recompose'
 
-import getModifiers from './getModifiers'
-import getDefaultAlign from './getDefaultAlign'
+import {
+  getModifiers,
+  getDefaultAlign,
+  getBoundingClientRect,
+  scrollX,
+  isPositionedToBottom,
+  isPositionedToTop,
+  isPositionedToRight,
+  isPositionedToLeft,
+  fitsOnBottom,
+  fitsOnTop,
+  fitsOnRight,
+  fitsOnLeft,
+} from './utils'
+
+import DEFAULT_POSITION from './defaultPosition'
+
+import { type StickPropsT, type PositionT } from './flowTypes'
+
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
-import DEFAULT_POSITION from './defaultPosition'
-import { scrollX } from './scroll'
-import getBoundingClientRect from './getBoundingClientRect'
-import type { StickPropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
 

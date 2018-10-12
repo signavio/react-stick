@@ -1,5 +1,5 @@
 // @flow
-import type { PositionT } from './flowTypes'
+import { type PositionT } from '../flowTypes'
 
 const defaultAligns = {
   'top left': 'bottom left',

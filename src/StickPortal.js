@@ -5,8 +5,8 @@ import PT from 'prop-types'
 import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
 
-import { scrollX, scrollY } from './scroll'
-import getBoundingClientRect from './getBoundingClientRect'
+import { scrollX, scrollY, getBoundingClientRect } from './utils'
+
 import type { PositionT, StickPortalPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
