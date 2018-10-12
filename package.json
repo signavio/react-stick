@@ -59,6 +59,9 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
+  "resolutions": {
+    "upath": "1.1.0"
+  },
   "release": {
     "analyzeCommits": "semantic-release-github-pr",
     "generateNotes": "semantic-release-github-pr",
