@@ -1,31 +1,18 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component } from 'react'
+import React, { Component, type Node } from 'react'
 import { findDOMNode } from 'react-dom'
 import { includes } from 'lodash'
 import PropTypes from 'prop-types'
 import { defaultStyle } from 'substyle'
 import { omit, uniqueId, compact, some } from 'lodash'
-import { compose, withStateHandlers } from 'recompose'
+import { compose, type HOC } from 'recompose'
+import { type Substyle } from 'substyle'
 
-import {
-  getModifiers,
-  getDefaultAlign,
-  getBoundingClientRect,
-  scrollX,
-  isPositionedToBottom,
-  isPositionedToTop,
-  isPositionedToRight,
-  isPositionedToLeft,
-  fitsOnBottom,
-  fitsOnTop,
-  fitsOnRight,
-  fitsOnLeft,
-} from './utils'
+import { getModifiers, getBoundingClientRect, scrollX } from './utils'
 
-import DEFAULT_POSITION from './defaultPosition'
-
-import { type StickPropsT, type PositionT } from './flowTypes'
+import { type PositionT, type AlignT } from './flowTypes'
+import { autoPositionHandling } from './higher-order'
 
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
@@ -52,24 +39,61 @@ const PositionPropType = PropTypes.oneOf([
   'top right',
 ])
 
-class Stick extends Component<StickPropsT, StateT> {
+type StickBasePropsT = {
+  sameWidth?: boolean,
+  inline?: boolean,
+
+  autoFlipVertically?: boolean,
+  autoFlipHorizontally?: boolean,
+
+  updateOnAnimationFrame?: boolean,
+
+  node: Node,
+  children: Node,
+
+  onClickOutside?: (ev: MouseEvent) => void,
+}
+
+type ApiPropsT = StickBasePropsT & {
+  position?: PositionT,
+  align?: AlignT,
+
+  style?: Substyle,
+}
+
+type PropsT = StickBasePropsT & {
+  position: PositionT,
+  align: AlignT,
+
+  style: Substyle,
+
+  onFlipHorizontallyIfNeeded: (
+    nodeRef: HTMLElement,
+    stickRef: HTMLElement
+  ) => void,
+  onFlipVerticallyIfNeeded: (
+    nodeRef: HTMLElement,
+    stickRef: HTMLElement
+  ) => void,
+}
+
+class Stick extends Component<PropsT, StateT> {
   containerNestingKeyExtension: string
   containerNode: ?HTMLElement
   nodeRef: ?HTMLElement
+  stickRef: Element
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
 
   static propTypes = {
     node: PropTypes.node,
-    children: PropTypes.node,
     position: PositionPropType,
     align: PositionPropType,
     inline: PropTypes.bool,
     sameWidth: PropTypes.bool,
     updateOnAnimationFrame: PropTypes.bool,
     onClickOutside: PropTypes.func,
-    transportTo: PropTypes.instanceOf(HTMLElement),
   }
 
   static contextTypes = ContextTypes
@@ -103,7 +127,7 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 
   render() {
-    const { inline, node, style, sameWidth, ...rest } = this.props
+    const { inline, node, style, sameWidth, children, ...rest } = this.props
     const { width } = this.state
     const SpecificStick = inline ? StickInline : StickPortal
 
@@ -116,6 +140,8 @@ class Stick extends Component<StickPropsT, StateT> {
         {...omit(
           rest,
           'initialPosition',
+          'autoFlipVertically',
+          'autoFlipHorizontally',
           'onFlipVerticallyIfNeeded',
           'onFlipHorizontallyIfNeeded',
           'onClickOutside'
@@ -139,7 +165,9 @@ class Stick extends Component<StickPropsT, StateT> {
         style={style}
         nestingKey={this.getNestingKey()}
         containerRef={this.setContainerRef}
-      />
+      >
+        {children}
+      </SpecificStick>
     )
   }
 
@@ -242,6 +270,10 @@ class Stick extends Component<StickPropsT, StateT> {
       return
     }
 
+    if (!(stickRef instanceof HTMLElement)) {
+      return
+    }
+
     if (autoFlipVertically) {
       onFlipVerticallyIfNeeded(this.nodeRef, stickRef)
     }
@@ -252,18 +284,9 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 }
 
-const switchPosition = (position: PositionT, target: string) =>
-  `${target} ${position.split(' ')[1]}`
-
-const switchToBottom = (position: PositionT) =>
-  switchPosition(position, 'bottom')
-const switchToTop = (position: PositionT) => switchPosition('top')
-const switchToLeft = (position: PositionT) => switchPosition('left')
-const switchToRight = (position: PositionT) => switchPosition('right')
-
 function calculateWidth(
   position: PositionT,
-  align: PositionT,
+  align: AlignT,
   { left, width, right }: ClientRect
 ) {
   const scrollWidth = document.documentElement
@@ -291,97 +314,8 @@ function calculateWidth(
   }
 }
 
-const enhance = compose(
-  withStateHandlers(
-    ({ align, position }) => ({
-      align: align || getDefaultAlign(position || DEFAULT_POSITION),
-      position: position || DEFAULT_POSITION,
-      initialPosition: position || DEFAULT_POSITION,
-    }),
-    {
-      onFlipVerticallyIfNeeded: ({ position, align, initialPosition }) => (
-        nodeRef: HTMLElement,
-        containerRef: HTMLElement
-      ) => {
-        const positionedToBottom = isPositionedToBottom(position)
-        const positionedToTop = isPositionedToTop(position)
-
-        if (isPositionedToBottom(initialPosition)) {
-          if (fitsOnBottom(nodeRef, containerRef)) {
-            if (!positionedToBottom) {
-              return {
-                position: switchToBottom(position),
-                align: switchToTop(align),
-              }
-            }
-          } else if (fitsOnTop(nodeRef, containerRef) && !positionedToTop) {
-            return {
-              position: switchToTop(position),
-              align: switchToBottom(align),
-            }
-          }
-        }
-
-        if (isPositionedToTop(initialPosition)) {
-          if (fitsOnTop(nodeRef, containerRef)) {
-            if (!positionedToTop) {
-              return {
-                position: switchToTop(position),
-                align: switchToBottom(align),
-              }
-            }
-          } else if (
-            fitsOnBottom(nodeRef, containerRef) &&
-            !positionedToBottom
-          ) {
-            return {
-              position: switchToBottom(position),
-              align: switchToTop(align),
-            }
-          }
-        }
-      },
-      onFlipHorizontallyIfNeeded: ({ position, align, initialPosition }) => (
-        nodeRef: HTMLElement,
-        stickRef: HTMLElement
-      ) => {
-        const positionedToLeft = isPositionedToLeft(position)
-        const positionedToRight = isPositionedToRight(position)
-
-        if (isPositionedToRight(initialPosition)) {
-          if (fitsOnRight(nodeRef, stickRef)) {
-            if (!positionedToRight) {
-              return {
-                position: switchToRight(position),
-                align: switchToLeft(align),
-              }
-            }
-          } else if (fitsOnLeft(nodeRef, stickRef)) {
-            return {
-              position: switchToLeft(position),
-              align: switchToRight(align),
-            }
-          }
-        }
-
-        if (isPositionedToLeft(initialPosition)) {
-          if (fitsOnLeft(nodeRef, stickRef)) {
-            if (!positionedToLeft) {
-              return {
-                position: switchToLeft(position),
-                align: switchToRight(align),
-              }
-            }
-          } else if (fitsOnRight(nodeRef, stickRef)) {
-            return {
-              position: switchToRight(position),
-              align: switchToLeft(align),
-            }
-          }
-        }
-      },
-    }
-  ),
+const enhance: HOC<*, ApiPropsT> = compose(
+  autoPositionHandling,
   defaultStyle(
     {
       node: {
