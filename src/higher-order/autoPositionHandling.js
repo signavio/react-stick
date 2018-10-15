@@ -86,19 +86,19 @@ export default withStateHandlers(
       position,
       align,
       initialPosition,
-    }: StateT) => (nodeRef: HTMLElement, stickRef: HTMLElement) => {
+    }: StateT) => (nodeRef: HTMLElement, anchorRef: HTMLElement) => {
       const positionedToLeft = isPositionedToLeft(position)
       const positionedToRight = isPositionedToRight(position)
 
       if (isPositionedToRight(initialPosition)) {
-        if (fitsOnRight(nodeRef, stickRef)) {
+        if (fitsOnRight(nodeRef, anchorRef)) {
           if (!positionedToRight) {
             return {
               position: switchToRight(position),
               align: switchToLeft(align),
             }
           }
-        } else if (fitsOnLeft(nodeRef, stickRef)) {
+        } else if (fitsOnLeft(nodeRef, anchorRef)) {
           return {
             position: switchToLeft(position),
             align: switchToRight(align),
@@ -107,14 +107,14 @@ export default withStateHandlers(
       }
 
       if (isPositionedToLeft(initialPosition)) {
-        if (fitsOnLeft(nodeRef, stickRef)) {
+        if (fitsOnLeft(nodeRef, anchorRef)) {
           if (!positionedToLeft) {
             return {
               position: switchToLeft(position),
               align: switchToRight(align),
             }
           }
-        } else if (fitsOnRight(nodeRef, stickRef)) {
+        } else if (fitsOnRight(nodeRef, anchorRef)) {
           return {
             position: switchToRight(position),
             align: switchToLeft(align),
@@ -149,7 +149,7 @@ const switchHorizontalPosition = (
   const newPosition: ?PositionT = find(
     positions,
     (standardPosition: PositionT) =>
-      standardPosition === `${position.split(' ')[0]} ${target} `
+      standardPosition === `${position.split(' ')[0]} ${target}`
   )
 
   invariant(

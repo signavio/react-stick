@@ -14,53 +14,53 @@ export const isPositionedToBottom = (position: PositionT): boolean => {
 }
 
 export const isPositionedToRight = (position: PositionT): boolean => {
-  const [positionMarker] = position.split(' ')
+  const positionMarker = position.split(' ')[1]
 
   return positionMarker === 'right'
 }
 
 export const isPositionedToLeft = (position: PositionT): boolean => {
-  const [positionMarker] = position.split(' ')
+  const positionMarker = position.split(' ')[1]
 
   return positionMarker === 'left'
 }
 
 export const fitsOnRight = (
   nodeRef: HTMLElement,
-  stickRef: HTMLElement
+  anchorRef: HTMLElement
 ): boolean => {
   const { width: nodeWidth } = nodeRef.getBoundingClientRect()
-  const { right: stickRight } = stickRef.getBoundingClientRect()
+  const { right: anchorRight } = anchorRef.getBoundingClientRect()
 
-  return stickRight + nodeWidth < window.innerWidth
+  return anchorRight + nodeWidth < window.innerWidth
 }
 
 export const fitsOnLeft = (
   nodeRef: HTMLElement,
-  stickRef: HTMLElement
+  anchorRef: HTMLElement
 ): boolean => {
   const { width: nodeWidth } = nodeRef.getBoundingClientRect()
-  const { left: stickLeft } = nodeRef.getBoundingClientRect()
+  const { left: anchorLeft } = anchorRef.getBoundingClientRect()
 
-  return stickLeft - nodeWidth > 0
+  return anchorLeft - nodeWidth > 0
 }
 
 export const fitsOnTop = (
   nodeRef: HTMLElement,
-  stickRef: HTMLElement
+  anchorRef: HTMLElement
 ): boolean => {
   const { height: nodeHeight } = nodeRef.getBoundingClientRect()
-  const { top: stickTop } = stickRef.getBoundingClientRect()
+  const { top: anchorTop } = anchorRef.getBoundingClientRect()
 
-  return stickTop - nodeHeight > 0
+  return anchorTop - nodeHeight > 0
 }
 
 export const fitsOnBottom = (
   nodeRef: HTMLElement,
-  stickRef: HTMLElement
+  anchorRef: HTMLElement
 ): boolean => {
   const { height: nodeHeight } = nodeRef.getBoundingClientRect()
-  const { bottom: stickBottom } = stickRef.getBoundingClientRect()
+  const { bottom: anchorBottom } = anchorRef.getBoundingClientRect()
 
-  return stickBottom + nodeHeight < window.innerHeight
+  return anchorBottom + nodeHeight < window.innerHeight
 }

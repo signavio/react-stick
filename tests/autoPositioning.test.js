@@ -7,9 +7,13 @@ import Stick from '../src'
 import { render } from './utils'
 
 const windowHeight = window.innerHeight
+const windowWidth = window.innerWidth
 
-const halfWindowSize = windowHeight / 2
-const quarterWindowSize = windowHeight / 4
+const halfWindowHeight = windowHeight / 2
+const quarterWindowHeight = windowHeight / 4
+
+const halfWindowWidth = windowWidth / 2
+const quarterWindowWidth = windowWidth / 2
 
 describe('autoPositioning', () => {
   let host
@@ -27,7 +31,7 @@ describe('autoPositioning', () => {
 
   describe('vertical', () => {
     const node = (
-      <div id="node" style={{ height: quarterWindowSize, width: 100 }} />
+      <div id="node" style={{ height: quarterWindowHeight, width: 100 }} />
     )
 
     it('should move the node form bottom to top if there is not enough space at the bottom.', done => {
@@ -38,7 +42,7 @@ describe('autoPositioning', () => {
             style={{
               position: 'relative',
               height: 100,
-              top: halfWindowSize + quarterWindowSize + 100,
+              top: halfWindowHeight + quarterWindowHeight + 100,
             }}
           />
         </Stick>
@@ -137,6 +141,131 @@ describe('autoPositioning', () => {
           const { top: anchorTop } = anchorElement.getBoundingClientRect()
 
           expect(anchorTop).toBeLessThan(nodeTop)
+
+          done()
+        }, 100)
+      })
+    })
+  })
+
+  describe('horizontal', () => {
+    const node = (
+      <div id="node" style={{ height: 100, width: quarterWindowWidth }} />
+    )
+
+    it('should move the node form left to right if there is not enough space at the left.', done => {
+      const stick = (
+        <Stick autoFlipHorizontally position="middle left" node={node}>
+          <div
+            id="anchor"
+            style={{
+              position: 'relative',
+              height: 100,
+              width: 100,
+              left: 0,
+            }}
+          />
+        </Stick>
+      )
+
+      render(stick, host, () => {
+        setTimeout(() => {
+          const nodeElement = document.getElementById('node')
+          const anchorElement = document.getElementById('anchor')
+
+          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+
+          expect(anchorLeft).toBeLessThan(nodeLeft)
+
+          done()
+        }, 100)
+      })
+    })
+
+    it('should move the node from right to left if there is not enough space a the right.', done => {
+      const stick = (
+        <Stick autoFlipHorizontally position="middle right" node={node}>
+          <div
+            id="anchor"
+            style={{
+              position: 'relative',
+              height: 100,
+              width: 100,
+
+              left: halfWindowWidth + quarterWindowWidth,
+            }}
+          />
+        </Stick>
+      )
+
+      render(stick, host, () => {
+        setTimeout(() => {
+          const nodeElement = document.getElementById('node')
+          const anchorElement = document.getElementById('anchor')
+
+          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+
+          expect(anchorLeft).toBeGreaterThan(nodeLeft)
+
+          done()
+        }, 100)
+      })
+    })
+
+    it('should not move the node from left to right if there is neither enough space at the left nor the right.', done => {
+      const stick = (
+        <Stick autoFlipHorizontally position="middle left" node={node}>
+          <div
+            id="anchor"
+            style={{
+              position: 'relative',
+              height: 100,
+              width: windowWidth,
+            }}
+          />
+        </Stick>
+      )
+
+      render(stick, host, () => {
+        setTimeout(() => {
+          const nodeElement = document.getElementById('node')
+          const anchorElement = document.getElementById('anchor')
+
+          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+
+          expect(anchorLeft).toBeGreaterThan(nodeLeft)
+
+          done()
+        }, 100)
+      })
+    })
+
+    it('should not move the node from right to left if there is neither enough space at the right nor the left.', done => {
+      const stick = (
+        <Stick autoFlipHorizontally position="middle right" node={node}>
+          <div
+            id="anchor"
+            style={{
+              position: 'relative',
+              height: 100,
+              width: windowWidth,
+            }}
+          />
+        </Stick>
+      )
+
+      render(stick, host, () => {
+        setTimeout(() => {
+          const nodeElement = document.getElementById('node')
+          const anchorElement = document.getElementById('anchor')
+
+          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+
+          expect(anchorLeft).toBeLessThan(nodeLeft)
 
           done()
         }, 100)
