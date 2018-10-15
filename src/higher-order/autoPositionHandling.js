@@ -46,19 +46,19 @@ export default withStateHandlers(
       position,
       align,
       initialPosition,
-    }: StateT) => (nodeRef: HTMLElement, containerRef: HTMLElement) => {
+    }: StateT) => (nodeRef: HTMLElement, anchorRef: HTMLElement) => {
       const positionedToBottom = isPositionedToBottom(position)
       const positionedToTop = isPositionedToTop(position)
 
       if (isPositionedToBottom(initialPosition)) {
-        if (fitsOnBottom(nodeRef, containerRef)) {
+        if (fitsOnBottom(nodeRef, anchorRef)) {
           if (!positionedToBottom) {
             return {
               position: switchToBottom(position),
               align: switchToTop(align),
             }
           }
-        } else if (fitsOnTop(nodeRef, containerRef) && !positionedToTop) {
+        } else if (fitsOnTop(nodeRef, anchorRef) && !positionedToTop) {
           return {
             position: switchToTop(position),
             align: switchToBottom(align),
@@ -67,14 +67,14 @@ export default withStateHandlers(
       }
 
       if (isPositionedToTop(initialPosition)) {
-        if (fitsOnTop(nodeRef, containerRef)) {
+        if (fitsOnTop(nodeRef, anchorRef)) {
           if (!positionedToTop) {
             return {
               position: switchToTop(position),
               align: switchToBottom(align),
             }
           }
-        } else if (fitsOnBottom(nodeRef, containerRef) && !positionedToBottom) {
+        } else if (fitsOnBottom(nodeRef, anchorRef) && !positionedToBottom) {
           return {
             position: switchToBottom(position),
             align: switchToTop(align),
@@ -98,7 +98,7 @@ export default withStateHandlers(
               align: switchToLeft(align),
             }
           }
-        } else if (fitsOnLeft(nodeRef, anchorRef)) {
+        } else if (fitsOnLeft(nodeRef, anchorRef) && !positionedToLeft) {
           return {
             position: switchToLeft(position),
             align: switchToRight(align),
@@ -114,7 +114,7 @@ export default withStateHandlers(
               align: switchToRight(align),
             }
           }
-        } else if (fitsOnRight(nodeRef, anchorRef)) {
+        } else if (fitsOnRight(nodeRef, anchorRef) && !positionedToRight) {
           return {
             position: switchToRight(position),
             align: switchToLeft(align),
