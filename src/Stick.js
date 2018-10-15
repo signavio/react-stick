@@ -69,11 +69,11 @@ type PropsT = StickBasePropsT & {
 
   onFlipHorizontallyIfNeeded: (
     nodeRef: HTMLElement,
-    stickRef: HTMLElement
+    anchorRef: HTMLElement
   ) => void,
   onFlipVerticallyIfNeeded: (
     nodeRef: HTMLElement,
-    stickRef: HTMLElement
+    anchorRef: HTMLElement
   ) => void,
 }
 
@@ -81,7 +81,7 @@ class Stick extends Component<PropsT, StateT> {
   containerNestingKeyExtension: string
   containerNode: ?HTMLElement
   nodeRef: ?HTMLElement
-  stickRef: Element
+  anchorRef: Element
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
@@ -146,7 +146,7 @@ class Stick extends Component<PropsT, StateT> {
           'onFlipHorizontallyIfNeeded',
           'onClickOutside'
         )}
-        ref={ref => (this.stickRef = ref)}
+        ref={ref => (this.anchorRef = ref)}
         node={
           node && (
             <div
@@ -264,22 +264,22 @@ class Stick extends Component<PropsT, StateT> {
       this.setState({ width: newWidth })
     }
 
-    const stickRef = findDOMNode(this.stickRef)
+    const anchorRef = findDOMNode(this.anchorRef)
 
-    if (!this.nodeRef || !stickRef) {
+    if (!this.nodeRef || !anchorRef) {
       return
     }
 
-    if (!(stickRef instanceof HTMLElement)) {
+    if (!(anchorRef instanceof HTMLElement)) {
       return
     }
 
     if (autoFlipVertically) {
-      onFlipVerticallyIfNeeded(this.nodeRef, stickRef)
+      onFlipVerticallyIfNeeded(this.nodeRef, anchorRef)
     }
 
     if (autoFlipHorizontally) {
-      onFlipHorizontallyIfNeeded(this.nodeRef, stickRef)
+      onFlipHorizontallyIfNeeded(this.nodeRef, anchorRef)
     }
   }
 }
