@@ -42,9 +42,6 @@ export const fitsOnLeft = (
   const { width: nodeWidth } = nodeRef.getBoundingClientRect()
   const { left: anchorLeft } = anchorRef.getBoundingClientRect()
 
-  console.log('nodeWidth', nodeWidth)
-  console.log('anchorLeft', anchorLeft)
-
   return anchorLeft - nodeWidth >= 0
 }
 
