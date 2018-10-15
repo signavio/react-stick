@@ -1,6 +1,6 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PT from 'prop-types'
 import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
@@ -92,8 +92,8 @@ class StickPortal extends Component<StickPortalPropsT, StateT> {
   }
 
   render() {
-    const { children, style, component, ...rest } = this.props
-    const Comp = component || 'div'
+    const { children, component, ...rest } = this.props
+    const Comp = component || Fragment
     return (
       <Comp
         {...omit(
@@ -101,12 +101,12 @@ class StickPortal extends Component<StickPortalPropsT, StateT> {
           'node',
           'position',
           'align',
+          'style',
           'updateOnAnimationFrame',
           'transportTo',
           'containerRef',
           'nestingKey'
         )}
-        {...style}
       >
         {children}
         {this.renderNode()}
