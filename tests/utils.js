@@ -6,7 +6,7 @@ export const render = (stick, host, callback) => {
   let called = false
   renderBase(
     // wrap in inline-block container so that the stick container adjusts to anchor size
-    <div style={{ display: 'inline-block ' }}>
+    <div style={{ display: 'inline-block' }}>
       {cloneElement(stick, {
         node: cloneElement(stick.props.node, {
           ref: el => !!el && !called && window.setTimeout(callback, 1),
