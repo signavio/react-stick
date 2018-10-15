@@ -32,7 +32,7 @@ export const fitsOnRight = (
   const { width: nodeWidth } = nodeRef.getBoundingClientRect()
   const { right: anchorRight } = anchorRef.getBoundingClientRect()
 
-  return anchorRight + nodeWidth < window.innerWidth
+  return anchorRight + nodeWidth <= window.innerWidth
 }
 
 export const fitsOnLeft = (
@@ -42,7 +42,10 @@ export const fitsOnLeft = (
   const { width: nodeWidth } = nodeRef.getBoundingClientRect()
   const { left: anchorLeft } = anchorRef.getBoundingClientRect()
 
-  return anchorLeft - nodeWidth > 0
+  console.log('nodeWidth', nodeWidth)
+  console.log('anchorLeft', anchorLeft)
+
+  return anchorLeft - nodeWidth >= 0
 }
 
 export const fitsOnTop = (
@@ -52,7 +55,7 @@ export const fitsOnTop = (
   const { height: nodeHeight } = nodeRef.getBoundingClientRect()
   const { top: anchorTop } = anchorRef.getBoundingClientRect()
 
-  return anchorTop - nodeHeight > 0
+  return anchorTop - nodeHeight >= 0
 }
 
 export const fitsOnBottom = (
@@ -62,5 +65,5 @@ export const fitsOnBottom = (
   const { height: nodeHeight } = nodeRef.getBoundingClientRect()
   const { bottom: anchorBottom } = anchorRef.getBoundingClientRect()
 
-  return anchorBottom + nodeHeight < window.innerHeight
+  return anchorBottom + nodeHeight <= window.innerHeight
 }
