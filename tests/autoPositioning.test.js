@@ -9,12 +9,6 @@ import { render } from './utils'
 const windowHeight = window.innerHeight
 const windowWidth = window.innerWidth
 
-const halfWindowHeight = windowHeight / 2
-const quarterWindowHeight = windowHeight / 4
-
-const halfWindowWidth = windowWidth / 2
-const quarterWindowWidth = windowWidth / 2
-
 describe('autoPositioning', () => {
   let host
 
@@ -30,9 +24,7 @@ describe('autoPositioning', () => {
   })
 
   describe('vertical', () => {
-    const node = (
-      <div id="node" style={{ height: quarterWindowHeight, width: 100 }} />
-    )
+    const node = <div id="node" style={{ height: 100, width: 100 }} />
 
     it('should move the node from bottom to top if there is not enough space at the bottom.', done => {
       const stick = (
@@ -40,9 +32,8 @@ describe('autoPositioning', () => {
           <div
             id="anchor"
             style={{
-              position: 'relative',
               height: 100,
-              top: halfWindowHeight + quarterWindowHeight + 100,
+              marginTop: windowHeight,
             }}
           />
         </Stick>
@@ -53,10 +44,13 @@ describe('autoPositioning', () => {
           const nodeElement = document.getElementById('node')
           const anchorElement = document.getElementById('anchor')
 
-          const { top: nodeTop } = nodeElement.getBoundingClientRect()
+          const {
+            top: nodeTop,
+            height: nodeHeight,
+          } = nodeElement.getBoundingClientRect()
           const { top: anchorTop } = anchorElement.getBoundingClientRect()
 
-          expect(anchorTop).toBeGreaterThan(nodeTop)
+          expect(anchorTop).toEqual(nodeTop + nodeHeight)
 
           done()
         }, 100)
@@ -71,7 +65,7 @@ describe('autoPositioning', () => {
             style={{
               position: 'relative',
               height: 100,
-              top: halfWindowHeight + quarterWindowHeight + 100,
+              marginTop: windowHeight,
             }}
           />
         </Stick>,
@@ -98,9 +92,10 @@ describe('autoPositioning', () => {
                   const { top: nodeTop } = nodeElement.getBoundingClientRect()
                   const {
                     top: anchorTop,
+                    height: anchorHeight,
                   } = anchorElement.getBoundingClientRect()
 
-                  expect(anchorTop).toBeLessThan(nodeTop)
+                  expect(nodeTop).toEqual(anchorTop + anchorHeight)
 
                   done()
                 }, 100)
@@ -132,7 +127,7 @@ describe('autoPositioning', () => {
                   style={{
                     position: 'relative',
                     height: 100,
-                    top: windowHeight,
+                    marginTop: windowHeight,
                   }}
                 />
               </Stick>,
@@ -142,12 +137,15 @@ describe('autoPositioning', () => {
                   const nodeElement = document.getElementById('node')
                   const anchorElement = document.getElementById('anchor')
 
-                  const { top: nodeTop } = nodeElement.getBoundingClientRect()
+                  const {
+                    top: nodeTop,
+                    height: nodeHeight,
+                  } = nodeElement.getBoundingClientRect()
                   const {
                     top: anchorTop,
                   } = anchorElement.getBoundingClientRect()
 
-                  expect(anchorTop).toBeGreaterThan(nodeTop)
+                  expect(anchorTop).toEqual(nodeTop + nodeHeight)
 
                   done()
                 }, 100)
@@ -158,14 +156,14 @@ describe('autoPositioning', () => {
       )
     })
 
-    it('should move the node from top to bottom if there is not enough space a the top.', done => {
+    it('should not move the node from top to bottom if there is not enough space a the top.', done => {
       const stick = (
         <Stick autoFlipVertically position="top center" node={node}>
           <div
             id="anchor"
             style={{
               position: 'relative',
-              height: 100,
+              marginTop: windowHeight,
             }}
           />
         </Stick>
@@ -176,10 +174,13 @@ describe('autoPositioning', () => {
           const nodeElement = document.getElementById('node')
           const anchorElement = document.getElementById('anchor')
 
-          const { top: nodeTop } = nodeElement.getBoundingClientRect()
+          const {
+            top: nodeTop,
+            height: nodeHeight,
+          } = nodeElement.getBoundingClientRect()
           const { top: anchorTop } = anchorElement.getBoundingClientRect()
 
-          expect(anchorTop).toBeLessThan(nodeTop)
+          expect(anchorTop).toEqual(nodeTop + nodeHeight)
 
           done()
         }, 100)
@@ -204,10 +205,13 @@ describe('autoPositioning', () => {
           const nodeElement = document.getElementById('node')
           const anchorElement = document.getElementById('anchor')
 
-          const { top: nodeTop } = nodeElement.getBoundingClientRect()
+          const {
+            top: nodeTop,
+            height: nodeHeight,
+          } = nodeElement.getBoundingClientRect()
           const { top: anchorTop } = anchorElement.getBoundingClientRect()
 
-          expect(anchorTop).toBeGreaterThan(nodeTop)
+          expect(anchorTop).toEqual(nodeTop + nodeHeight)
 
           done()
         }, 100)
@@ -233,9 +237,12 @@ describe('autoPositioning', () => {
           const anchorElement = document.getElementById('anchor')
 
           const { top: nodeTop } = nodeElement.getBoundingClientRect()
-          const { top: anchorTop } = anchorElement.getBoundingClientRect()
+          const {
+            top: anchorTop,
+            height: anchorHeight,
+          } = anchorElement.getBoundingClientRect()
 
-          expect(anchorTop).toBeLessThan(nodeTop)
+          expect(nodeTop).toEqual(anchorTop + anchorHeight)
 
           done()
         }, 100)
@@ -244,9 +251,7 @@ describe('autoPositioning', () => {
   })
 
   describe('horizontal', () => {
-    const node = (
-      <div id="node" style={{ height: 100, width: quarterWindowWidth }} />
-    )
+    const node = <div id="node" style={{ height: 100, width: 100 }} />
 
     it('should move the node from left to right if there is not enough space at the left.', done => {
       const stick = (
@@ -254,7 +259,6 @@ describe('autoPositioning', () => {
           <div
             id="anchor"
             style={{
-              position: 'relative',
               height: 100,
               width: 100,
               left: 0,
@@ -269,9 +273,12 @@ describe('autoPositioning', () => {
           const anchorElement = document.getElementById('anchor')
 
           const { left: nodeLeft } = nodeElement.getBoundingClientRect()
-          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+          const {
+            left: anchorLeft,
+            width: anchorWidth,
+          } = anchorElement.getBoundingClientRect()
 
-          expect(anchorLeft).toBeLessThan(nodeLeft)
+          expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
 
           done()
         }, 100)
@@ -284,10 +291,9 @@ describe('autoPositioning', () => {
           <div
             id="anchor"
             style={{
-              position: 'relative',
               height: 100,
               width: 100,
-              left: windowWidth,
+              marginLeft: windowWidth,
             }}
           />
         </Stick>,
@@ -299,10 +305,9 @@ describe('autoPositioning', () => {
                 <div
                   id="anchor"
                   style={{
-                    position: 'relative',
                     height: 100,
                     width: 100,
-                    left: 0,
+                    marginLeft: 0,
                   }}
                 />
               </Stick>,
@@ -315,9 +320,10 @@ describe('autoPositioning', () => {
                   const { left: nodeLeft } = nodeElement.getBoundingClientRect()
                   const {
                     left: anchorLeft,
+                    width: anchorWidth,
                   } = anchorElement.getBoundingClientRect()
 
-                  expect(anchorLeft).toBeLessThan(nodeLeft)
+                  expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
 
                   done()
                 }, 100)
@@ -330,14 +336,12 @@ describe('autoPositioning', () => {
 
     it('should move the node back to its original intended position if space clears up (initial position: "middle left").', done => {
       render(
-        <Stick autoFlipVertically position="middle left" node={node}>
+        <Stick autoFlipHorizontally position="middle left" node={node}>
           <div
             id="anchor"
             style={{
-              position: 'relative',
               height: 100,
               width: 100,
-              left: 0,
             }}
           />
         </Stick>,
@@ -345,14 +349,13 @@ describe('autoPositioning', () => {
         () => {
           setTimeout(() => {
             render(
-              <Stick autoFlipVertically position="middle left" node={node}>
+              <Stick autoFlipHorizontally position="middle left" node={node}>
                 <div
                   id="anchor"
                   style={{
-                    position: 'relative',
                     height: 100,
                     width: 100,
-                    left: windowWidth,
+                    marginLeft: windowWidth,
                   }}
                 />
               </Stick>,
@@ -362,12 +365,18 @@ describe('autoPositioning', () => {
                   const nodeElement = document.getElementById('node')
                   const anchorElement = document.getElementById('anchor')
 
-                  const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+                  const {
+                    left: nodeLeft,
+                    width: nodeWidth,
+                  } = nodeElement.getBoundingClientRect()
                   const {
                     left: anchorLeft,
+                    width: anchorWidth,
                   } = anchorElement.getBoundingClientRect()
 
-                  expect(anchorLeft).toBeGreaterThan(nodeLeft)
+                  console.log(nodeWidth, nodeLeft, anchorWidth, anchorLeft)
+
+                  expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
 
                   done()
                 }, 100)
@@ -388,7 +397,7 @@ describe('autoPositioning', () => {
               height: 100,
               width: 100,
 
-              left: halfWindowWidth + quarterWindowWidth,
+              marginLeft: windowWidth,
             }}
           />
         </Stick>
@@ -399,10 +408,13 @@ describe('autoPositioning', () => {
           const nodeElement = document.getElementById('node')
           const anchorElement = document.getElementById('anchor')
 
-          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const {
+            left: nodeLeft,
+            width: nodeWidth,
+          } = nodeElement.getBoundingClientRect()
           const { left: anchorLeft } = anchorElement.getBoundingClientRect()
 
-          expect(anchorLeft).toBeGreaterThan(nodeLeft)
+          expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
 
           done()
         }, 100)
@@ -428,10 +440,13 @@ describe('autoPositioning', () => {
           const nodeElement = document.getElementById('node')
           const anchorElement = document.getElementById('anchor')
 
-          const { left: nodeLeft } = nodeElement.getBoundingClientRect()
+          const {
+            left: nodeLeft,
+            width: nodeWidth,
+          } = nodeElement.getBoundingClientRect()
           const { left: anchorLeft } = anchorElement.getBoundingClientRect()
 
-          expect(anchorLeft).toBeGreaterThan(nodeLeft)
+          expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
 
           done()
         }, 100)
@@ -458,9 +473,12 @@ describe('autoPositioning', () => {
           const anchorElement = document.getElementById('anchor')
 
           const { left: nodeLeft } = nodeElement.getBoundingClientRect()
-          const { left: anchorLeft } = anchorElement.getBoundingClientRect()
+          const {
+            left: anchorLeft,
+            width: anchorWidth,
+          } = anchorElement.getBoundingClientRect()
 
-          expect(anchorLeft).toBeLessThan(nodeLeft)
+          expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
 
           done()
         }, 100)
