@@ -81,7 +81,6 @@ class Stick extends Component<PropsT, StateT> {
   containerNestingKeyExtension: string
   containerNode: ?HTMLElement
   nodeRef: ?HTMLElement
-  anchorRef: Element
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
@@ -146,7 +145,6 @@ class Stick extends Component<PropsT, StateT> {
           'onFlipHorizontallyIfNeeded',
           'onClickOutside'
         )}
-        ref={ref => (this.anchorRef = ref)}
         node={
           node && (
             <div
@@ -264,7 +262,7 @@ class Stick extends Component<PropsT, StateT> {
       this.setState({ width: newWidth })
     }
 
-    const anchorRef = findDOMNode(this.anchorRef)
+    const anchorRef = findDOMNode(this)
 
     if (!this.nodeRef || !anchorRef) {
       return
