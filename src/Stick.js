@@ -2,17 +2,13 @@
 import 'requestidlecallback'
 import React, { Component, type Node } from 'react'
 import { findDOMNode } from 'react-dom'
-import { includes } from 'lodash'
+import { omit, uniqueId, compact, some, includes } from 'lodash'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact, some } from 'lodash'
-import { compose, type HOC } from 'recompose'
-import { type Substyle } from 'substyle'
+import { defaultStyle, type Substyle } from 'substyle'
 
 import { getModifiers, getBoundingClientRect, scrollX } from './utils'
 
 import { type PositionT, type AlignT } from './flowTypes'
-import { autoPositionHandling } from './higher-order'
 
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
@@ -43,15 +39,13 @@ type StickBasePropsT = {
   sameWidth?: boolean,
   inline?: boolean,
 
-  autoFlipVertically?: boolean,
-  autoFlipHorizontally?: boolean,
-
   updateOnAnimationFrame?: boolean,
 
   node: Node,
   children: Node,
 
   onClickOutside?: (ev: MouseEvent) => void,
+  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
 }
 
 type ApiPropsT = StickBasePropsT & {
@@ -66,15 +60,6 @@ type PropsT = StickBasePropsT & {
   align: AlignT,
 
   style: Substyle,
-
-  onFlipHorizontallyIfNeeded: (
-    nodeRef: HTMLElement,
-    anchorRef: HTMLElement
-  ) => void,
-  onFlipVerticallyIfNeeded: (
-    nodeRef: HTMLElement,
-    anchorRef: HTMLElement
-  ) => void,
 }
 
 class Stick extends Component<PropsT, StateT> {
@@ -136,15 +121,7 @@ class Stick extends Component<PropsT, StateT> {
 
     return (
       <SpecificStick
-        {...omit(
-          rest,
-          'initialPosition',
-          'autoFlipVertically',
-          'autoFlipHorizontally',
-          'onFlipVerticallyIfNeeded',
-          'onFlipHorizontallyIfNeeded',
-          'onClickOutside'
-        )}
+        {...omit(rest, 'onClickOutside', 'onReposition')}
         node={
           node && (
             <div
@@ -241,15 +218,7 @@ class Stick extends Component<PropsT, StateT> {
   }
 
   measure() {
-    const {
-      position,
-      align,
-      sameWidth,
-      autoFlipVertically,
-      autoFlipHorizontally,
-      onFlipVerticallyIfNeeded,
-      onFlipHorizontallyIfNeeded,
-    } = this.props
+    const { position, align, sameWidth, onReposition } = this.props
     const { width } = this.state
 
     const boundingRect = getBoundingClientRect(this)
@@ -272,13 +241,7 @@ class Stick extends Component<PropsT, StateT> {
       return
     }
 
-    if (autoFlipVertically) {
-      onFlipVerticallyIfNeeded(this.nodeRef, anchorRef)
-    }
-
-    if (autoFlipHorizontally) {
-      onFlipHorizontallyIfNeeded(this.nodeRef, anchorRef)
-    }
+    onReposition(this.nodeRef, anchorRef)
   }
 }
 
@@ -312,73 +275,72 @@ function calculateWidth(
   }
 }
 
-const enhance: HOC<*, ApiPropsT> = compose(
-  autoPositionHandling,
-  defaultStyle(
-    {
-      node: {
-        position: 'absolute',
-        zIndex: 99,
-        textAlign: 'left',
-      },
+const styled = defaultStyle(
+  {
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+      textAlign: 'left',
+    },
 
-      nodeWrapper: {
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-      },
+    nodeWrapper: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+    },
 
+    nodeContent: {
+      // absolute position is needed as the stick node would otherwise
+      // cover up the base node and, for instance, make it impossible to
+      // click buttons
+      position: 'absolute',
+      display: 'inline-block',
+
+      left: 'inherit',
+      right: 'inherit',
+      top: 'inherit',
+      bottom: 'inherit',
+    },
+
+    '&sameWidth': {
       nodeContent: {
-        // absolute position is needed as the stick node would otherwise
-        // cover up the base node and, for instance, make it impossible to
-        // click buttons
-        position: 'absolute',
-        display: 'inline-block',
-
-        left: 'inherit',
-        right: 'inherit',
-        top: 'inherit',
-        bottom: 'inherit',
+        display: 'block',
+        width: '100%',
       },
+    },
 
-      '&sameWidth': {
-        nodeContent: {
-          display: 'block',
-          width: '100%',
-        },
+    '&align-left': {
+      nodeWrapper: {
+        right: 'auto',
+        left: 0,
       },
+    },
+    '&align-top': {
+      nodeWrapper: {
+        bottom: 'auto',
+        top: 0,
+      },
+    },
 
-      '&align-left': {
-        nodeWrapper: {
-          right: 'auto',
-          left: 0,
-        },
+    '&align-middle': {
+      nodeContent: {
+        transform: 'translate(0, 50%)',
       },
-      '&align-top': {
-        nodeWrapper: {
-          bottom: 'auto',
-          top: 0,
-        },
+    },
+    '&align-center': {
+      nodeContent: {
+        transform: 'translate(50%, 0)',
       },
-
       '&align-middle': {
         nodeContent: {
-          transform: 'translate(0, 50%)',
-        },
-      },
-      '&align-center': {
-        nodeContent: {
-          transform: 'translate(50%, 0)',
-        },
-        '&align-middle': {
-          nodeContent: {
-            transform: 'translate(50%, 50%)',
-          },
+          transform: 'translate(50%, 50%)',
         },
       },
     },
-    getModifiers
-  )
+  },
+  getModifiers
 )
 
-export default enhance(Stick)
+const StyledStick: Component<ApiPropsT> = styled(Stick)
+
+export default StyledStick

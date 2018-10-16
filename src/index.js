@@ -1,2 +1,2 @@
 // @flow
-export { default } from './Stick'
+export { default } from './AutoFlipStick'
