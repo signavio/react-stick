@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react'
+import React, { Component, type Node } from 'react'
 import invariant from 'invariant'
 import { omit } from 'lodash'
 import Stick from './Stick'
@@ -29,8 +29,15 @@ type ApiPropsT = {
   align?: AlignT,
   position?: PositionT,
 
+  node: Node,
+  children: Node,
+
+  updateOnAnimationFrame?: boolean,
+
   autoFlipVertically?: boolean,
   autoFlipHorizontally?: boolean,
+
+  onClickOutside?: (ev: MouseEvent) => void,
 }
 
 type StateT = {

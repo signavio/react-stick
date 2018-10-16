@@ -1,6 +1,6 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component, type Node } from 'react'
+import React, { Component, type Node, type ComponentType } from 'react'
 import { findDOMNode } from 'react-dom'
 import { omit, uniqueId, compact, some, includes } from 'lodash'
 import PropTypes from 'prop-types'
@@ -341,6 +341,6 @@ const styled = defaultStyle(
   getModifiers
 )
 
-const StyledStick: Component<ApiPropsT> = styled(Stick)
+const StyledStick: ComponentType<ApiPropsT> = styled(Stick)
 
 export default StyledStick
