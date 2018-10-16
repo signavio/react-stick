@@ -5,8 +5,8 @@ import PT from 'prop-types'
 import { omit, includes } from 'lodash'
 import { createPortal } from 'react-dom'
 
-import { scrollX, scrollY } from './scroll'
-import getBoundingClientRect from './getBoundingClientRect'
+import { scrollX, scrollY, getBoundingClientRect } from './utils'
+
 import type { PositionT, StickPortalPropsT } from './flowTypes'
 
 const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
@@ -92,7 +92,7 @@ class StickPortal extends Component<StickPortalPropsT, StateT> {
   }
 
   render() {
-    const { children, style, component, ...rest } = this.props
+    const { children, component, style, ...rest } = this.props
     const Comp = component || 'div'
     return (
       <Comp
@@ -100,6 +100,7 @@ class StickPortal extends Component<StickPortalPropsT, StateT> {
           rest,
           'node',
           'position',
+          'align',
           'updateOnAnimationFrame',
           'transportTo',
           'containerRef',

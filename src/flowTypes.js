@@ -2,6 +2,9 @@
 import type { Substyle } from 'substyle'
 import type { Node } from 'react'
 
+export type VerticalTargetT = 'bottom' | 'middle' | 'top'
+export type HorizontalTargetT = 'left' | 'center' | 'right'
+
 export type PositionT =
   | 'bottom left'
   | 'bottom center'
@@ -12,6 +15,8 @@ export type PositionT =
   | 'top left'
   | 'top center'
   | 'top right'
+
+export type AlignT = PositionT
 
 type SharedPropsT = {
   node?: Node,
@@ -26,33 +31,11 @@ type SharedPropsT = {
   updateOnAnimationFrame?: boolean,
 }
 
-type StickBasePropsT = SharedPropsT & {
-  align?: PositionT,
-
-  sameWidth?: boolean,
-
-  onClickOutside?: (ev: MouseEvent) => void,
-}
-
-// the props we are dealing with in Stick
-export type StickPropsT = StickBasePropsT & {
-  // props handled by Stick and not passed further down to specific stick components
-  style: Substyle,
-  position: PositionT,
-}
-
-// the props the user has to pass to the Stick
-export type PublicPropsT = StickBasePropsT & {
-  // position is optional, but has a default value
-  position?: PositionT,
-  // style is optional, but will be injected by substyle
-  style?: Substyle,
-}
-
 type SpecificStickBasePropsT = SharedPropsT & {
   style: Substyle,
 
   position: PositionT,
+  align: AlignT,
 }
 
 export type StickInlinePropsT = SpecificStickBasePropsT & {

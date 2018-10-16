@@ -1,20 +1,17 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component } from 'react'
+import React, { Component, type Node, type ComponentType } from 'react'
 import { findDOMNode } from 'react-dom'
-import { includes } from 'lodash'
+import { omit, uniqueId, compact, some, includes } from 'lodash'
 import PropTypes from 'prop-types'
-import { defaultStyle } from 'substyle'
-import { omit, uniqueId, compact, some } from 'lodash'
+import { defaultStyle, type Substyle } from 'substyle'
 
-import getModifiers from './getModifiers'
-import getDefaultAlign from './getDefaultAlign'
+import { getModifiers, getBoundingClientRect, scrollX } from './utils'
+
+import { type PositionT, type AlignT } from './flowTypes'
+
 import StickPortal from './StickPortal'
 import StickInline from './StickInline'
-import DEFAULT_POSITION from './defaultPosition'
-import { scrollX } from './scroll'
-import getBoundingClientRect from './getBoundingClientRect'
-import type { StickPropsT, PositionT } from './flowTypes'
 
 const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
 
@@ -38,35 +35,58 @@ const PositionPropType = PropTypes.oneOf([
   'top right',
 ])
 
-class Stick extends Component<StickPropsT, StateT> {
+type StickBasePropsT = {
+  sameWidth?: boolean,
+  inline?: boolean,
+
+  updateOnAnimationFrame?: boolean,
+
+  node: Node,
+  children: Node,
+
+  onClickOutside?: (ev: MouseEvent) => void,
+  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
+}
+
+type ApiPropsT = StickBasePropsT & {
+  position?: PositionT,
+  align?: AlignT,
+
+  style?: Substyle,
+}
+
+type PropsT = StickBasePropsT & {
+  position: PositionT,
+  align: AlignT,
+
+  style: Substyle,
+}
+
+class Stick extends Component<PropsT, StateT> {
   containerNestingKeyExtension: string
   containerNode: ?HTMLElement
+  nodeRef: ?HTMLElement
 
   animationFrameId: ?AnimationFrameID
   idleCallbackId: ?IdleCallbackID
 
   static propTypes = {
     node: PropTypes.node,
-    children: PropTypes.node,
     position: PositionPropType,
     align: PositionPropType,
     inline: PropTypes.bool,
     sameWidth: PropTypes.bool,
     updateOnAnimationFrame: PropTypes.bool,
     onClickOutside: PropTypes.func,
-    transportTo: PropTypes.instanceOf(HTMLElement),
   }
 
   static contextTypes = ContextTypes
   static childContextTypes = ContextTypes
 
-  static defaultProps = {
-    position: DEFAULT_POSITION,
-  }
-
-  constructor(...args) {
-    super(...args)
+  constructor(props) {
+    super(props)
     this.containerNestingKeyExtension = uniqueId()
+
     this.state = {
       width: 0,
     }
@@ -74,11 +94,13 @@ class Stick extends Component<StickPropsT, StateT> {
 
   componentDidMount() {
     document.addEventListener('click', this.handleClickOutside, true)
+
     this.startTracking()
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClickOutside, true)
+
     this.stopTracking()
   }
 
@@ -89,37 +111,42 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 
   render() {
-    const { inline, node, style, align, sameWidth, ...rest } = this.props
+    const { inline, node, style, sameWidth, children, ...rest } = this.props
+    const { width } = this.state
     const SpecificStick = inline ? StickInline : StickPortal
+
     const { style: wrapperStyle = {}, ...wrapperStylingProps } = style(
       'nodeWrapper'
     )
+
     return (
       <SpecificStick
-        {...omit(rest, 'onClickOutside')}
+        {...omit(rest, 'onClickOutside', 'onReposition')}
         node={
           node && (
             <div
               {...wrapperStylingProps}
               style={{
                 ...wrapperStyle,
-                width: wrapperStyle.width
-                  ? wrapperStyle.width
-                  : this.state.width,
+                width: wrapperStyle.width ? wrapperStyle.width : width,
               }}
             >
-              <div {...style('nodeContent')}>{node}</div>
+              <div {...style('nodeContent')} ref={ref => (this.nodeRef = ref)}>
+                {node}
+              </div>
             </div>
           )
         }
         style={style}
         nestingKey={this.getNestingKey()}
         containerRef={this.setContainerRef}
-      />
+      >
+        {children}
+      </SpecificStick>
     )
   }
 
-  setContainerRef = (ref: HTMLElement | null) => {
+  setContainerRef = (ref: ?HTMLElement) => {
     this.containerNode = ref
   }
 
@@ -191,25 +218,34 @@ class Stick extends Component<StickPropsT, StateT> {
   }
 
   measure() {
+    const { position, align, sameWidth, onReposition } = this.props
+    const { width } = this.state
+
     const boundingRect = getBoundingClientRect(this)
 
-    const width = this.props.sameWidth
+    const newWidth = sameWidth
       ? boundingRect.width
-      : calculateWidth(
-          this.props.position,
-          this.props.align || getDefaultAlign(this.props.position),
-          boundingRect
-        )
+      : calculateWidth(position, align, boundingRect)
 
-    if (width !== this.state.width) {
-      this.setState({ width })
+    if (newWidth !== width) {
+      this.setState({ width: newWidth })
+    }
+
+    const anchorRef = findDOMNode(this)
+
+    if (!this.nodeRef || !anchorRef) {
+      return
+    }
+
+    if (anchorRef instanceof HTMLElement) {
+      onReposition(this.nodeRef, anchorRef)
     }
   }
 }
 
 function calculateWidth(
   position: PositionT,
-  align: PositionT,
+  align: AlignT,
   { left, width, right }: ClientRect
 ) {
   const scrollWidth = document.documentElement
@@ -303,4 +339,6 @@ const styled = defaultStyle(
   getModifiers
 )
 
-export default styled(Stick)
+const StyledStick: ComponentType<ApiPropsT> = styled(Stick)
+
+export default StyledStick

@@ -1,7 +1,11 @@
 // @flow
-import type { PositionT } from './flowTypes'
+import { type PositionT, type AlignT } from '../flowTypes'
 
-const defaultAligns = {
+type DefaultAlignT = {
+  [position: PositionT]: AlignT,
+}
+
+const defaultAligns: DefaultAlignT = {
   'top left': 'bottom left',
   'top center': 'bottom center',
   'top right': 'bottom right',
@@ -13,7 +17,6 @@ const defaultAligns = {
   'bottom right': 'top right',
 }
 
-const getDefaultAlign = (position: PositionT): PositionT =>
-  defaultAligns[position]
+const getDefaultAlign = (position: PositionT): AlignT => defaultAligns[position]
 
 export default getDefaultAlign

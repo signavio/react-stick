@@ -38,7 +38,7 @@ describe('updates', () => {
   })
 
   it('should work if the node is only provided after the initial mount', done => {
-    render(<Stick>{anchor}</Stick>, host)
+    render(<Stick position="middle right">{anchor}</Stick>, host)
     render(
       <Stick position="middle right" node={node}>
         {anchor}

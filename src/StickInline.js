@@ -4,8 +4,8 @@ import React from 'react'
 import { defaultStyle } from 'substyle'
 import { omit } from 'lodash'
 
-import getModifiers from './getModifiers'
-import type { StickInlinePropsT } from './flowTypes'
+import { getModifiers } from './utils'
+import { type StickInlinePropsT } from './flowTypes'
 
 const StickInline = ({
   node,
