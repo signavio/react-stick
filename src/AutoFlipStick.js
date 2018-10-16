@@ -26,6 +26,9 @@ import {
 } from './flowTypes'
 
 type ApiPropsT = {
+  sameWidth?: boolean,
+  inline?: boolean,
+
   align?: AlignT,
   position?: PositionT,
 

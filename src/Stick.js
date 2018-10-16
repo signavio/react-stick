@@ -237,11 +237,9 @@ class Stick extends Component<PropsT, StateT> {
       return
     }
 
-    if (!(anchorRef instanceof HTMLElement)) {
-      return
+    if (anchorRef instanceof HTMLElement) {
+      onReposition(this.nodeRef, anchorRef)
     }
-
-    onReposition(this.nodeRef, anchorRef)
   }
 }
 
