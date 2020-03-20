@@ -1,214 +1,143 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component } from 'react'
-import PT from 'prop-types'
-import { omit, includes } from 'lodash'
+
+import React, {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { createPortal } from 'react-dom'
 
-import { scrollX, scrollY, getBoundingClientRect } from './utils'
-
 import type { PositionT, StickPortalPropsT } from './flowTypes'
+import { useWatcher } from './hooks'
+import { scrollX, scrollY } from './utils'
 
-const PORTAL_HOST_ELEMENT = 'react-stick__portalHostElement'
+function StickPortal(
+  {
+    children,
+    component,
+    style,
+    transportTo,
+    nestingKey,
+    node,
+    position,
+    containerRef,
+    updateOnAnimationFrame,
+    onReposition,
+    ...rest
+  }: StickPortalPropsT,
+  ref
+) {
+  const nodeRef = useRef()
+  const [top, setTop] = useState(0)
+  const [left, setLeft] = useState(0)
 
-const ContextTypes = {
-  [PORTAL_HOST_ELEMENT]: window ? PT.instanceOf(window.Element) : PT.any,
-}
+  const host = useHost(transportTo)
 
-type PortalPropsT = {
-  host: HTMLElement,
-  children: React$Element<any>,
-}
-
-class Portal extends Component<PortalPropsT> {
-  static childContextTypes = ContextTypes
-
-  render() {
-    const { host, children } = this.props
-    return createPortal(children, host)
-  }
-
-  getChildContext() {
-    return {
-      [PORTAL_HOST_ELEMENT]: this.props.host.parentNode,
+  useEffect(() => {
+    if (nodeRef.current) {
+      onReposition(nodeRef.current)
     }
-  }
-}
+  }, [onReposition, top, left])
 
-type StateT = {
-  top: number,
-  left: number,
-}
-
-class StickPortal extends Component<StickPortalPropsT, StateT> {
-  element: HTMLElement // the element whose position is tracked
-  container: HTMLElement // the container for the stick node (has z-index)
-  host: HTMLElement // the host element to which we portal the container (has no styles)
-
-  animationFrameId: ?AnimationFrameID
-  idleCallbackId: ?IdleCallbackID
-
-  static contextTypes = ContextTypes
-
-  state = {
-    top: 0,
-    left: 0,
-  }
-
-  constructor(props: StickPortalPropsT) {
-    super(props)
-    this.host = document.createElement('div')
-  }
-
-  componentDidMount() {
-    if (this.props.node) {
-      this.mountHost()
-      this.startTracking()
-    }
-  }
-
-  componentDidUpdate(prevProps: StickPortalPropsT) {
-    if (this.props.node && !prevProps.node) {
-      this.mountHost()
-      this.startTracking()
+  const measure = useCallback(() => {
+    if (!nodeRef.current) {
+      return
     }
 
-    if (this.props.transportTo !== prevProps.transportTo && this.props.node) {
-      // re-call mountHost, which will also move the node to the new host
-      this.mountHost()
+    const boundingRect = nodeRef.current.getBoundingClientRect()
+    const isFixed = hasFixedPosition(host)
+
+    const newTop = calculateTop(position, boundingRect, isFixed)
+    const newLeft = calculateLeft(
+      nodeRef.current,
+      position,
+      boundingRect,
+      isFixed
+    )
+
+    if (newTop !== top) {
+      setTop(newTop)
     }
 
-    if (!this.props.node && prevProps.node) {
-      this.stopTracking()
-      this.unmountHost()
+    if (newLeft !== left) {
+      setLeft(newLeft)
     }
-  }
+  }, [host, left, position, top])
 
-  componentWillUnmount() {
-    if (this.host) {
-      this.stopTracking()
-      this.unmountHost()
-    }
-  }
+  useWatcher(measure, { updateOnAnimationFrame })
 
-  render() {
-    const { children, component, style, ...rest } = this.props
-    const Comp = component || 'div'
-    return (
-      <Comp
-        {...omit(
-          rest,
-          'node',
-          'position',
-          'align',
-          'updateOnAnimationFrame',
-          'transportTo',
-          'containerRef',
-          'nestingKey'
+  const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
+
+  const Component = component || 'div'
+  return (
+    <Component
+      {...style}
+      ref={node => {
+        if (typeof ref === 'function') {
+          ref(node)
+        } else {
+          ref.current = node
+        }
+
+        nodeRef.current = node
+      }}
+    >
+      {children}
+
+      <PortalContext.Provider value={host.parentNode}>
+        {createPortal(
+          <div
+            {...otherNodeStyleProps}
+            ref={containerRef}
+            data-sticknestingkey={nestingKey}
+            style={{
+              position: 'absolute',
+              // The position property should be be overwritten
+              // $FlowFixMe
+              ...nodeStyle,
+              top,
+              left,
+            }}
+          >
+            {node}
+          </div>,
+          host
         )}
-        {...style}
-      >
-        {children}
-        {this.renderNode()}
-      </Comp>
-    )
-  }
-
-  renderNode() {
-    const { node, style, nestingKey } = this.props
-    const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
-    // Do not render `this.props.node` before the container ref is set. This ensures that
-    // all descendant portals will be mounted to the right host element straight away.
-    // We must not rely on context updates!
-    return (
-      <Portal host={this.host}>
-        <div
-          ref={this.storeContainerRef}
-          data-sticknestingkey={nestingKey}
-          {...otherNodeStyleProps}
-          style={{
-            position: 'absolute',
-            ...nodeStyle,
-            ...this.state,
-          }}
-        >
-          {this.container && node}
-        </div>
-      </Portal>
-    )
-  }
-
-  storeContainerRef = (ref: HTMLElement) => {
-    const { containerRef } = this.props
-
-    if (containerRef) {
-      containerRef(ref)
-    }
-
-    if (this.container !== ref) {
-      this.container = ref
-      this.forceUpdate()
-    }
-  }
-
-  mountHost() {
-    const hostParent =
-      this.props.transportTo ||
-      this.context[PORTAL_HOST_ELEMENT] ||
-      document.body
-    if (hostParent) {
-      hostParent.appendChild(this.host)
-    }
-  }
-
-  unmountHost() {
-    if (this.host.parentNode) {
-      this.host.parentNode.removeChild(this.host)
-    }
-  }
-
-  startTracking() {
-    // do not track in node
-    if (typeof window.requestAnimationFrame === 'undefined') return
-
-    const callback = () => this.startTracking()
-    if (this.props.updateOnAnimationFrame) {
-      this.animationFrameId = requestAnimationFrame(callback)
-    } else {
-      this.idleCallbackId = requestIdleCallback(callback)
-    }
-
-    this.measure()
-  }
-
-  stopTracking() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId)
-      this.animationFrameId = undefined
-    }
-
-    if (this.idleCallbackId) {
-      cancelIdleCallback(this.idleCallbackId)
-      this.idleCallbackId = undefined
-    }
-  }
-
-  measure() {
-    const boundingRect = getBoundingClientRect(this)
-    const isFixed = hasFixedPosition(this.host)
-
-    const newStyle = {
-      top: calculateTop(this.props.position, boundingRect, isFixed),
-      left: calculateLeft(this.props.position, boundingRect, isFixed),
-    }
-
-    if (!stylesEqual(newStyle, this.state)) {
-      this.setState(newStyle)
-    }
-  }
+      </PortalContext.Provider>
+    </Component>
+  )
 }
 
-export default StickPortal
+const PortalContext = createContext<?Node>(null)
+
+export default forwardRef<StickPortalPropsT, ?HTMLElement>(StickPortal)
+
+function useHost(transportTo) {
+  const [host] = useState(() => document.createElement('div'))
+
+  const portalHost = useContext(PortalContext)
+
+  useEffect(() => {
+    const hostParent = transportTo || portalHost || document.body
+
+    if (hostParent) {
+      hostParent.appendChild(host)
+    }
+
+    return () => {
+      if (hostParent) {
+        hostParent.removeChild(host)
+      }
+    }
+  }, [host, portalHost, transportTo])
+
+  return host
+}
 
 function calculateTop(
   position: PositionT,
@@ -216,38 +145,35 @@ function calculateTop(
   isFixed: boolean
 ) {
   let result = 0
-  if (includes(position, 'top')) {
+  if (position.indexOf('top') !== -1) {
     result = top
   }
-  if (includes(position, 'middle')) {
+  if (position.indexOf('middle') !== -1) {
     result = top + height / 2
   }
-  if (includes(position, 'bottom')) {
+  if (position.indexOf('bottom') !== -1) {
     result = bottom
   }
   return result + (isFixed ? 0 : scrollY())
 }
 
 function calculateLeft(
+  nodeRef,
   position: PositionT,
   { left, width, right }: ClientRect,
   isFixed: boolean
 ) {
   let result = 0
-  if (includes(position, 'left')) {
+  if (position.indexOf('left') !== -1) {
     result = left
   }
-  if (includes(position, 'center')) {
+  if (position.indexOf('center') !== -1) {
     result = left + width / 2
   }
-  if (includes(position, 'right')) {
+  if (position.indexOf('right') !== -1) {
     result = right
   }
-  return result + (isFixed ? 0 : scrollX())
-}
-
-function stylesEqual(style1 = {}, style2 = {}) {
-  return style1.left === style2.left && style1.top === style2.top
+  return result + (isFixed ? 0 : scrollX(nodeRef))
 }
 
 function hasFixedPosition(element: Element) {

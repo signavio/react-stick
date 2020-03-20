@@ -1,344 +1,281 @@
 // @flow
 import 'requestidlecallback'
-import React, { Component, type Node, type ComponentType } from 'react'
-import { findDOMNode } from 'react-dom'
-import { omit, uniqueId, compact, some, includes } from 'lodash'
-import PropTypes from 'prop-types'
-import { defaultStyle, type Substyle } from 'substyle'
 
-import { getModifiers, getBoundingClientRect, scrollX } from './utils'
+import invariant from 'invariant'
+import { some } from 'lodash'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { type HOC } from 'recompose'
+import { type Substyle, defaultStyle } from 'substyle'
 
-import { type PositionT, type AlignT } from './flowTypes'
-
-import StickPortal from './StickPortal'
+import { StickContext } from './StickContext'
 import StickInline from './StickInline'
+import StickNode from './StickNode'
+import StickPortal from './StickPortal'
+import DEFAULT_POSITION from './defaultPosition'
+import { type AlignT, type ApiPropsT, type PositionT } from './flowTypes'
+import { useAutoFlip, useWatcher } from './hooks'
+import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
-const PARENT_STICK_NESTING_KEY = 'react-stick__parentStickNestingKey'
-
-const ContextTypes = {
-  [PARENT_STICK_NESTING_KEY]: PropTypes.string,
-}
-
-type StateT = {
-  width: ?number,
-}
-
-const PositionPropType = PropTypes.oneOf([
-  'bottom left',
-  'bottom center',
-  'bottom right',
-  'middle left',
-  'middle center',
-  'middle right',
-  'top left',
-  'top center',
-  'top right',
-])
-
-type StickBasePropsT = {
-  sameWidth?: boolean,
-  inline?: boolean,
-
-  updateOnAnimationFrame?: boolean,
-
-  node: Node,
-  children: Node,
-
-  onClickOutside?: (ev: MouseEvent) => void,
-  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
-}
-
-type ApiPropsT = StickBasePropsT & {
-  position?: PositionT,
-  align?: AlignT,
-
-  style?: Substyle,
-}
-
-type PropsT = StickBasePropsT & {
-  position: PositionT,
-  align: AlignT,
+type PropsT = {|
+  ...ApiPropsT,
 
   style: Substyle,
-}
+|}
 
-class Stick extends Component<PropsT, StateT> {
-  containerNestingKeyExtension: string
-  containerNode: ?HTMLElement
-  nodeRef: ?HTMLElement
+function Stick({
+  inline,
+  node,
+  style,
+  sameWidth,
+  children,
+  updateOnAnimationFrame,
+  position,
+  align,
+  component,
+  transportTo,
+  autoFlipHorizontally,
+  autoFlipVertically,
+  onClickOutside,
+}: PropsT) {
+  const [width, setWidth] = useState(0)
+  const [containerNestingKeyExtension] = useState(() => uniqueId())
+  const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
+    .filter(key => !!key)
+    .join('_')
 
-  animationFrameId: ?AnimationFrameID
-  idleCallbackId: ?IdleCallbackID
+  const anchorRef = useRef()
+  const nodeRef = useRef()
+  const containerRef = useRef()
 
-  static propTypes = {
-    node: PropTypes.node,
-    position: PositionPropType,
-    align: PositionPropType,
-    inline: PropTypes.bool,
-    sameWidth: PropTypes.bool,
-    updateOnAnimationFrame: PropTypes.bool,
-    onClickOutside: PropTypes.func,
-  }
+  const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
+    !!autoFlipHorizontally,
+    !!autoFlipVertically,
+    position || DEFAULT_POSITION,
+    align || getDefaultAlign(position || DEFAULT_POSITION)
+  )
 
-  static contextTypes = ContextTypes
-  static childContextTypes = ContextTypes
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!nodeRef.current || !anchorRef.current) {
+        return
+      }
 
-  constructor(props) {
-    super(props)
-    this.containerNestingKeyExtension = uniqueId()
-
-    this.state = {
-      width: 0,
+      checkAlignment(nodeRef.current, anchorRef.current)
     }
-  }
 
-  componentDidMount() {
-    document.addEventListener('click', this.handleClickOutside, true)
+    window.addEventListener('scroll', handleScroll)
 
-    this.startTracking()
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClickOutside, true)
-
-    this.stopTracking()
-  }
-
-  getChildContext() {
-    return {
-      [PARENT_STICK_NESTING_KEY]: this.getNestingKey(),
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
     }
-  }
+  }, [checkAlignment])
 
-  render() {
-    const { inline, node, style, sameWidth, children, ...rest } = this.props
-    const { width } = this.state
-    const SpecificStick = inline ? StickInline : StickPortal
+  useEffect(() => {
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (!onClickOutside) {
+        return
+      }
 
-    const { style: wrapperStyle = {}, ...wrapperStylingProps } = style(
-      'nodeWrapper'
-    )
+      const { target } = ev
+      if (
+        target instanceof window.HTMLElement &&
+        isOutside(anchorRef, containerRef, target)
+      ) {
+        onClickOutside(ev)
+      }
+    }
 
-    return (
-      <SpecificStick
-        {...omit(rest, 'onClickOutside', 'onReposition')}
-        node={
-          node && (
-            <div
-              {...wrapperStylingProps}
-              style={{
-                ...wrapperStyle,
-                width: wrapperStyle.width ? wrapperStyle.width : width,
-              }}
-            >
-              <div {...style('nodeContent')} ref={ref => (this.nodeRef = ref)}>
-                {node}
-              </div>
-            </div>
-          )
-        }
-        style={style}
-        nestingKey={this.getNestingKey()}
-        containerRef={this.setContainerRef}
-      >
-        {children}
-      </SpecificStick>
-    )
-  }
+    document.addEventListener('click', handleClickOutside, true)
 
-  setContainerRef = (ref: ?HTMLElement) => {
-    this.containerNode = ref
-  }
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [onClickOutside])
 
-  getNestingKey() {
-    return compact([
-      this.context[PARENT_STICK_NESTING_KEY],
-      this.containerNestingKeyExtension,
-    ]).join('_')
-  }
-
-  handleClickOutside = (ev: MouseEvent) => {
-    const { onClickOutside } = this.props
-    if (!onClickOutside) {
+  const measure = useCallback(() => {
+    if (!anchorRef.current) {
       return
     }
 
-    const { target } = ev
-    if (target instanceof window.HTMLElement && this.isOutside(target)) {
-      onClickOutside(ev)
-    }
-  }
-
-  isOutside(target: HTMLElement) {
-    const anchorNode = findDOMNode(this)
-    if (anchorNode && anchorNode.contains(target)) {
-      return false
-    }
-
-    const nestingKey =
-      this.containerNode &&
-      this.containerNode.getAttribute('data-sticknestingkey')
-
-    if (nestingKey) {
-      // Find all stick nodes nested inside our own stick node and check if the click
-      // happened on any of these (our own stick node will also be part of the query result)
-      const nestedStickNodes = document.querySelectorAll(
-        `[data-stickNestingKey^='${nestingKey}']`
-      )
-      return !some(nestedStickNodes, stickNode => stickNode.contains(target))
-    }
-
-    return true
-  }
-
-  startTracking() {
-    // do not track in node
-    if (typeof window.requestAnimationFrame === 'undefined') return
-
-    const callback = () => this.startTracking()
-    if (this.props.updateOnAnimationFrame) {
-      this.animationFrameId = requestAnimationFrame(callback)
-    } else {
-      this.idleCallbackId = requestIdleCallback(callback)
-    }
-
-    this.measure()
-  }
-
-  stopTracking() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId)
-      this.animationFrameId = undefined
-    }
-
-    if (this.idleCallbackId) {
-      cancelIdleCallback(this.idleCallbackId)
-      this.idleCallbackId = undefined
-    }
-  }
-
-  measure() {
-    const { position, align, sameWidth, onReposition } = this.props
-    const { width } = this.state
-
-    const boundingRect = getBoundingClientRect(this)
+    const boundingRect = anchorRef.current.getBoundingClientRect()
 
     const newWidth = sameWidth
       ? boundingRect.width
-      : calculateWidth(position, align, boundingRect)
+      : calculateWidth(
+          anchorRef.current,
+          resolvedPosition,
+          resolvedAlign,
+          boundingRect
+        )
 
     if (newWidth !== width) {
-      this.setState({ width: newWidth })
+      setWidth(newWidth)
     }
+  }, [resolvedAlign, resolvedPosition, sameWidth, width])
 
-    const anchorRef = findDOMNode(this)
+  useWatcher(measure, { updateOnAnimationFrame: !!updateOnAnimationFrame })
 
-    if (!this.nodeRef || !anchorRef) {
-      return
-    }
+  const resolvedStyle = style(
+    getModifiers({ position: resolvedPosition, align: resolvedAlign })
+  )
 
-    if (anchorRef instanceof HTMLElement) {
-      onReposition(this.nodeRef, anchorRef)
-    }
+  if (!node) {
+    return children
   }
+
+  if (inline) {
+    return (
+      <StickContext.Provider value={nestingKey}>
+        <StickInline
+          position={resolvedPosition}
+          align={resolvedAlign}
+          node={
+            <StickNode
+              width={width}
+              position={resolvedPosition}
+              align={resolvedAlign}
+              sameWidth={!!sameWidth}
+              nodeRef={nodeRef}
+            >
+              {node}
+            </StickNode>
+          }
+          nestingKey={nestingKey}
+          containerRef={node => {
+            anchorRef.current = node
+            containerRef.current = node
+          }}
+          component={component}
+        >
+          {children}
+        </StickInline>
+      </StickContext.Provider>
+    )
+  }
+
+  return (
+    <StickContext.Provider value={nestingKey}>
+      <StickPortal
+        updateOnAnimationFrame={!!updateOnAnimationFrame}
+        transportTo={transportTo}
+        component={component}
+        ref={node => {
+          invariant(
+            !node || node instanceof Element,
+            'Only HTML elements can be stick anchors.'
+          )
+
+          anchorRef.current = node
+        }}
+        position={resolvedPosition}
+        node={
+          <StickNode
+            width={width}
+            position={resolvedPosition}
+            align={resolvedAlign}
+            sameWidth={!!sameWidth}
+            nodeRef={nodeRef}
+          >
+            {node}
+          </StickNode>
+        }
+        style={resolvedStyle}
+        nestingKey={nestingKey}
+        containerRef={containerRef}
+        onReposition={() => {
+          if (nodeRef.current && anchorRef.current) {
+            checkAlignment(nodeRef.current, anchorRef.current)
+          }
+        }}
+      >
+        {children}
+      </StickPortal>
+    </StickContext.Provider>
+  )
+}
+
+function isOutside(anchorRef, containerRef, target: HTMLElement) {
+  if (anchorRef.current && anchorRef.current.contains(target)) {
+    return false
+  }
+
+  const nestingKey =
+    containerRef.current &&
+    containerRef.current.getAttribute('data-sticknestingkey')
+
+  if (nestingKey) {
+    // Find all stick nodes nested inside our own stick node and check if the click
+    // happened on any of these (our own stick node will also be part of the query result)
+    const nestedStickNodes = document.querySelectorAll(
+      `[data-stickNestingKey^='${nestingKey}']`
+    )
+    return !some(nestedStickNodes, stickNode => stickNode.contains(target))
+  }
+
+  return true
 }
 
 function calculateWidth(
+  anchorRef,
   position: PositionT,
   align: AlignT,
   { left, width, right }: ClientRect
-) {
-  const scrollWidth = document.documentElement
-    ? document.documentElement.scrollWidth
-    : right // this should never be used in a browser env where documentElement will be available
+): number {
+  if (!anchorRef) {
+    return 0
+  }
 
-  const absLeft =
-    scrollX() +
-    {
-      left,
-      center: left + width / 2,
-      right,
-    }[position.split(' ')[1]]
+  invariant(document.documentElement, 'Could not find document root node.')
 
-  if (includes(align, 'left')) {
+  const scrollWidth = document.documentElement.scrollWidth
+
+  const [, horizontalPosition] = position.split(' ')
+
+  invariant(
+    horizontalPosition === 'left' ||
+      horizontalPosition === 'center' ||
+      horizontalPosition === 'right',
+    `Expected horizontal position to be "left", "center", or "right" but got "${horizontalPosition}".`
+  )
+
+  const positionAdjustments = {
+    left,
+    center: left + width / 2,
+    right,
+  }
+
+  const absLeft = scrollX(anchorRef) + positionAdjustments[horizontalPosition]
+
+  if (align.indexOf('left') !== -1) {
     return scrollWidth - absLeft
   }
 
-  if (includes(align, 'right')) {
+  if (align.indexOf('right') !== -1) {
     return absLeft
   }
 
-  if (includes(align, 'center')) {
+  if (align.indexOf('center') !== -1) {
     return Math.min(absLeft, scrollWidth - absLeft) * 2
   }
+
+  return 0
 }
 
-const styled = defaultStyle(
+const styled: HOC<*, ApiPropsT> = defaultStyle(
   {
     node: {
       position: 'absolute',
       zIndex: 99,
       textAlign: 'left',
     },
-
-    nodeWrapper: {
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-    },
-
-    nodeContent: {
-      // absolute position is needed as the stick node would otherwise
-      // cover up the base node and, for instance, make it impossible to
-      // click buttons
-      position: 'absolute',
-      display: 'inline-block',
-
-      left: 'inherit',
-      right: 'inherit',
-      top: 'inherit',
-      bottom: 'inherit',
-    },
-
-    '&sameWidth': {
-      nodeContent: {
-        display: 'block',
-        width: '100%',
-      },
-    },
-
-    '&align-left': {
-      nodeWrapper: {
-        right: 'auto',
-        left: 0,
-      },
-    },
-    '&align-top': {
-      nodeWrapper: {
-        bottom: 'auto',
-        top: 0,
-      },
-    },
-
-    '&align-middle': {
-      nodeContent: {
-        transform: 'translate(0, 50%)',
-      },
-    },
-    '&align-center': {
-      nodeContent: {
-        transform: 'translate(50%, 0)',
-      },
-      '&align-middle': {
-        nodeContent: {
-          transform: 'translate(50%, 50%)',
-        },
-      },
-    },
   },
   getModifiers
 )
 
-const StyledStick: ComponentType<ApiPropsT> = styled(Stick)
-
-export default StyledStick
+export default styled(Stick)

@@ -3,7 +3,6 @@ import React from 'react'
 import { unmountComponentAtNode } from 'react-dom'
 
 import Stick from '../src'
-
 import { render } from './utils'
 
 const windowHeight = window.innerHeight
@@ -259,7 +258,7 @@ describe('autoPositioning', () => {
     it('should move the node back to its original intended position if space clears up (initial position: "middle right").', done => {
       render(
         <Stick
-          autoFlipVertically
+          autoFlipHorizontally
           position="middle right"
           node={node}
           style={{ marginLeft: windowWidth }}
@@ -271,7 +270,7 @@ describe('autoPositioning', () => {
           setTimeout(() => {
             render(
               <Stick
-                autoFlipVertically
+                autoFlipHorizontally
                 position="middle right"
                 node={node}
                 style={{ marginLeft: 0 }}

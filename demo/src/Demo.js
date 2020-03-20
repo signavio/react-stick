@@ -1,9 +1,8 @@
 import React from 'react'
 
-import Regressions from './regressions'
-
-import PositionAlignOverview from './PositionAlignOverview'
 import AutoAlignment from './AutoAlignment'
+import PositionAlignOverview from './PositionAlignOverview'
+import Regressions from './regressions'
 
 export default function Demo() {
   return (
