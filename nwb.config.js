@@ -7,6 +7,7 @@ module.exports = {
         browsers: ['chrome >= 50', 'firefox >= 52', 'safari >= 10', 'ie >= 11'],
       },
     },
+    presets: ['@babel/preset-flow'],
   },
   npm: {
     esModules: true,
