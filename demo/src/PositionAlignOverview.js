@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
 import { compact } from 'lodash'
+import React, { Component, useState } from 'react'
 
 import Stick from '../../src'
 
@@ -80,143 +80,142 @@ class FramesPerSecond extends Component {
     return <div>FPS: {this.state.fps}</div>
   }
 }
-class PositionAlignOverview extends Component {
-  state = {
-    inline: false,
-    updateOnAnimationFrame: false,
-  }
+function PositionAlignOverview() {
+  const [updateOnAnimationFrame, setUpdateOnAnimationFrame] = useState(false)
+  const [inline, setInline] = useState(false)
+  const [showNode, setShowNode] = useState(true)
 
-  render() {
-    const { updateOnAnimationFrame, inline } = this.state
-
-    return (
+  return (
+    <div>
+      <p>
+        The table shows all combinations of possible values for the{' '}
+        <code>position</code> and <code>align</code> props. The{' '}
+        <code>node</code> elements are colors in red while the anchor elements (
+        <code>children</code>) are colored in blue.
+      </p>
       <div>
-        <p>
-          The table shows all combinations of possible values for the{' '}
-          <code>position</code> and <code>align</code> props. The{' '}
-          <code>node</code> elements are colors in red while the anchor elements
-          (<code>children</code>) are colored in blue.
-        </p>
-        <div>
-          <input
-            type="checkbox"
-            value={inline}
-            onChange={() => {
-              this.setState({ inline: !inline })
-            }}
-          />
-          <code>inline</code>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            value={updateOnAnimationFrame}
-            onChange={() => {
-              this.setState({ updateOnAnimationFrame: !updateOnAnimationFrame })
-            }}
-          />
-          <code>updateOnAnimationFrame</code>
-        </div>
-        <div>
-          <textarea
-            readOnly
-            defaultValue="resize me to check smoothness of Stick"
-          />
-          <FramesPerSecond updateOnAnimationFrame={updateOnAnimationFrame} />
-        </div>
-        <table
+        <input
+          type="checkbox"
+          checked={inline}
+          onChange={() => setInline(!inline)}
+        />
+        <code>inline</code>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          checked={updateOnAnimationFrame}
+          onChange={() => setUpdateOnAnimationFrame(!updateOnAnimationFrame)}
+        />
+        <code>updateOnAnimationFrame</code>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          checked={showNode}
+          onChange={() => setShowNode(!showNode)}
+        />
+        <code>showNode</code>
+      </div>
+      <div>
+        <textarea
+          readOnly
+          defaultValue="resize me to check smoothness of Stick"
+        />
+        <FramesPerSecond updateOnAnimationFrame={updateOnAnimationFrame} />
+      </div>
+      <table
+        style={{
+          textAlign: 'center',
+          borderCollapse: 'collapse',
+        }}
+      >
+        <tbody
           style={{
-            textAlign: 'center',
-            borderCollapse: 'collapse',
+            borderTop: '1px solid black',
+            borderRight: '1px solid black',
           }}
         >
-          <tbody
-            style={{
-              borderTop: '1px solid black',
-              borderRight: '1px solid black',
-            }}
-          >
-            {positionGroups.map((positions: Array<string>, i: number) => (
-              <tr key={i}>
-                {positions.map((position: string) => (
-                  <td
-                    key={position}
+          {positionGroups.map((positions: Array<string>, i: number) => (
+            <tr key={i}>
+              {positions.map((position: string) => (
+                <td
+                  key={position}
+                  style={{
+                    padding: '0 10px 10px 10px',
+                    borderLeft: '1px solid black',
+                    borderBottom: '1px solid black',
+                    fontSize: 11,
+                  }}
+                >
+                  <pre>position="{position}"</pre>
+                  <br />
+                  <div style={{ display: 'inline-block' }}>
+                    <Stick
+                      inline={inline}
+                      updateOnAnimationFrame={updateOnAnimationFrame}
+                      position={position}
+                      node={showNode && <Node />}
+                    >
+                      <Anchor />
+                    </Stick>
+                  </div>
+
+                  <table
                     style={{
-                      padding: '0 10px 10px 10px',
-                      borderLeft: '1px solid black',
-                      borderBottom: '1px solid black',
-                      fontSize: 11,
+                      borderCollapse: 'collapse',
+                      marginTop: 20,
                     }}
                   >
-                    <pre>position="{position}"</pre>
-                    <br />
-                    <div style={{ display: 'inline-block' }}>
-                      <Stick
-                        inline={inline}
-                        updateOnAnimationFrame={updateOnAnimationFrame}
-                        position={position}
-                        node={<Node />}
-                      >
-                        <Anchor />
-                      </Stick>
-                    </div>
-
-                    <table
+                    <tbody
                       style={{
-                        borderCollapse: 'collapse',
-                        marginTop: 20,
+                        borderTop: '1px solid gray',
+                        borderRight: '1px solid gray',
                       }}
                     >
-                      <tbody
-                        style={{
-                          borderTop: '1px solid gray',
-                          borderRight: '1px solid gray',
-                        }}
-                      >
-                        {alignmentGroups.map(
-                          (alignments: Array<string>, j: number) => (
-                            <tr key={j}>
-                              {alignments.map((alignment: string) => (
-                                <td
-                                  key={alignment}
-                                  style={{
-                                    padding: '0 10px 10px 10px',
-                                    borderLeft: '1px solid gray',
-                                    borderBottom: '1px solid gray',
-                                    fontSize: 11,
-                                  }}
-                                >
-                                  <pre>align="{alignment}"</pre>
-                                  <br />
-                                  <div style={{ display: 'inline-block' }}>
-                                    <Stick
-                                      position={position}
-                                      align={alignment}
-                                      inline={inline}
-                                      updateOnAnimationFrame={
-                                        updateOnAnimationFrame
-                                      }
-                                      node={<Node />}
-                                    >
-                                      <Anchor />
-                                    </Stick>
-                                  </div>
-                                </td>
-                              ))}
-                            </tr>
-                          )
-                        )}
-                      </tbody>
-                    </table>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
+                      {alignmentGroups.map(
+                        (alignments: Array<string>, j: number) => (
+                          <tr key={j}>
+                            {alignments.map((alignment: string) => (
+                              <td
+                                key={alignment}
+                                style={{
+                                  padding: '0 10px 10px 10px',
+                                  borderLeft: '1px solid gray',
+                                  borderBottom: '1px solid gray',
+                                  fontSize: 11,
+                                }}
+                              >
+                                <pre>align="{alignment}"</pre>
+                                <br />
+                                <div style={{ display: 'inline-block' }}>
+                                  <Stick
+                                    position={position}
+                                    align={alignment}
+                                    inline={inline}
+                                    updateOnAnimationFrame={
+                                      updateOnAnimationFrame
+                                    }
+                                    node={showNode && <Node />}
+                                  >
+                                    <Anchor />
+                                  </Stick>
+                                </div>
+                              </td>
+                            ))}
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 export default PositionAlignOverview

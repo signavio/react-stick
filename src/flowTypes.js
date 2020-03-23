@@ -1,6 +1,6 @@
 // @flow
-import type { Substyle } from 'substyle'
 import type { Node } from 'react'
+import type { Substyle } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
 export type HorizontalTargetT = 'left' | 'center' | 'right'
@@ -18,30 +18,85 @@ export type PositionT =
 
 export type AlignT = PositionT
 
-type SharedPropsT = {
-  node?: Node,
-  children?: Node,
+export type RefT =
+  | {|
+      current: ?HTMLElement,
+    |}
+  | ((node: ?HTMLElement) => void)
 
-  transportTo?: HTMLElement,
+export type ApiPropsT = {|
+  position?: PositionT,
+  align?: AlignT,
+
+  inline?: boolean,
+  sameWidth?: boolean,
+  autoFlipVertically?: boolean,
+  autoFlipHorizontally?: boolean,
+
+  updateOnAnimationFrame?: boolean,
+
+  style?: Substyle,
 
   component?: string,
 
+  transportTo?: HTMLElement,
+
+  node: ?Node,
+  children: Node,
+
+  onClickOutside?: (ev: MouseEvent) => void,
+|}
+
+export type StickPropsT = {|
+  position: PositionT,
+  align: AlignT,
+
   inline?: boolean,
+  sameWidth?: boolean,
 
   updateOnAnimationFrame?: boolean,
-}
 
-type SpecificStickBasePropsT = SharedPropsT & {
-  style: Substyle,
+  style?: Substyle,
+
+  component?: string,
+
+  transportTo: ?HTMLElement,
+
+  node: Node,
+  children: Node,
+
+  onClickOutside?: (ev: MouseEvent) => void,
+  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
+|}
+
+type SpecificStickBasePropsT = {|
+  children: Node,
+  node: ?Node,
+
+  component: ?string,
+
+  nestingKey: string,
+
+  containerRef: RefT,
+|}
+
+export type StickInlinePropsT = {|
+  ...SpecificStickBasePropsT,
 
   position: PositionT,
   align: AlignT,
-}
+|}
 
-export type StickInlinePropsT = SpecificStickBasePropsT & {
-  // props injected by Stick
-  containerRef: (element: ?HTMLElement) => void,
-  nestingKey: string,
-}
+export type StickPortalPropsT = {|
+  ...SpecificStickBasePropsT,
 
-export type StickPortalPropsT = StickInlinePropsT
+  transportTo: ?HTMLElement,
+
+  position: PositionT,
+
+  style: Substyle,
+
+  updateOnAnimationFrame: boolean,
+
+  onReposition: (nodeRef: HTMLElement) => void,
+|}

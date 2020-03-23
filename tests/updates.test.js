@@ -1,7 +1,6 @@
 import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
-
 import Stick from 'src/'
 
 describe('updates', () => {
@@ -58,10 +57,12 @@ describe('updates', () => {
     render(<Stick node={node}>{anchor}</Stick>, host, () => {
       const bodyChildrenCountWithStick = document.body.childElementCount
       render(<Stick>{anchor}</Stick>, host)
+
       expect(document.getElementById('node')).toBe(null)
       expect(document.body.childElementCount).toBe(
         bodyChildrenCountWithStick - 1
       )
+
       done()
     })
   })

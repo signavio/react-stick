@@ -1,40 +1,43 @@
 // @flow
-
 import React from 'react'
-import { defaultStyle } from 'substyle'
-import { omit } from 'lodash'
+import { type HOC } from 'recompose'
+import { type Substyle, defaultStyle } from 'substyle'
 
-import { getModifiers } from './utils'
 import { type StickInlinePropsT } from './flowTypes'
+import { getModifiers } from './utils'
 
-const StickInline = ({
+type PropsT = {|
+  ...StickInlinePropsT,
+
+  style: Substyle,
+|}
+
+function StickInline({
   node,
   children,
   style,
   component,
   containerRef,
   nestingKey,
-  ...rest
-}: StickInlinePropsT) => {
+}: PropsT) {
   const Component = component || 'div'
   return (
-    <Component
-      ref={ref => {
-        containerRef(ref)
-      }}
-      data-sticknestingkey={nestingKey}
-      {...omit(rest, 'position', 'updateOnAnimationFrame')}
-      {...style}
-    >
+    <Component {...style} ref={containerRef} data-sticknestingkey={nestingKey}>
       {children}
       {node && <div {...style('node')}>{node}</div>}
     </Component>
   )
 }
 
-const styled = defaultStyle(
+const styled: HOC<*, StickInlinePropsT> = defaultStyle(
   {
     position: 'relative',
+
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+      textAlign: 'left',
+    },
 
     '&position-top': {
       node: {
