@@ -34,7 +34,6 @@
   "devDependencies": {
     "@babel/core": "7.8.7",
     "@babel/preset-flow": "7.8.3",
-    "@semantic-release/github": "^4.0.3",
     "babel-eslint": "10.1.0",
     "condition-circle": "2.0.2",
     "eslint": "6.8.0",
@@ -54,7 +53,6 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "semantic-release": "17.0.4",
-    "semantic-release-github-pr": "6.0.0",
     "substyle-glamor": "^2.1.3"
   },
   "peerDependencies": {
@@ -63,12 +61,10 @@
   },
 
   "release": {
-    "analyzeCommits": "semantic-release-github-pr",
-    "generateNotes": "semantic-release-github-pr",
-    "verifyConditions": [
-      "condition-circle",
-      "@semantic-release/github",
-      "semantic-release-github-pr"
-    ]
+    "branch": "master",
+    "branches": [
+      "master"
+    ],
+    "verifyConditions": "condition-circle"
   }
 }
