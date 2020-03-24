@@ -126,6 +126,12 @@ function Stick({
     getModifiers({ position: resolvedPosition, align: resolvedAlign })
   )
 
+  const handleReposition = useCallback(() => {
+    if (nodeRef.current && anchorRef.current) {
+      checkAlignment(nodeRef.current, anchorRef.current)
+    }
+  }, [checkAlignment])
+
   if (!node) {
     const Component = component || 'div'
 
@@ -197,11 +203,7 @@ function Stick({
         style={resolvedStyle}
         nestingKey={nestingKey}
         containerRef={containerRef}
-        onReposition={() => {
-          if (nodeRef.current && anchorRef.current) {
-            checkAlignment(nodeRef.current, anchorRef.current)
-          }
-        }}
+        onReposition={handleReposition}
       >
         {children}
       </StickPortal>
