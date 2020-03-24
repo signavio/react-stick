@@ -42,6 +42,7 @@ function Stick({
   autoFlipHorizontally,
   autoFlipVertically,
   onClickOutside,
+  ...rest
 }: PropsT) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
@@ -126,13 +127,20 @@ function Stick({
   )
 
   if (!node) {
-    return children
+    const Component = component || 'div'
+
+    return (
+      <StickContext.Provider value={nestingKey}>
+        <Component {...rest}>{children}</Component>
+      </StickContext.Provider>
+    )
   }
 
   if (inline) {
     return (
       <StickContext.Provider value={nestingKey}>
         <StickInline
+          {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
           node={
@@ -162,6 +170,7 @@ function Stick({
   return (
     <StickContext.Provider value={nestingKey}>
       <StickPortal
+        {...rest}
         updateOnAnimationFrame={!!updateOnAnimationFrame}
         transportTo={transportTo}
         component={component}

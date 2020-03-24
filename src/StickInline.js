@@ -19,10 +19,16 @@ function StickInline({
   component,
   containerRef,
   nestingKey,
+  ...rest
 }: PropsT) {
   const Component = component || 'div'
   return (
-    <Component {...style} ref={containerRef} data-sticknestingkey={nestingKey}>
+    <Component
+      {...style}
+      {...rest}
+      ref={containerRef}
+      data-sticknestingkey={nestingKey}
+    >
       {children}
       {node && <div {...style('node')}>{node}</div>}
     </Component>
