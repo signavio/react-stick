@@ -74,6 +74,7 @@ type SpecificStickBasePropsT = {|
   node: ?Node,
 
   component: ?string,
+  style: Substyle,
 
   nestingKey: string,
 
@@ -93,8 +94,6 @@ export type StickPortalPropsT = {|
   transportTo: ?HTMLElement,
 
   position: PositionT,
-
-  style: Substyle,
 
   updateOnAnimationFrame: boolean,
 
