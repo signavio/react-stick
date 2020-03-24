@@ -77,6 +77,7 @@ function StickPortal(
   return (
     <Component
       {...style}
+      {...rest}
       ref={node => {
         if (typeof ref === 'function') {
           ref(node)
