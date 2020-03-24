@@ -137,7 +137,9 @@ function Stick({
 
     return (
       <StickContext.Provider value={nestingKey}>
-        <Component {...rest}>{children}</Component>
+        <Component {...resolvedStyle} {...rest}>
+          {children}
+        </Component>
       </StickContext.Provider>
     )
   }
@@ -149,6 +151,7 @@ function Stick({
           {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
+          style={resolvedStyle}
           node={
             <StickNode
               width={width}
