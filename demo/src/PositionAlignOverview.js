@@ -2,7 +2,7 @@ import { compact } from 'lodash'
 import React, { useCallback, useRef, useState } from 'react'
 
 import Stick from '../../es'
-import { useWatcher } from '../../src/hooks'
+import { useWatcher } from './hooks'
 
 const formPairs = (listA: Array<string>, listB: Array<string>) =>
   compact(
@@ -51,7 +51,7 @@ function FramesPerSecond({ updateOnAnimationFrame }) {
   const measure = useCallback(() => {
     framesSinceLastUpdate.current += 1
 
-    let duration = Date.now() - lastUpdated.current
+    const duration = Date.now() - lastUpdated.current
     if (duration >= 1000) {
       setFps(framesSinceLastUpdate.current)
 
