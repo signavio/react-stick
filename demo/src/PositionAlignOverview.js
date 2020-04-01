@@ -1,7 +1,8 @@
 import { compact } from 'lodash'
-import React, { Component, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 
 import Stick from '../../src'
+import { useWatcher } from '../../src/hooks'
 
 const formPairs = (listA: Array<string>, listB: Array<string>) =>
   compact(
@@ -42,44 +43,28 @@ const Node = () => (
   />
 )
 
-class FramesPerSecond extends Component {
-  state = {
-    fps: 0,
-  }
+function FramesPerSecond({ updateOnAnimationFrame }) {
+  const [fps, setFps] = useState(0)
+  const lastUpdated = useRef(() => Date.now())
+  const framesSinceLastUpdate = useRef(0)
 
-  lastUpdated = Date.now()
-  framesSinceLastUpdate = 0
+  const measure = useCallback(() => {
+    framesSinceLastUpdate.current += 1
 
-  startTracking() {
-    const requestCallback = this.props.updateOnAnimationFrame
-      ? requestAnimationFrame
-      : requestIdleCallback
-    this.lastCallbackAsAnimationFrame = this.props.updateOnAnimationFrame
-
-    this.animationId = requestCallback(() => this.startTracking())
-    this.measure()
-  }
-
-  measure() {
-    this.framesSinceLastUpdate += 1
-    let duration = Date.now() - this.lastUpdated
+    let duration = Date.now() - lastUpdated.current
     if (duration >= 1000) {
-      this.setState({
-        fps: this.framesSinceLastUpdate,
-      })
-      this.framesSinceLastUpdate = 0
-      this.lastUpdated = Date.now()
+      setFps(framesSinceLastUpdate.current)
+
+      framesSinceLastUpdate.current = 0
+      lastUpdated.current = Date.now()
     }
-  }
+  }, [])
 
-  componentDidMount() {
-    this.startTracking()
-  }
+  useWatcher(measure, { updateOnAnimationFrame })
 
-  render() {
-    return <div>FPS: {this.state.fps}</div>
-  }
+  return <div>FPS: {fps}</div>
 }
+
 function PositionAlignOverview() {
   const [updateOnAnimationFrame, setUpdateOnAnimationFrame] = useState(false)
   const [inline, setInline] = useState(false)
