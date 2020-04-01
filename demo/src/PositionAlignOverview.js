@@ -45,7 +45,7 @@ const Node = () => (
 
 function FramesPerSecond({ updateOnAnimationFrame }) {
   const [fps, setFps] = useState(0)
-  const lastUpdated = useRef(() => Date.now())
+  const lastUpdated = useRef(Date.now())
   const framesSinceLastUpdate = useRef(0)
 
   const measure = useCallback(() => {
