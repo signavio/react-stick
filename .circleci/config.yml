@@ -90,6 +90,9 @@ jobs:
           command: |
             git config --global user.name "Workflow Bot" && git config --global user.email "dev@effektif.com"
       - run:
+          name: build
+          command: yarn build
+      - run:
           name: Build demo
           command: yarn build-demo
       - run:
