@@ -50,14 +50,13 @@ function StickPortal(
     }
 
     const boundingRect = nodeRef.current.getBoundingClientRect()
-    const isFixed = hasFixedPosition(host)
 
-    const newTop = calculateTop(position, boundingRect, isFixed)
+    const newTop = calculateTop(position, boundingRect, getFixedParent(host))
     const newLeft = calculateLeft(
       nodeRef.current,
       position,
       boundingRect,
-      isFixed
+      getFixedParent(host)
     )
 
     if (newTop !== top) {
@@ -143,7 +142,7 @@ function useHost(transportTo) {
 function calculateTop(
   position: PositionT,
   { top, height, bottom }: ClientRect,
-  isFixed: boolean
+  fixedHost: ?Element
 ) {
   let result = 0
   if (position.indexOf('top') !== -1) {
@@ -155,14 +154,21 @@ function calculateTop(
   if (position.indexOf('bottom') !== -1) {
     result = bottom
   }
-  return result + (isFixed ? 0 : scrollY())
+
+  if (fixedHost) {
+    const { top: hostTop } = fixedHost.getBoundingClientRect()
+
+    return result - hostTop
+  }
+
+  return result + scrollY()
 }
 
 function calculateLeft(
   nodeRef,
   position: PositionT,
   { left, width, right }: ClientRect,
-  isFixed: boolean
+  fixedHost: ?Element
 ) {
   let result = 0
   if (position.indexOf('left') !== -1) {
@@ -174,17 +180,26 @@ function calculateLeft(
   if (position.indexOf('right') !== -1) {
     result = right
   }
-  return result + (isFixed ? 0 : scrollX(nodeRef))
+
+  if (fixedHost) {
+    const { left: hostLeft } = fixedHost.getBoundingClientRect()
+
+    return result - hostLeft
+  }
+
+  return result + scrollX(nodeRef)
 }
 
-function hasFixedPosition(element: Element) {
+function getFixedParent(element: Element): ?Element {
   if (element.nodeName === 'BODY' || element.nodeName === 'HTML') {
-    return false
+    return null
   }
+
   if (getComputedStyle(element).position === 'fixed') {
-    return true
+    return element
   }
+
   return element.parentNode instanceof Element
-    ? hasFixedPosition(element.parentNode)
-    : false
+    ? getFixedParent(element.parentNode)
+    : null
 }
