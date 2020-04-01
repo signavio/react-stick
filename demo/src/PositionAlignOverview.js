@@ -1,7 +1,7 @@
 import { compact } from 'lodash'
 import React, { useCallback, useRef, useState } from 'react'
 
-import Stick from '../../src'
+import Stick from '../../es'
 import { useWatcher } from '../../src/hooks'
 
 const formPairs = (listA: Array<string>, listB: Array<string>) =>

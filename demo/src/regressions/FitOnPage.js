@@ -1,7 +1,7 @@
-import React from 'react'
 import { times } from 'lodash'
-import Stick from '../../../src'
+import React from 'react'
 
+import Stick from '../../../es'
 import Regression from './Regression'
 
 const Anchor = ({ width, children }) => (
