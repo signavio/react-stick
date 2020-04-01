@@ -11,7 +11,7 @@
   "scripts": {
     "build": "nwb build-react-component --no-demo",
     "postbuild": "flow-copy-source -v src lib && flow-copy-source -v src es",
-    "build-demo": "nwb build-react-component",
+    "build-demo": "webpack",
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow check",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",

@@ -4,7 +4,7 @@ const fs = require('fs')
 const { execSync } = require('child_process')
 
 const branchName = process.argv[2]
-const dir = path.resolve(__dirname, '..', 'demo', 'dist')
+const dir = path.resolve(__dirname, '..', 'build')
 const demoUrl = `https://signavio.github.io/react-stick/${branchName}`
 
 if (!fs.existsSync(dir)) {
