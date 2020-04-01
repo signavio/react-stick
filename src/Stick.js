@@ -42,6 +42,7 @@ function Stick({
   autoFlipHorizontally,
   autoFlipVertically,
   onClickOutside,
+  ...rest
 }: PropsT) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
@@ -125,16 +126,32 @@ function Stick({
     getModifiers({ position: resolvedPosition, align: resolvedAlign })
   )
 
+  const handleReposition = useCallback(() => {
+    if (nodeRef.current && anchorRef.current) {
+      checkAlignment(nodeRef.current, anchorRef.current)
+    }
+  }, [checkAlignment])
+
   if (!node) {
-    return children
+    const Component = component || 'div'
+
+    return (
+      <StickContext.Provider value={nestingKey}>
+        <Component {...resolvedStyle} {...rest}>
+          {children}
+        </Component>
+      </StickContext.Provider>
+    )
   }
 
   if (inline) {
     return (
       <StickContext.Provider value={nestingKey}>
         <StickInline
+          {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
+          style={resolvedStyle}
           node={
             <StickNode
               width={width}
@@ -162,6 +179,7 @@ function Stick({
   return (
     <StickContext.Provider value={nestingKey}>
       <StickPortal
+        {...rest}
         updateOnAnimationFrame={!!updateOnAnimationFrame}
         transportTo={transportTo}
         component={component}
@@ -188,11 +206,7 @@ function Stick({
         style={resolvedStyle}
         nestingKey={nestingKey}
         containerRef={containerRef}
-        onReposition={() => {
-          if (nodeRef.current && anchorRef.current) {
-            checkAlignment(nodeRef.current, anchorRef.current)
-          }
-        }}
+        onReposition={handleReposition}
       >
         {children}
       </StickPortal>
