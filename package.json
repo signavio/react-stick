@@ -17,7 +17,7 @@
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
     "publish-demo": "node scripts/gh-pages-publish.js $CIRCLE_BRANCH",
-    "start": "NODE_ENV=development webpack-dev-server --config webpack.config.js",
+    "start": "NODE_ENV=development webpack-dev-server",
     "semantic-release": "semantic-release",
     "semantic-release-preview": "semantic-release-github-pr",
     "test": "nwb test-react",

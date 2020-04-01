@@ -10,7 +10,7 @@ const inDev = NODE_ENV === 'development'
 
 module.exports = {
   mode: inDev ? 'development' : 'production',
-  devtool: inDev ? 'dev-tool-cheap-source-map' : 'source-map',
+  devtool: 'source-map',
   entry: [path.resolve(__dirname, 'demo/src/index.js')],
   output: {
     path: path.resolve(__dirname, 'build'),
