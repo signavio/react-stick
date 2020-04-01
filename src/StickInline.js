@@ -1,16 +1,10 @@
 // @flow
 import React from 'react'
 import { type HOC } from 'recompose'
-import { type Substyle, defaultStyle } from 'substyle'
+import { defaultStyle } from 'substyle'
 
 import { type StickInlinePropsT } from './flowTypes'
 import { getModifiers } from './utils'
-
-type PropsT = {|
-  ...StickInlinePropsT,
-
-  style: Substyle,
-|}
 
 function StickInline({
   node,
@@ -19,10 +13,18 @@ function StickInline({
   component,
   containerRef,
   nestingKey,
-}: PropsT) {
+  align,
+  position,
+  ...rest
+}: StickInlinePropsT) {
   const Component = component || 'div'
   return (
-    <Component {...style} ref={containerRef} data-sticknestingkey={nestingKey}>
+    <Component
+      {...style}
+      {...rest}
+      ref={containerRef}
+      data-sticknestingkey={nestingKey}
+    >
       {children}
       {node && <div {...style('node')}>{node}</div>}
     </Component>

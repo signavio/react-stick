@@ -5,7 +5,7 @@ defaults: &defaults
   docker:
     - image: circleci/node:latest-browsers
       environment:
-        CHROME_BIN: "/usr/bin/google-chrome"
+        CHROME_BIN: '/usr/bin/google-chrome'
 
 attach_workspace: &attach_workspace
   attach_workspace:
@@ -110,6 +110,9 @@ jobs:
     steps:
       - *attach_workspace
       - *restore_cache
+      - run:
+          name: Fix host authenticity for github.com
+          command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Build
           command: yarn build
