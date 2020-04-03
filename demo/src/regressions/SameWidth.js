@@ -1,7 +1,6 @@
 import React from 'react'
 
-import Stick from '../../../src'
-
+import Stick from '../../../es'
 import Regression from './Regression'
 
 const Anchor = ({ width, children }) => (

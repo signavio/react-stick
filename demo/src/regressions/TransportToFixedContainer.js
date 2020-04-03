@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Stick from '../../../src'
+import Stick from '../../../es'
 import Regression from './Regression'
 
 export default function TransportToFixedContainer() {
@@ -33,11 +33,9 @@ export default function TransportToFixedContainer() {
           }}
           ref={node => setContainer(node)}
         >
-          {container != null && (
-            <Stick transportTo={container} node="Yes, here it is!">
-              <div>There should be a line of text below me</div>
-            </Stick>
-          )}
+          <Stick transportTo={container} node="Yes, here it is!">
+            <div>There should be a line of text below me</div>
+          </Stick>
         </div>
       )}
     </Regression>
