@@ -8,7 +8,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react'
 import { type HOC } from 'recompose'
 import { type Substyle, defaultStyle } from 'substyle'
@@ -25,7 +25,7 @@ import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 type PropsT = {|
   ...ApiPropsT,
 
-  style: Substyle,
+  style: Substyle
 |}
 
 function Stick({
@@ -132,18 +132,6 @@ function Stick({
     }
   }, [checkAlignment])
 
-  if (!node) {
-    const Component = component || 'div'
-
-    return (
-      <StickContext.Provider value={nestingKey}>
-        <Component {...resolvedStyle} {...rest}>
-          {children}
-        </Component>
-      </StickContext.Provider>
-    )
-  }
-
   if (inline) {
     return (
       <StickContext.Provider value={nestingKey}>
@@ -153,15 +141,17 @@ function Stick({
           align={resolvedAlign}
           style={resolvedStyle}
           node={
-            <StickNode
-              width={width}
-              position={resolvedPosition}
-              align={resolvedAlign}
-              sameWidth={!!sameWidth}
-              nodeRef={nodeRef}
-            >
-              {node}
-            </StickNode>
+            node && (
+              <StickNode
+                width={width}
+                position={resolvedPosition}
+                align={resolvedAlign}
+                sameWidth={!!sameWidth}
+                nodeRef={nodeRef}
+              >
+                {node}
+              </StickNode>
+            )
           }
           nestingKey={nestingKey}
           containerRef={node => {
@@ -193,15 +183,17 @@ function Stick({
         }}
         position={resolvedPosition}
         node={
-          <StickNode
-            width={width}
-            position={resolvedPosition}
-            align={resolvedAlign}
-            sameWidth={!!sameWidth}
-            nodeRef={nodeRef}
-          >
-            {node}
-          </StickNode>
+          node && (
+            <StickNode
+              width={width}
+              position={resolvedPosition}
+              align={resolvedAlign}
+              sameWidth={!!sameWidth}
+              nodeRef={nodeRef}
+            >
+              {node}
+            </StickNode>
+          )
         }
         style={resolvedStyle}
         nestingKey={nestingKey}
@@ -261,7 +253,7 @@ function calculateWidth(
   const positionAdjustments = {
     left,
     center: left + width / 2,
-    right,
+    right
   }
 
   const absLeft = scrollX(anchorRef) + positionAdjustments[horizontalPosition]
@@ -286,8 +278,8 @@ const styled: HOC<*, ApiPropsT> = defaultStyle(
     node: {
       position: 'absolute',
       zIndex: 99,
-      textAlign: 'left',
-    },
+      textAlign: 'left'
+    }
   },
   getModifiers
 )

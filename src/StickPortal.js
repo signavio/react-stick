@@ -1,14 +1,16 @@
 // @flow
 import 'requestidlecallback'
 
+import invariant from 'invariant'
 import React, {
   createContext,
   forwardRef,
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
-  useState,
+  useState
 } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -36,13 +38,23 @@ function StickPortal(
   const [top, setTop] = useState(0)
   const [left, setLeft] = useState(0)
 
-  const host = useHost(transportTo)
+  const [host, hostParent] = useHost(transportTo)
 
   useEffect(() => {
     if (nodeRef.current) {
       onReposition(nodeRef.current)
     }
   }, [onReposition, top, left])
+
+  useLayoutEffect(() => {
+    if (node) {
+      hostParent.appendChild(host)
+
+      return () => {
+        hostParent.removeChild(host)
+      }
+    }
+  }, [host, hostParent, node])
 
   const measure = useCallback(() => {
     if (!nodeRef.current) {
@@ -101,7 +113,7 @@ function StickPortal(
               // $FlowFixMe
               ...nodeStyle,
               top,
-              left,
+              left
             }}
           >
             {node}
@@ -122,21 +134,11 @@ function useHost(transportTo) {
 
   const portalHost = useContext(PortalContext)
 
-  useEffect(() => {
-    const hostParent = transportTo || portalHost || document.body
+  const hostParent = transportTo || portalHost || document.body
 
-    if (hostParent) {
-      hostParent.appendChild(host)
-    }
+  invariant(hostParent, 'Could not determine a parent for the host node.')
 
-    return () => {
-      if (hostParent) {
-        hostParent.removeChild(host)
-      }
-    }
-  }, [host, portalHost, transportTo])
-
-  return host
+  return [host, hostParent]
 }
 
 function calculateTop(
