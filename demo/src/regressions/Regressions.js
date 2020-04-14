@@ -1,10 +1,11 @@
 import React from 'react'
 
 import ButtonOverlay from './ButtonOverlay'
-import SameWidth from './SameWidth'
-import StickNodeWidth from './StickNodeWidth'
 import FitOnPage from './FitOnPage'
+import SameWidth from './SameWidth'
 import StickInSvg from './StickInSvg'
+import StickNodeWidth from './StickNodeWidth'
+import StickOnHover from './StickOnHover'
 import StyledWithDataAttributes from './StyledWithDataAttributes'
 import TransportToFixedContainer from './TransportToFixedContainer'
 
@@ -20,6 +21,7 @@ export default function Regressions() {
       <StickInSvg />
       <StyledWithDataAttributes />
       <TransportToFixedContainer />
+      <StickOnHover />
     </div>
   )
 }
