@@ -5,7 +5,7 @@ defaults: &defaults
   docker:
     - image: circleci/node:latest-browsers
       environment:
-        CHROME_BIN: '/usr/bin/google-chrome'
+        CHROME_BIN: "/usr/bin/google-chrome"
 
 attach_workspace: &attach_workspace
   attach_workspace:
@@ -15,9 +15,9 @@ restore_cache: &restore_cache
   restore_cache:
     name: Restore node_modules cache
     keys:
-      - v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v1-node-{{ .Branch }}-
-      - v1-node-
+      - v2-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v2-node-{{ .Branch }}-
+      - v2-node-
 
 jobs:
   install:
@@ -36,7 +36,7 @@ jobs:
             - .cache/yarn
       - save_cache:
           name: Save node_modules cache
-          key: v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v2-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
       - run:
