@@ -1,19 +1,19 @@
 version: 2
 
-defaults: &defaults
-  working_directory: ~/repo
-  docker:
-    - image: circleci/node:latest-browsers
-      environment:
-        CHROME_BIN: "/usr/bin/google-chrome"
+references:
+  defaults: &defaults
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:latest-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
 
-restore_cache: &restore_cache
-  restore_cache:
-    name: Restore node_modules cache
-    keys:
-      - v2-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v2-node-{{ .Branch }}-
-      - v2-node-
+  restore_cache: &restore_cache
+    restore_cache:
+      keys:
+        - deps-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        - deps-v1-{{ .Branch }}
+        - deps-v1
 
 jobs:
   install:
@@ -24,15 +24,12 @@ jobs:
 
       - *restore_cache
 
-      - run:
-          name: Install Dependencies
-          command: yarn
+      - run: yarn
 
       - save_cache:
-          name: Save node_modules cache
-          key: v2-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: deps-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules/
+            - node_modules
 
   lint:
     <<: *defaults
