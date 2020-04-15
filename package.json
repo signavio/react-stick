@@ -53,7 +53,7 @@
     "html-webpack-harddisk-plugin": "^1.0.1",
     "html-webpack-plugin": "^4.0.4",
     "inferno": "7.4.2",
-    "nwb": "0.24.3",
+    "nwb": "0.24.5",
     "prettier": "1.19.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
