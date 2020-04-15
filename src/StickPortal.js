@@ -10,7 +10,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState
+  useState,
 } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -37,6 +37,7 @@ function StickPortal(
   const nodeRef = useRef()
   const [top, setTop] = useState(0)
   const [left, setLeft] = useState(0)
+  const [visible, setVisible] = useState(!!node)
 
   const [host, hostParent] = useHost(transportTo)
 
@@ -46,15 +47,19 @@ function StickPortal(
     }
   }, [onReposition, top, left])
 
+  useEffect(() => {
+    setVisible(!!node)
+  }, [node])
+
   useLayoutEffect(() => {
-    if (node) {
+    if (visible) {
       hostParent.appendChild(host)
 
       return () => {
         hostParent.removeChild(host)
       }
     }
-  }, [host, hostParent, node])
+  }, [host, hostParent, visible])
 
   const measure = useCallback(() => {
     if (!nodeRef.current) {
@@ -89,7 +94,7 @@ function StickPortal(
     <Component
       {...style}
       {...rest}
-      ref={node => {
+      ref={(node) => {
         if (typeof ref === 'function') {
           ref(node)
         } else {
@@ -113,7 +118,7 @@ function StickPortal(
               // $FlowFixMe
               ...nodeStyle,
               top,
-              left
+              left,
             }}
           >
             {node}
