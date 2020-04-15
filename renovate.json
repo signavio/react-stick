@@ -1,0 +1,16 @@
+{
+  "extends": ["config:js-lib"],
+  "encrypted": {
+    "npmToken": "K6b0qzdDGHnF7OhXFRDHBoFNlWWSBdNuFdjhpPQ2TjEGpBNhrQD3MHMg7PV3PnztLRS7Ho2UzcTqO31eVZiZegBOQNMhpFv4+Y0SUD/ZD2noeD4Pqy1Mztf2wevFCtZpkYrgNIgBp8Dbix8EyQTv7F3nAF+xGhlIgX2rhx/K0rVfx/70dBmZoFPoQLHoEHYtQB3k6ooKZC4q3lHlCJtGbZzJ8vAcRkEPHF4uTA0VB771yj1P/aESrtSBhHOUs6hJM3yJnLdfN75yj959GG0KQMNw6t2iWFOmpIXok7olPrDe2mDHOoLsTgfquVIhpZHev3sdymIIGA9TSGb5wb1zSA=="
+  },
+  "npmrc": "@signavio:registry=https://npm.pkg.github.com/\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}",
+  "docker": {
+    "enabled": false
+  },
+  "packageRules": [
+    {
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    }
+  ]
+}
