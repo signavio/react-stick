@@ -1,66 +1,56 @@
 version: 2
 
-defaults: &defaults
-  working_directory: ~/project/react-stick
-  docker:
-    - image: circleci/node:latest-browsers
-      environment:
-        CHROME_BIN: '/usr/bin/google-chrome'
+references:
+  defaults: &defaults
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:latest-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
 
-attach_workspace: &attach_workspace
-  attach_workspace:
-    at: ~/project
-
-restore_cache: &restore_cache
-  restore_cache:
-    name: Restore node_modules cache
-    keys:
-      - v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v1-node-{{ .Branch }}-
-      - v1-node-
+  restore_cache: &restore_cache
+    restore_cache:
+      keys:
+        - deps-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        - deps-v1-{{ .Branch }}
+        - deps-v1
 
 jobs:
   install:
     <<: *defaults
+
     steps:
       - checkout
-      - *attach_workspace
+
       - *restore_cache
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile
+
+      - run: yarn
+
       - save_cache:
-          name: Save yarn cache
-          key: v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: deps-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
-            - .cache/yarn
-      - save_cache:
-          name: Save node_modules cache
-          key: v1-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules/
-      - run:
-          name: Remove node_modules to cleanup workspace
-          command: rm -r node_modules/
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - react-stick
+            - node_modules
 
   lint:
     <<: *defaults
+
     steps:
-      - *attach_workspace
+      - checkout
+
       - *restore_cache
+
       - run:
           name: Lint
           command: yarn lint
 
   flow:
     <<: *defaults
+
     steps:
-      - *attach_workspace
+      - checkout
+
       - *restore_cache
+
       - run:
           name: Flow
           command: yarn flow
@@ -68,11 +58,14 @@ jobs:
   test:
     <<: *defaults
     steps:
-      - *attach_workspace
+      - checkout
+
       - *restore_cache
+
       - run:
           name: Test
           command: yarn test:coverage
+
       - run:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)
@@ -80,8 +73,10 @@ jobs:
   publish-demo:
     <<: *defaults
     steps:
-      - *attach_workspace
+      - checkout
+
       - *restore_cache
+
       - run:
           name: Fix host authenticity for github.com
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
@@ -102,7 +97,7 @@ jobs:
   release-preview:
     <<: *defaults
     steps:
-      - *attach_workspace
+      - checkout
       - *restore_cache
       - run:
           name: Post release preview
@@ -111,7 +106,7 @@ jobs:
   release:
     <<: *defaults
     steps:
-      - *attach_workspace
+      - checkout
       - *restore_cache
       - run:
           name: Fix host authenticity for github.com

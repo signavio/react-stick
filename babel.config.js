@@ -16,14 +16,8 @@ module.exports = {
   comments: true,
   plugins: [
     '@babel/transform-runtime',
-    '@babel/plugin-transform-flow-strip-types',
     '@babel/plugin-proposal-object-rest-spread',
-    '@babel/plugin-proposal-export-namespace-from',
-    '@babel/plugin-proposal-optional-chaining',
 
     'lodash',
-    'syntax-dynamic-import',
-
-    ...(NODE_ENV === 'test' ? ['dynamic-import-node'] : []),
   ],
 }
