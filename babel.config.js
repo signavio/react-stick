@@ -19,8 +19,5 @@ module.exports = {
     '@babel/plugin-proposal-object-rest-spread',
 
     'lodash',
-    'syntax-dynamic-import',
-
-    ...(NODE_ENV === 'test' ? ['dynamic-import-node'] : []),
   ],
 }
