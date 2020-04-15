@@ -1,6 +1,7 @@
 import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
 import Stick from 'src/'
 
 describe('updates', () => {
@@ -12,18 +13,21 @@ describe('updates', () => {
   // wrap render to invoke callback only after the node has actually been mounted
   const render = (stick, host, callback) => {
     let called = false
-    renderBase(
-      <div style={{ width: 10, height: 10 }}>
-        {cloneElement(stick, {
-          node:
-            stick.props.node &&
-            cloneElement(stick.props.node, {
-              ref: el => !!el && !called && window.setTimeout(callback, 1),
-            }),
-        })}
-      </div>,
-      host
-    )
+
+    act(() => {
+      renderBase(
+        <div style={{ width: 10, height: 10 }}>
+          {cloneElement(stick, {
+            node:
+              stick.props.node &&
+              cloneElement(stick.props.node, {
+                ref: (el) => !!el && !called && window.setTimeout(callback, 1),
+              }),
+          })}
+        </div>,
+        host
+      )
+    })
   }
 
   beforeEach(() => {
@@ -36,7 +40,7 @@ describe('updates', () => {
     document.body.removeChild(host)
   })
 
-  it('should work if the node is only provided after the initial mount', done => {
+  it('should work if the node is only provided after the initial mount', (done) => {
     render(<Stick position="middle right">{anchor}</Stick>, host)
     render(
       <Stick position="middle right" node={node}>
@@ -53,7 +57,7 @@ describe('updates', () => {
     )
   })
 
-  it('should unmount node container if no node is passed anymore', done => {
+  it('should unmount node container if no node is passed anymore', (done) => {
     render(<Stick node={node}>{anchor}</Stick>, host, () => {
       const bodyChildrenCountWithStick = document.body.childElementCount
       render(<Stick>{anchor}</Stick>, host)
@@ -67,7 +71,7 @@ describe('updates', () => {
     })
   })
 
-  it('should correctly apply `sameWidth` if set after initial mount', done => {
+  it('should correctly apply `sameWidth` if set after initial mount', (done) => {
     render(<Stick node={node}>{anchor}</Stick>, host, () => {
       render(
         <Stick node={node} sameWidth>
@@ -86,7 +90,7 @@ describe('updates', () => {
     })
   })
 
-  it('should correctly handle clearing of `sameWidth` after initial mount', done => {
+  it('should correctly handle clearing of `sameWidth` after initial mount', (done) => {
     render(
       <Stick sameWidth node={node}>
         {anchor}
@@ -103,7 +107,7 @@ describe('updates', () => {
     )
   })
 
-  it('should handle switching to `updateOnAnimationFrame` correctly', done => {
+  it('should handle switching to `updateOnAnimationFrame` correctly', (done) => {
     render(
       <Stick node={node} position="middle right">
         {anchor}
@@ -127,7 +131,7 @@ describe('updates', () => {
     )
   })
 
-  it('should handle switching back from `updateOnAnimationFrame` correctly', done => {
+  it('should handle switching back from `updateOnAnimationFrame` correctly', (done) => {
     render(
       <Stick node={node} position="middle right" updateOnAnimationFrame>
         {anchor}
