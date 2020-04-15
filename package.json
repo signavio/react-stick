@@ -16,6 +16,7 @@
     "flow": "flow check",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
+    "prenow-build": "yarn build",
     "now-build": "webpack",
     "start": "NODE_ENV=development webpack-dev-server",
     "semantic-release": "semantic-release",
