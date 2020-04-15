@@ -6,7 +6,7 @@ references:
     docker:
       - image: circleci/node:latest-browsers
         environment:
-          CHROME_BIN: "/usr/bin/google-chrome"
+          CHROME_BIN: '/usr/bin/google-chrome'
 
   restore_cache: &restore_cache
     restore_cache:
@@ -70,30 +70,6 @@ jobs:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
-  publish-demo:
-    <<: *defaults
-    steps:
-      - checkout
-
-      - *restore_cache
-
-      - run:
-          name: Fix host authenticity for github.com
-          command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - run:
-          name: Set git name & email
-          command: |
-            git config --global user.name "Workflow Bot" && git config --global user.email "dev@effektif.com"
-      - run:
-          name: build
-          command: yarn build
-      - run:
-          name: Build demo
-          command: yarn build-demo
-      - run:
-          name: Publish demo
-          command: yarn publish-demo
-
   release-preview:
     <<: *defaults
     steps:
@@ -130,9 +106,6 @@ workflows:
           requires:
             - install
       - test:
-          requires:
-            - install
-      - publish-demo:
           requires:
             - install
       - release-preview:
