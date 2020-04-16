@@ -58,7 +58,7 @@
     "html-webpack-plugin": "4.0.4",
     "inferno": "7.4.2",
     "nwb": "0.24.5",
-    "prettier": "1.19.1",
+    "prettier": "2.0.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "regenerator-runtime": "0.13.5",
