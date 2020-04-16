@@ -8,7 +8,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react'
 import { type HOC } from 'recompose'
 import { type Substyle, defaultStyle } from 'substyle'
@@ -25,7 +25,7 @@ import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 type PropsT = {|
   ...ApiPropsT,
 
-  style: Substyle
+  style: Substyle,
 |}
 
 function Stick({
@@ -47,7 +47,7 @@ function Stick({
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
   const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
-    .filter(key => !!key)
+    .filter((key) => !!key)
     .join('_')
 
   const anchorRef = useRef()
@@ -154,7 +154,7 @@ function Stick({
             )
           }
           nestingKey={nestingKey}
-          containerRef={node => {
+          containerRef={(node) => {
             anchorRef.current = node
             containerRef.current = node
           }}
@@ -173,7 +173,7 @@ function Stick({
         updateOnAnimationFrame={!!updateOnAnimationFrame}
         transportTo={transportTo}
         component={component}
-        ref={node => {
+        ref={(node) => {
           invariant(
             !node || node instanceof Element,
             'Only HTML elements can be stick anchors.'
@@ -221,7 +221,7 @@ function isOutside(anchorRef, containerRef, target: HTMLElement) {
     const nestedStickNodes = document.querySelectorAll(
       `[data-stickNestingKey^='${nestingKey}']`
     )
-    return !some(nestedStickNodes, stickNode => stickNode.contains(target))
+    return !some(nestedStickNodes, (stickNode) => stickNode.contains(target))
   }
 
   return true
@@ -253,7 +253,7 @@ function calculateWidth(
   const positionAdjustments = {
     left,
     center: left + width / 2,
-    right
+    right,
   }
 
   const absLeft = scrollX(anchorRef) + positionAdjustments[horizontalPosition]
@@ -278,8 +278,8 @@ const styled: HOC<*, ApiPropsT> = defaultStyle(
     node: {
       position: 'absolute',
       zIndex: 99,
-      textAlign: 'left'
-    }
+      textAlign: 'left',
+    },
   },
   getModifiers
 )
