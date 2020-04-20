@@ -113,10 +113,8 @@ function StickPortal(
             ref={containerRef}
             data-sticknestingkey={nestingKey}
             style={{
-              position: 'absolute',
-              // The position property should be be overwritten
-              // $FlowFixMe
               ...nodeStyle,
+              position: 'absolute',
               top,
               left,
             }}
