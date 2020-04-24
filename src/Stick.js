@@ -10,8 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { type HOC } from 'recompose'
-import { type Substyle, defaultStyle } from 'substyle'
+import { createUseStyle } from 'substyle'
 
 import { StickContext } from './StickContext'
 import StickInline from './StickInline'
@@ -22,28 +21,36 @@ import { type AlignT, type ApiPropsT, type PositionT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
-type PropsT = {|
-  ...ApiPropsT,
+const useStyle = createUseStyle(
+  {
+    node: {
+      position: 'absolute',
+      zIndex: 99,
+      textAlign: 'left',
+    },
+  },
+  getModifiers
+)
 
-  style: Substyle,
-|}
+function Stick(props: ApiPropsT) {
+  const style = useStyle((props: Object))
+  const {
+    inline,
+    node,
+    sameWidth,
+    children,
+    updateOnAnimationFrame,
+    position,
+    align,
+    component,
+    transportTo,
+    autoFlipHorizontally,
+    autoFlipVertically,
+    onClickOutside,
+    style: _style,
+    ...rest
+  } = props
 
-function Stick({
-  inline,
-  node,
-  style,
-  sameWidth,
-  children,
-  updateOnAnimationFrame,
-  position,
-  align,
-  component,
-  transportTo,
-  autoFlipHorizontally,
-  autoFlipVertically,
-  onClickOutside,
-  ...rest
-}: PropsT) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
   const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
@@ -273,15 +280,4 @@ function calculateWidth(
   return 0
 }
 
-const styled: HOC<*, ApiPropsT> = defaultStyle(
-  {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      textAlign: 'left',
-    },
-  },
-  getModifiers
-)
-
-export default styled(Stick)
+export default Stick

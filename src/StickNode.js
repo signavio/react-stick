@@ -1,12 +1,11 @@
 // @flow
 import React, { type Node } from 'react'
-import { type HOC } from 'recompose'
-import { type Substyle, defaultStyle } from 'substyle'
+import { createUseStyle } from 'substyle'
 
 import { type AlignT, type PositionT, type RefT } from './flowTypes'
 import { getModifiers } from './utils'
 
-type ApiPropsT = {|
+type PropsT = {|
   width: number,
 
   position: PositionT,
@@ -18,13 +17,9 @@ type ApiPropsT = {|
   nodeRef: RefT,
 |}
 
-type PropsT = {|
-  ...ApiPropsT,
-
-  style: Substyle,
-|}
-
-function StickNode({ style, children, nodeRef }: PropsT) {
+function StickNode(props: PropsT) {
+  const style = useStyle((props: Object))
+  const { children, nodeRef } = props
   return (
     <div {...style}>
       <div {...style('content')} ref={nodeRef}>
@@ -34,7 +29,7 @@ function StickNode({ style, children, nodeRef }: PropsT) {
   )
 }
 
-const styled: HOC<*, ApiPropsT> = defaultStyle(
+const useStyle = createUseStyle(
   ({ width }) => ({
     position: 'absolute',
     right: 0,
@@ -90,4 +85,4 @@ const styled: HOC<*, ApiPropsT> = defaultStyle(
   getModifiers
 )
 
-export default styled(StickNode)
+export default StickNode

@@ -1178,13 +1178,6 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@7.3.4":
-  version "7.3.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.4.tgz#73d12ba819e365fcf7fd152aed56d6df97d21c83"
-  integrity sha512-IvfvnMdSaLBateu0jfsYIpZTxAc2cKEXEMiezGGN75QcBcecDUKd3PgLAncT0oOgxKy8dd8hrJKj9MfzgfZd6g==
-  dependencies:
-    regenerator-runtime "^0.12.0"
-
 "@babel/runtime@7.9.2", "@babel/runtime@^7.3.4":
   version "7.9.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.2.tgz#d90df0583a3a252f09aaa619665367bae518db06"
@@ -6220,13 +6213,6 @@ hoist-non-react-statics@^2.3.1:
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
 
-hoist-non-react-statics@^3.1.0:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
-  integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
-  dependencies:
-    react-is "^16.7.0"
-
 homedir-polyfill@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/homedir-polyfill/-/homedir-polyfill-1.0.3.tgz#743298cef4e5af3e194161fbadcc2151d3a058e8"
@@ -10558,15 +10544,6 @@ prop-types@^15.5.10:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.8:
-  version "15.6.0"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
-  integrity sha1-zq8IMCL8RrSjX2nhPvda7Q1jmFY=
-  dependencies:
-    fbjs "^0.8.16"
-    loose-envify "^1.3.1"
-    object-assign "^4.1.1"
-
 prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
@@ -10858,7 +10835,7 @@ react-error-overlay@^6.0.3:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.6.tgz#ac4d9dc4c1b5c536c2c312bf66aa2b09bfa384e2"
   integrity sha512-Yzpno3enVzSrSCnnljmr4b/2KUQSMZaPuqmS26t9k4nW7uwJk6STWmH9heNjPuvqUTO3jOSPkHoKgO4+Dw7uIw==
 
-react-is@^16.7.0, react-is@^16.8.1:
+react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -11149,11 +11126,6 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
-
-regenerator-runtime@^0.12.0:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
-  integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
 
 regenerator-transform@^0.14.2:
   version "0.14.4"
@@ -12527,24 +12499,21 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-substyle-glamor@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-2.1.3.tgz#bc1fb5c9cd4eacd3f8a7823c507e99b7dc32fbe2"
-  integrity sha512-Q3RPu0vplaP/J/gCDCNDU2B0fj7S+nKzYQFWHnSZ1CPOTP6oK8SyY/fpCzcWhn8cjuRryon/LTNZlW1/P7+5zw==
-  dependencies:
-    "@babel/runtime" "7.3.4"
-    substyle "^7.1.3"
-
-substyle@^7.1.3:
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/substyle/-/substyle-7.1.3.tgz#44d7407278d68bc8a6b28191341f1e075db7773c"
-  integrity sha512-rqlfENKEFO6hBHQ8/85RV12QJR9ybUBLVWBuAUVFvA06NWof10tOT2HdWPL4RcwyG/FW7cSZPb6LFAU9vlKVYA==
+substyle-glamor@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-3.0.0.tgz#eaef0be0be9c06ddae66a18c8ddaddd5ce8bf5a8"
+  integrity sha512-q82E2qrHYi0W0AbypxBnwMCYp4ncW789PB64p0BUZdtCc3xm6F64GD1fHwuDjSw83nTt7PbQYL+FY0t97mQA1g==
   dependencies:
     "@babel/runtime" "^7.3.4"
-    hoist-non-react-statics "^3.1.0"
+    substyle "^8.0.0"
+
+substyle@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-8.0.0.tgz#0b26f37f1e2bdf1479b659201107846fdc6befe7"
+  integrity sha512-t7QuX3AYe2xKHHsba4WZ0klKcWa3wX7bNuDqxmb5t6anJg5dVkpwhIOwWTwMORVlQFRpaTQKfPTVQR0rV0ktGw==
+  dependencies:
+    "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"
-    prop-types "^15.5.8"
-    warning "^2.1.0"
 
 supports-color@6.0.0:
   version "6.0.0"
@@ -13344,13 +13313,6 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
-
-warning@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/warning/-/warning-2.1.0.tgz#21220d9c63afc77a8c92111e011af705ce0c6901"
-  integrity sha1-ISINnGOvx3qMkhEeARr3Bc4MaQE=
-  dependencies:
-    loose-envify "^1.0.0"
 
 watchpack@^1.6.0:
   version "1.6.0"

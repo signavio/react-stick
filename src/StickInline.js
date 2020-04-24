@@ -1,27 +1,28 @@
 // @flow
 import React from 'react'
-import { type HOC } from 'recompose'
-import { defaultStyle } from 'substyle'
+import { createUseStyle } from 'substyle'
 
 import { type StickInlinePropsT } from './flowTypes'
 import { getModifiers } from './utils'
 
-function StickInline({
-  node,
-  children,
-  style,
-  component,
-  containerRef,
-  nestingKey,
-  align,
-  position,
-  ...rest
-}: StickInlinePropsT) {
+function StickInline(props: StickInlinePropsT) {
+  const style = useStyle((props: Object))
+  const {
+    node,
+    children,
+    component,
+    containerRef,
+    nestingKey,
+    align,
+    position,
+    style: _style,
+    ...rest
+  } = props
   const Component = component || 'div'
   return (
     <Component
-      {...style}
       {...rest}
+      {...style}
       ref={containerRef}
       data-sticknestingkey={nestingKey}
     >
@@ -31,7 +32,7 @@ function StickInline({
   )
 }
 
-const styled: HOC<*, StickInlinePropsT> = defaultStyle(
+const useStyle = createUseStyle(
   {
     position: 'relative',
 
@@ -76,4 +77,4 @@ const styled: HOC<*, StickInlinePropsT> = defaultStyle(
   getModifiers
 )
 
-export default styled(StickInline)
+export default StickInline

@@ -12,6 +12,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { inline } from 'substyle'
 import { createPortal } from 'react-dom'
 
 import type { PositionT, StickPortalPropsT } from './flowTypes'
@@ -87,13 +88,11 @@ function StickPortal(
 
   useWatcher(measure, { updateOnAnimationFrame })
 
-  const { style: nodeStyle, ...otherNodeStyleProps } = style('node')
-
   const Component = component || 'div'
   return (
     <Component
-      {...style}
       {...rest}
+      {...style}
       ref={(node) => {
         if (typeof ref === 'function') {
           ref(node)
@@ -109,15 +108,13 @@ function StickPortal(
       <PortalContext.Provider value={host.parentNode}>
         {createPortal(
           <div
-            {...otherNodeStyleProps}
             ref={containerRef}
             data-sticknestingkey={nestingKey}
-            style={{
-              ...nodeStyle,
+            {...inline(style('node'), {
               position: 'absolute',
               top,
               left,
-            }}
+            })}
           >
             {node}
           </div>,
