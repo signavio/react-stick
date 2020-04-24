@@ -1178,13 +1178,6 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@7.3.4":
-  version "7.3.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.4.tgz#73d12ba819e365fcf7fd152aed56d6df97d21c83"
-  integrity sha512-IvfvnMdSaLBateu0jfsYIpZTxAc2cKEXEMiezGGN75QcBcecDUKd3PgLAncT0oOgxKy8dd8hrJKj9MfzgfZd6g==
-  dependencies:
-    regenerator-runtime "^0.12.0"
-
 "@babel/runtime@7.9.2", "@babel/runtime@^7.3.4":
   version "7.9.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.2.tgz#d90df0583a3a252f09aaa619665367bae518db06"
@@ -11150,11 +11143,6 @@ regenerator-runtime@^0.11.0:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
-regenerator-runtime@^0.12.0:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
-  integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
-
 regenerator-transform@^0.14.2:
   version "0.14.4"
   resolved "https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.4.tgz#5266857896518d1616a78a0479337a30ea974cc7"
@@ -12527,13 +12515,13 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-substyle-glamor@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-2.1.3.tgz#bc1fb5c9cd4eacd3f8a7823c507e99b7dc32fbe2"
-  integrity sha512-Q3RPu0vplaP/J/gCDCNDU2B0fj7S+nKzYQFWHnSZ1CPOTP6oK8SyY/fpCzcWhn8cjuRryon/LTNZlW1/P7+5zw==
+substyle-glamor@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-3.0.0.tgz#eaef0be0be9c06ddae66a18c8ddaddd5ce8bf5a8"
+  integrity sha512-q82E2qrHYi0W0AbypxBnwMCYp4ncW789PB64p0BUZdtCc3xm6F64GD1fHwuDjSw83nTt7PbQYL+FY0t97mQA1g==
   dependencies:
-    "@babel/runtime" "7.3.4"
-    substyle "^7.1.3"
+    "@babel/runtime" "^7.3.4"
+    substyle "^8.0.0"
 
 substyle@^7.1.3:
   version "7.1.3"
@@ -12545,6 +12533,14 @@ substyle@^7.1.3:
     invariant "^2.2.4"
     prop-types "^15.5.8"
     warning "^2.1.0"
+
+substyle@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-8.0.0.tgz#0b26f37f1e2bdf1479b659201107846fdc6befe7"
+  integrity sha512-t7QuX3AYe2xKHHsba4WZ0klKcWa3wX7bNuDqxmb5t6anJg5dVkpwhIOwWTwMORVlQFRpaTQKfPTVQR0rV0ktGw==
+  dependencies:
+    "@babel/runtime" "^7.3.4"
+    invariant "^2.2.4"
 
 supports-color@6.0.0:
   version "6.0.0"
