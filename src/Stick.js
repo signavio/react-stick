@@ -10,30 +10,26 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { createUseStyle } from 'substyle'
+import useStyles from 'substyle'
 
 import { StickContext } from './StickContext'
 import StickInline from './StickInline'
 import StickNode from './StickNode'
 import StickPortal from './StickPortal'
 import DEFAULT_POSITION from './defaultPosition'
-import { type AlignT, type ApiPropsT, type PositionT } from './flowTypes'
+import { type AlignT, type PropsT, type PositionT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
-const useStyle = createUseStyle(
-  {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      textAlign: 'left',
-    },
+const defaultStyles = {
+  node: {
+    position: 'absolute',
+    zIndex: 99,
+    textAlign: 'left',
   },
-  getModifiers
-)
+}
 
-function Stick(props: ApiPropsT) {
-  const style = useStyle((props: Object))
+function Stick(props: PropsT) {
   const {
     inline,
     node,
@@ -47,9 +43,12 @@ function Stick(props: ApiPropsT) {
     autoFlipHorizontally,
     autoFlipVertically,
     onClickOutside,
-    style: _style,
+    style,
+    className,
+    classNames,
     ...rest
   } = props
+  const styles = useStyles(defaultStyles, { style, className, classNames })
 
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
@@ -129,8 +128,12 @@ function Stick(props: ApiPropsT) {
 
   useWatcher(measure, { updateOnAnimationFrame: !!updateOnAnimationFrame })
 
-  const resolvedStyle = style(
-    getModifiers({ position: resolvedPosition, align: resolvedAlign })
+  const resolvedStyles = styles(
+    getModifiers({
+      position: resolvedPosition,
+      align: resolvedAlign,
+      sameWidth,
+    })
   )
 
   const handleReposition = useCallback(() => {
@@ -146,7 +149,7 @@ function Stick(props: ApiPropsT) {
           {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
-          style={resolvedStyle}
+          style={resolvedStyles}
           node={
             node && (
               <StickNode
@@ -202,7 +205,7 @@ function Stick(props: ApiPropsT) {
             </StickNode>
           )
         }
-        style={resolvedStyle}
+        style={resolvedStyles}
         nestingKey={nestingKey}
         containerRef={containerRef}
         onReposition={handleReposition}

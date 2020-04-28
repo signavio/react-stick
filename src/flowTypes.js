@@ -24,7 +24,38 @@ export type RefT =
     |}
   | ((node: ?HTMLElement) => void)
 
-export type ApiPropsT = {|
+type StyleT = {
+  [string]: string | number | StyleT,
+}
+
+type PlainStyleT = {
+  [string]: string | number,
+}
+
+type ModifiersT = {
+  [string]: boolean,
+}
+type KeysT = string | Array<string> | ModifiersT
+type SubstyleT = {
+  (select: KeysT, defaultStyle?: StyleT): SubstyleT,
+
+  style?: PlainStyleT,
+  className?: string,
+  ...
+}
+
+type ClassNamesT = {
+  [string]: string,
+}
+type StylingPropsT = {
+  style?: StyleT | SubstyleT,
+  className?: string,
+  classNames?: ClassNamesT,
+}
+
+export type PropsT = {|
+  ...StylingPropsT,
+
   position?: PositionT,
   align?: AlignT,
 
@@ -35,8 +66,6 @@ export type ApiPropsT = {|
 
   updateOnAnimationFrame?: boolean,
 
-  style?: Substyle,
-
   component?: string,
 
   transportTo?: HTMLElement,
@@ -45,28 +74,6 @@ export type ApiPropsT = {|
   children: Node,
 
   onClickOutside?: (ev: MouseEvent) => void,
-|}
-
-export type StickPropsT = {|
-  position: PositionT,
-  align: AlignT,
-
-  inline?: boolean,
-  sameWidth?: boolean,
-
-  updateOnAnimationFrame?: boolean,
-
-  style?: Substyle,
-
-  component?: string,
-
-  transportTo: ?HTMLElement,
-
-  node: Node,
-  children: Node,
-
-  onClickOutside?: (ev: MouseEvent) => void,
-  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
 |}
 
 type SpecificStickBasePropsT = {|

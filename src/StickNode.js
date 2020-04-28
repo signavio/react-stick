@@ -1,6 +1,6 @@
 // @flow
 import React, { type Node } from 'react'
-import { createUseStyle } from 'substyle'
+import useStyles, { inline } from 'substyle'
 
 import { type AlignT, type PositionT, type RefT } from './flowTypes'
 import { getModifiers } from './utils'
@@ -18,71 +18,66 @@ type PropsT = {|
 |}
 
 function StickNode(props: PropsT) {
-  const style = useStyle((props: Object))
-  const { children, nodeRef } = props
+  const styles = useStyles(defaultStyle, {}, getModifiers(props))
+  const { children, sameWidth, width, nodeRef } = props
   return (
-    <div {...style}>
-      <div {...style('content')} ref={nodeRef}>
+    <div {...inline(styles, { width: sameWidth ? '100%' : width })}>
+      <div {...styles('content')} ref={nodeRef}>
         {children}
       </div>
     </div>
   )
 }
 
-const useStyle = createUseStyle(
-  ({ width }) => ({
+const defaultStyle = {
+  position: 'absolute',
+  right: 0,
+  bottom: 0,
+
+  content: {
+    // absolute position is needed as the stick node would otherwise
+    // cover up the base node and, for instance, make it impossible to
+    // click buttons
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    display: 'inline-block',
 
-    width,
+    left: 'inherit',
+    right: 'inherit',
+    top: 'inherit',
+    bottom: 'inherit',
+  },
 
+  '&sameWidth': {
     content: {
-      // absolute position is needed as the stick node would otherwise
-      // cover up the base node and, for instance, make it impossible to
-      // click buttons
-      position: 'absolute',
-      display: 'inline-block',
-
-      left: 'inherit',
-      right: 'inherit',
-      top: 'inherit',
-      bottom: 'inherit',
+      display: 'block',
+      width: '100%',
     },
+  },
 
-    '&sameWidth': {
-      content: {
-        display: 'block',
-        width: '100%',
-      },
-    },
+  '&align-left': {
+    right: 'auto',
+    left: 0,
+  },
+  '&align-top': {
+    bottom: 'auto',
+    top: 0,
+  },
 
-    '&align-left': {
-      right: 'auto',
-      left: 0,
+  '&align-middle': {
+    content: {
+      transform: 'translate(0, 50%)',
     },
-    '&align-top': {
-      bottom: 'auto',
-      top: 0,
+  },
+  '&align-center': {
+    content: {
+      transform: 'translate(50%, 0)',
     },
-
     '&align-middle': {
       content: {
-        transform: 'translate(0, 50%)',
+        transform: 'translate(50%, 50%)',
       },
     },
-    '&align-center': {
-      content: {
-        transform: 'translate(50%, 0)',
-      },
-      '&align-middle': {
-        content: {
-          transform: 'translate(50%, 50%)',
-        },
-      },
-    },
-  }),
-  getModifiers
-)
+  },
+}
 
 export default StickNode
