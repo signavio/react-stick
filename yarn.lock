@@ -12515,6 +12515,14 @@ substyle@^9.0.0:
     "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"
 
+substyle@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-8.0.0.tgz#0b26f37f1e2bdf1479b659201107846fdc6befe7"
+  integrity sha512-t7QuX3AYe2xKHHsba4WZ0klKcWa3wX7bNuDqxmb5t6anJg5dVkpwhIOwWTwMORVlQFRpaTQKfPTVQR0rV0ktGw==
+  dependencies:
+    "@babel/runtime" "^7.3.4"
+    invariant "^2.2.4"
+
 supports-color@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-6.0.0.tgz#76cfe742cf1f41bb9b1c29ad03068c05b4c0e40a"
