@@ -19,9 +19,9 @@ type PropsT = {|
 
 function StickNode(props: PropsT) {
   const styles = useStyles(defaultStyle, {}, getModifiers(props))
-  const { children, sameWidth, width, nodeRef } = props
+  const { children, width, nodeRef } = props
   return (
-    <div {...inline(styles, { width: sameWidth ? '100%' : width })}>
+    <div {...inline(styles, { width })}>
       <div {...styles('content')} ref={nodeRef}>
         {children}
       </div>
