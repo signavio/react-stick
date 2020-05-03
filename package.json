@@ -28,7 +28,6 @@
   "dependencies": {
     "invariant": "^2.2.4",
     "lodash": "^4.17.4",
-    "recompose": "0.30.0",
     "requestidlecallback": "^0.3.0",
     "substyle": "^9.1.0"
   },
