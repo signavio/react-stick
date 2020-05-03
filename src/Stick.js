@@ -2,7 +2,6 @@
 import 'requestidlecallback'
 
 import invariant from 'invariant'
-import { some } from 'lodash'
 import React, {
   useCallback,
   useContext,
@@ -231,7 +230,13 @@ function isOutside(anchorRef, containerRef, target: HTMLElement) {
     const nestedStickNodes = document.querySelectorAll(
       `[data-stickNestingKey^='${nestingKey}']`
     )
-    return !some(nestedStickNodes, (stickNode) => stickNode.contains(target))
+
+    return (
+      !nestedStickNodes ||
+      !Array.from(nestedStickNodes).find((stickNode) =>
+        stickNode.contains(target)
+      )
+    )
   }
 
   return true

@@ -17,7 +17,5 @@ module.exports = {
   plugins: [
     '@babel/transform-runtime',
     '@babel/plugin-proposal-object-rest-spread',
-
-    'lodash',
   ],
 }

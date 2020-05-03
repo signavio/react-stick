@@ -1,14 +1,13 @@
 import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
-import { times } from 'lodash'
 
 import Stick from 'src/'
 
 describe('stick node width', () => {
   let host, scrollWidth
 
-  const longText = times(50, () => 'Lorem ipsum dolor sit amet.').join(' ')
+  const longText = new Array(50).fill('Lorem ipsum dolor sit amet.').join(' ')
   const anchor = <div id="anchor" />
   const node = <div id="node">{longText}</div>
 
@@ -21,7 +20,7 @@ describe('stick node width', () => {
         <div style={{ position: 'absolute', width: 100, left: 100 }}>
           {cloneElement(stick, {
             node: cloneElement(stick.props.node, {
-              ref: el => !!el && !called && window.setTimeout(callback, 1),
+              ref: (el) => !!el && !called && window.setTimeout(callback, 1),
             }),
           })}
         </div>
@@ -42,9 +41,9 @@ describe('stick node width', () => {
   })
 
   const inlineOptions = [false, true]
-  inlineOptions.forEach(inline => {
+  inlineOptions.forEach((inline) => {
     describe(`inline={${inline}}`, () => {
-      it('should make sure that a left aligned node stretches to the right screen border', done => {
+      it('should make sure that a left aligned node stretches to the right screen border', (done) => {
         render(
           <Stick
             inline={inline}
@@ -64,7 +63,7 @@ describe('stick node width', () => {
         )
       })
 
-      it('should make sure that a right aligned node stretches to the left screen border', done => {
+      it('should make sure that a right aligned node stretches to the left screen border', (done) => {
         render(
           <Stick
             inline={inline}
@@ -85,7 +84,7 @@ describe('stick node width', () => {
       })
 
       describe('sameWidth={true}', () => {
-        it('should make sure that the stick node has the same width as the anchor', done => {
+        it('should make sure that the stick node has the same width as the anchor', (done) => {
           render(
             <Stick inline={inline} sameWidth node={node}>
               {anchor}

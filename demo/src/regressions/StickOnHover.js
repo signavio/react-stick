@@ -1,4 +1,3 @@
-import { range } from 'lodash'
 import React, { useState } from 'react'
 
 import Stick from '../../../es'
@@ -14,11 +13,13 @@ function StickOnHover() {
       description="Move your mouse over the squares. When you're hovering one another node should be shown. However, there should always only be one node at the same time."
     >
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {range(100).map(i => (
-          <div key={i} style={{ marginLeft: 20, marginBottom: 20 }}>
-            <Popover />
-          </div>
-        ))}
+        {Array(100)
+          .fill(null)
+          .map((_, i) => (
+            <div key={i} style={{ marginLeft: 20, marginBottom: 20 }}>
+              <Popover />
+            </div>
+          ))}
       </div>
     </Regression>
   )
@@ -44,7 +45,7 @@ const Anchor = () => (
     style={{
       height: 30,
       width: 30,
-      backgroundColor: 'rgb(24, 170, 177)'
+      backgroundColor: 'rgb(24, 170, 177)',
     }}
   />
 )
@@ -54,7 +55,7 @@ const Node = ({ children }) => (
     style={{
       backgroundColor: '#ae0d5c',
       width: 10,
-      height: 10
+      height: 10,
     }}
   >
     {children}

@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "invariant": "^2.2.4",
-    "lodash": "^4.17.4",
     "requestidlecallback": "^0.3.0",
     "substyle": "^9.1.0"
   },
