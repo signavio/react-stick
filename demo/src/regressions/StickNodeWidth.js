@@ -56,7 +56,9 @@ const Examples = ({ inline }) => (
         position="middle right"
         node={
           <Node>
-            This text must line-break as it would reach off-screen otherwise
+            This text must line-break as it would reach off-screen otherwise.
+            After we've increased page width, this text needed to be extended a
+            bit.
           </Node>
         }
       >
