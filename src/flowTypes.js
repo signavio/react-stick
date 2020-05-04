@@ -1,6 +1,6 @@
 // @flow
 import type { Node } from 'react'
-import type { Substyle } from 'substyle'
+import type { Substyle, StylingProps } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
 export type HorizontalTargetT = 'left' | 'center' | 'right'
@@ -24,37 +24,8 @@ export type RefT =
     |}
   | ((node: ?HTMLElement) => void)
 
-type StyleT = {
-  [string]: string | number | StyleT,
-}
-
-type PlainStyleT = {
-  [string]: string | number,
-}
-
-type ModifiersT = {
-  [string]: boolean,
-}
-type KeysT = string | Array<string> | ModifiersT
-type SubstyleT = {
-  (select: KeysT, defaultStyle?: StyleT): SubstyleT,
-
-  style?: PlainStyleT,
-  className?: string,
-  ...
-}
-
-type ClassNamesT = {
-  [string]: string,
-}
-type StylingPropsT = {
-  style?: StyleT | SubstyleT,
-  className?: string,
-  classNames?: ClassNamesT,
-}
-
 export type PropsT = {|
-  ...StylingPropsT,
+  ...$Exact<StylingProps>,
 
   position?: PositionT,
   align?: AlignT,

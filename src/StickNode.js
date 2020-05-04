@@ -10,7 +10,7 @@ type PropsT = {|
 
   position: PositionT,
   align: AlignT,
-  sameWidth: boolean,
+  sameWidth?: boolean,
 
   children: Node,
 

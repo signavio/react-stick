@@ -155,7 +155,7 @@ function Stick(props: PropsT) {
                 width={width}
                 position={resolvedPosition}
                 align={resolvedAlign}
-                sameWidth={!!sameWidth}
+                sameWidth={sameWidth}
                 nodeRef={nodeRef}
               >
                 {node}
@@ -197,7 +197,7 @@ function Stick(props: PropsT) {
               width={width}
               position={resolvedPosition}
               align={resolvedAlign}
-              sameWidth={!!sameWidth}
+              sameWidth={sameWidth}
               nodeRef={nodeRef}
             >
               {node}
