@@ -10,16 +10,27 @@ type PropsT = {|
 
   position: PositionT,
   align: AlignT,
-  sameWidth?: boolean,
+  sameWidth: boolean,
 
   children: Node,
 
   nodeRef: RefT,
 |}
 
-function StickNode(props: PropsT) {
-  const styles = useStyles(defaultStyle, {}, getModifiers(props))
-  const { children, width, nodeRef } = props
+function StickNode({
+  children,
+  width,
+  nodeRef,
+  align,
+  position,
+  sameWidth,
+}: PropsT) {
+  const styles = useStyles(
+    defaultStyle,
+    {},
+    getModifiers({ align, position, sameWidth })
+  )
+
   return (
     <div {...inline(styles, { width })}>
       <div {...styles('content')} ref={nodeRef}>

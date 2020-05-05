@@ -1,6 +1,6 @@
 // @flow
 import type { Node } from 'react'
-import type { Substyle, StylingProps } from 'substyle'
+import type { StylingProps, Substyle } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
 export type HorizontalTargetT = 'left' | 'center' | 'right'
@@ -24,7 +24,7 @@ export type RefT =
     |}
   | ((node: ?HTMLElement) => void)
 
-export type PropsT = {|
+export type StickPropsT = {|
   ...$Exact<StylingProps>,
 
   position?: PositionT,

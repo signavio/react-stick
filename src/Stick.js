@@ -16,7 +16,7 @@ import StickInline from './StickInline'
 import StickNode from './StickNode'
 import StickPortal from './StickPortal'
 import DEFAULT_POSITION from './defaultPosition'
-import { type AlignT, type PropsT, type PositionT } from './flowTypes'
+import { type AlignT, type PositionT, type StickPropsT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
@@ -28,27 +28,24 @@ const defaultStyles = {
   },
 }
 
-function Stick(props: PropsT) {
-  const {
-    inline,
-    node,
-    sameWidth,
-    children,
-    updateOnAnimationFrame,
-    position,
-    align,
-    component,
-    transportTo,
-    autoFlipHorizontally,
-    autoFlipVertically,
-    onClickOutside,
-    style,
-    className,
-    classNames,
-    ...rest
-  } = props
-  const styles = useStyles(defaultStyles, { style, className, classNames })
-
+function Stick({
+  inline,
+  node,
+  sameWidth,
+  children,
+  updateOnAnimationFrame,
+  position,
+  align,
+  component,
+  transportTo,
+  autoFlipHorizontally,
+  autoFlipVertically,
+  onClickOutside,
+  style,
+  className,
+  classNames,
+  ...rest
+}: StickPropsT) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
   const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
@@ -64,6 +61,16 @@ function Stick(props: PropsT) {
     !!autoFlipVertically,
     position || DEFAULT_POSITION,
     align || getDefaultAlign(position || DEFAULT_POSITION)
+  )
+
+  const styles = useStyles(
+    defaultStyles,
+    { style, className, classNames },
+    getModifiers({
+      position: resolvedPosition,
+      align: resolvedAlign,
+      sameWidth,
+    })
   )
 
   useEffect(() => {
@@ -127,14 +134,6 @@ function Stick(props: PropsT) {
 
   useWatcher(measure, { updateOnAnimationFrame: !!updateOnAnimationFrame })
 
-  const resolvedStyles = styles(
-    getModifiers({
-      position: resolvedPosition,
-      align: resolvedAlign,
-      sameWidth,
-    })
-  )
-
   const handleReposition = useCallback(() => {
     if (nodeRef.current && anchorRef.current) {
       checkAlignment(nodeRef.current, anchorRef.current)
@@ -148,14 +147,14 @@ function Stick(props: PropsT) {
           {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
-          style={resolvedStyles}
+          style={styles}
           node={
             node && (
               <StickNode
                 width={width}
                 position={resolvedPosition}
                 align={resolvedAlign}
-                sameWidth={sameWidth}
+                sameWidth={!!sameWidth}
                 nodeRef={nodeRef}
               >
                 {node}
@@ -197,14 +196,14 @@ function Stick(props: PropsT) {
               width={width}
               position={resolvedPosition}
               align={resolvedAlign}
-              sameWidth={sameWidth}
+              sameWidth={!!sameWidth}
               nodeRef={nodeRef}
             >
               {node}
             </StickNode>
           )
         }
-        style={resolvedStyles}
+        style={styles}
         nestingKey={nestingKey}
         containerRef={containerRef}
         onReposition={handleReposition}
@@ -233,7 +232,7 @@ function isOutside(anchorRef, containerRef, target: HTMLElement) {
 
     return (
       !nestedStickNodes ||
-      !Array.from(nestedStickNodes).find((stickNode) =>
+      !Array.from(nestedStickNodes).some((stickNode) =>
         stickNode.contains(target)
       )
     )
