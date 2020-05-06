@@ -69,13 +69,8 @@ function StickPortal(
 
     const boundingRect = nodeRef.current.getBoundingClientRect()
 
-    const newTop = calculateTop(position, boundingRect, getFixedParent(host))
-    const newLeft = calculateLeft(
-      nodeRef.current,
-      position,
-      boundingRect,
-      getFixedParent(host)
-    )
+    const newTop = calculateTop(position, boundingRect, host)
+    const newLeft = calculateLeft(nodeRef.current, position, boundingRect, host)
 
     if (newTop !== top) {
       setTop(newTop)
@@ -144,8 +139,10 @@ function useHost(transportTo) {
 function calculateTop(
   position: PositionT,
   { top, height, bottom }: ClientRect,
-  fixedHost: ?Element
+  host: Element
 ) {
+  const fixedHost = getFixedParent(host)
+
   let result = 0
   if (position.indexOf('top') !== -1) {
     result = top
@@ -170,8 +167,11 @@ function calculateLeft(
   nodeRef,
   position: PositionT,
   { left, width, right }: ClientRect,
-  fixedHost: ?Element
+  host: Element
 ) {
+  const fixedHost = getFixedParent(host)
+  const scrollHost = getScrollParent(nodeRef)
+
   let result = 0
   if (position.indexOf('left') !== -1) {
     result = left
@@ -189,7 +189,31 @@ function calculateLeft(
     return result - hostLeft
   }
 
+  if (scrollHost) {
+    return result + scrollX(nodeRef) - scrollHost.scrollLeft
+  }
+
   return result + scrollX(nodeRef)
+}
+
+function getScrollParent(element) {
+  if (!element) {
+    return null
+  }
+
+  if (element.nodeName === 'BODY' || element.nodeName === 'HTML') {
+    return null
+  }
+
+  const style = getComputedStyle(element)
+
+  if (style.overflowX === 'auto') {
+    return element
+  }
+
+  return element.parentNode instanceof Element
+    ? getScrollParent(element.parentNode)
+    : null
 }
 
 function getFixedParent(element: Element): ?Element {
