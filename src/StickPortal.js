@@ -207,7 +207,7 @@ function getScrollParent(element) {
 
   const style = getComputedStyle(element)
 
-  if (style.overflowX === 'auto') {
+  if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
     return element
   }
 

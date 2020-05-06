@@ -17,6 +17,8 @@ function ScrollPosition() {
           style={{
             width: 5000,
             height: 5000,
+            marginLeft: 20,
+            marginTop: 20,
             display: 'flex',
             alignItems: 'flex-start',
           }}
