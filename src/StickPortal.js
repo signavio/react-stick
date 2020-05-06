@@ -63,7 +63,7 @@ function StickPortal(
   }, [host, hostParent, visible])
 
   const measure = useCallback(() => {
-    if (!nodeRef.current) {
+    if (!nodeRef.current || !visible) {
       return
     }
 
@@ -79,7 +79,7 @@ function StickPortal(
     if (newLeft !== left) {
       setLeft(newLeft)
     }
-  }, [host, left, position, top])
+  }, [host, left, position, top, visible])
 
   useWatcher(measure, { updateOnAnimationFrame })
 
