@@ -3,6 +3,7 @@ import React from 'react'
 import ButtonOverlay from './ButtonOverlay'
 import FitOnPage from './FitOnPage'
 import SameWidth from './SameWidth'
+import ScrollPosition from './ScrollPosition'
 import StickInSvg from './StickInSvg'
 import StickNodeWidth from './StickNodeWidth'
 import StickOnHover from './StickOnHover'
@@ -22,6 +23,7 @@ export default function Regressions() {
       <StyledWithDataAttributes />
       <TransportToFixedContainer />
       <StickOnHover />
+      <ScrollPosition />
     </div>
   )
 }
