@@ -12,10 +12,10 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { inline } from 'substyle'
 import { createPortal } from 'react-dom'
+import { inline } from 'substyle'
 
-import type { PositionT, StickPortalPropsT } from './flowTypes'
+import type { StickPortalPropsT } from './flowTypes'
 import { useWatcher } from './hooks'
 import { scrollX, scrollY } from './utils'
 
@@ -36,8 +36,8 @@ function StickPortal(
   ref
 ) {
   const nodeRef = useRef()
-  const [top, setTop] = useState(0)
-  const [left, setLeft] = useState(0)
+  const [top, setTop] = useState(null)
+  const [left, setLeft] = useState(null)
   const [visible, setVisible] = useState(!!node)
 
   const [host, hostParent] = useHost(transportTo)
@@ -63,14 +63,14 @@ function StickPortal(
   }, [host, hostParent, visible])
 
   const measure = useCallback(() => {
-    if (!nodeRef.current || !visible) {
+    const node = nodeRef.current
+
+    if (!node || !visible) {
       return
     }
 
-    const boundingRect = nodeRef.current.getBoundingClientRect()
-
-    const newTop = calculateTop(position, boundingRect, host)
-    const newLeft = calculateLeft(nodeRef.current, position, boundingRect, host)
+    const newTop = calculateTop(node, position, host)
+    const newLeft = calculateLeft(node, position, host)
 
     if (newTop !== top) {
       setTop(newTop)
@@ -100,22 +100,24 @@ function StickPortal(
     >
       {children}
 
-      <PortalContext.Provider value={host.parentNode}>
-        {createPortal(
-          <div
-            ref={containerRef}
-            data-sticknestingkey={nestingKey}
-            {...inline(style('node'), {
-              position: 'absolute',
-              top,
-              left,
-            })}
-          >
-            {node}
-          </div>,
-          host
-        )}
-      </PortalContext.Provider>
+      {top != null && left != null && (
+        <PortalContext.Provider value={host.parentNode}>
+          {createPortal(
+            <div
+              ref={containerRef}
+              data-sticknestingkey={nestingKey}
+              {...inline(style('node'), {
+                position: 'absolute',
+                top,
+                left,
+              })}
+            >
+              {node}
+            </div>,
+            host
+          )}
+        </PortalContext.Provider>
+      )}
     </Component>
   )
 }
@@ -136,11 +138,8 @@ function useHost(transportTo) {
   return [host, hostParent]
 }
 
-function calculateTop(
-  position: PositionT,
-  { top, height, bottom }: ClientRect,
-  host: Element
-) {
+function calculateTop(node, position, host) {
+  const { top, height, bottom } = node.getBoundingClientRect()
   const fixedHost = getFixedParent(host)
 
   let result = 0
@@ -163,14 +162,11 @@ function calculateTop(
   return result + scrollY()
 }
 
-function calculateLeft(
-  nodeRef,
-  position: PositionT,
-  { left, width, right }: ClientRect,
-  host: Element
-) {
+function calculateLeft(node, position, host) {
+  const { left, width, right } = node.getBoundingClientRect()
+
   const fixedHost = getFixedParent(host)
-  const scrollHost = getScrollParent(nodeRef)
+  const scrollHost = getScrollParent(node)
 
   let result = 0
   if (position.indexOf('left') !== -1) {
@@ -190,10 +186,10 @@ function calculateLeft(
   }
 
   if (scrollHost) {
-    return result + scrollX(nodeRef) - scrollHost.scrollLeft
+    return result + scrollX(node) - scrollHost.scrollLeft
   }
 
-  return result + scrollX(nodeRef)
+  return result + scrollX(node)
 }
 
 function getScrollParent(element) {
