@@ -9,8 +9,8 @@ function ScrollPosition() {
       fixed
       allBrowsers
       version="3.0.3"
-      title="Node should scroll with stick node"
-      description="Scroll to the side. The sticked node should move with the element it was sticked to."
+      title="Node should scroll with anchor node"
+      description="Scroll to the side. The node should move with the anchor node."
     >
       <div style={{ overflow: 'auto', height: 200, border: '1px solid black' }}>
         <div
