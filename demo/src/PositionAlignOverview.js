@@ -1,12 +1,11 @@
-import { compact } from 'lodash'
 import React, { useCallback, useRef, useState } from 'react'
 
 import Stick from '../../es'
 import { useWatcher } from './hooks'
 
 const formPairs = (listA: Array<string>, listB: Array<string>) =>
-  compact(
-    listA.map((a: string) =>
+  listA
+    .map((a: string) =>
       listB.map((b: string) => {
         if (a === b) {
           return null
@@ -15,7 +14,7 @@ const formPairs = (listA: Array<string>, listB: Array<string>) =>
         return `${a} ${b}`
       })
     )
-  )
+    .filter((pair) => pair !== null)
 
 const verticals = ['top', 'middle', 'bottom']
 const horizontals = ['left', 'center', 'right']

@@ -1,6 +1,6 @@
 // @flow
 import type { Node } from 'react'
-import type { Substyle } from 'substyle'
+import type { StylingProps, Substyle } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
 export type HorizontalTargetT = 'left' | 'center' | 'right'
@@ -24,7 +24,9 @@ export type RefT =
     |}
   | ((node: ?HTMLElement) => void)
 
-export type ApiPropsT = {|
+export type StickPropsT = {|
+  ...$Exact<StylingProps>,
+
   position?: PositionT,
   align?: AlignT,
 
@@ -35,8 +37,6 @@ export type ApiPropsT = {|
 
   updateOnAnimationFrame?: boolean,
 
-  style?: Substyle,
-
   component?: string,
 
   transportTo?: HTMLElement,
@@ -45,28 +45,6 @@ export type ApiPropsT = {|
   children: Node,
 
   onClickOutside?: (ev: MouseEvent) => void,
-|}
-
-export type StickPropsT = {|
-  position: PositionT,
-  align: AlignT,
-
-  inline?: boolean,
-  sameWidth?: boolean,
-
-  updateOnAnimationFrame?: boolean,
-
-  style?: Substyle,
-
-  component?: string,
-
-  transportTo: ?HTMLElement,
-
-  node: Node,
-  children: Node,
-
-  onClickOutside?: (ev: MouseEvent) => void,
-  onReposition: (nodeRef: HTMLElement, anchorRef: HTMLElement) => void,
 |}
 
 type SpecificStickBasePropsT = {|

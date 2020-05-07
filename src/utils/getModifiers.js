@@ -6,7 +6,6 @@ import getDefaultAlign from './getDefaultAlign'
 type PropsT = {
   align: AlignT,
   position: PositionT,
-
   sameWidth?: boolean,
 }
 

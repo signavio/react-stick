@@ -1,14 +1,13 @@
 import expect from 'expect'
 import React, { cloneElement } from 'react'
 import { render as renderBase, unmountComponentAtNode } from 'react-dom'
-import { times } from 'lodash'
 
 import Stick from 'src/'
 
 describe('positioning in scrolling window', () => {
   let host, scrollHeight, fixedElement
 
-  const longText = times(50, () => 'Lorem ipsum dolor sit amet.').join(' ')
+  const longText = new Array(50).fill('Lorem ipsum dolor sit amet.').join(' ')
   const anchor = <div id="anchor" />
   const node = <div id="node">{longText}</div>
 
@@ -21,7 +20,7 @@ describe('positioning in scrolling window', () => {
         <div style={{ position: 'absolute', height: 0, top: 5000 }}>
           {cloneElement(stick, {
             node: cloneElement(stick.props.node, {
-              ref: el => !!el && !called && window.setTimeout(callback, 1),
+              ref: (el) => !!el && !called && window.setTimeout(callback, 1),
             }),
           })}
         </div>
@@ -47,7 +46,7 @@ describe('positioning in scrolling window', () => {
     document.body.removeChild(fixedElement)
   })
 
-  it('should keep the correct the node position when scrolling', done => {
+  it('should keep the correct the node position when scrolling', (done) => {
     render(
       <Stick position="bottom left" align="top left" node={node}>
         {anchor}
@@ -68,7 +67,7 @@ describe('positioning in scrolling window', () => {
     )
   })
 
-  it('should keep the correct the node position when transported to a fixed container', done => {
+  it('should keep the correct the node position when transported to a fixed container', (done) => {
     render(
       <Stick
         position="bottom left"

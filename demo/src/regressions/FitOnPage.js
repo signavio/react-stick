@@ -1,4 +1,3 @@
-import { times } from 'lodash'
 import React from 'react'
 
 import Stick from '../../../es'
@@ -25,7 +24,7 @@ const node = (
       minHeight: 18,
     }}
   >
-    {times(1, () => 'Lorem ipsum dolor sit amet.').join(' ')}
+    {Array(10).fill('Lorem ipsum dolor sit amet.').join(' ')}
   </div>
 )
 

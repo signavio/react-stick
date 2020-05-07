@@ -2,7 +2,6 @@
 import 'requestidlecallback'
 
 import invariant from 'invariant'
-import { some } from 'lodash'
 import React, {
   useCallback,
   useContext,
@@ -10,28 +9,28 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { type HOC } from 'recompose'
-import { type Substyle, defaultStyle } from 'substyle'
+import useStyles from 'substyle'
 
 import { StickContext } from './StickContext'
 import StickInline from './StickInline'
 import StickNode from './StickNode'
 import StickPortal from './StickPortal'
 import DEFAULT_POSITION from './defaultPosition'
-import { type AlignT, type ApiPropsT, type PositionT } from './flowTypes'
+import { type AlignT, type PositionT, type StickPropsT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
-type PropsT = {|
-  ...ApiPropsT,
-
-  style: Substyle,
-|}
+const defaultStyles = {
+  node: {
+    position: 'absolute',
+    zIndex: 99,
+    textAlign: 'left',
+  },
+}
 
 function Stick({
   inline,
   node,
-  style,
   sameWidth,
   children,
   updateOnAnimationFrame,
@@ -42,8 +41,11 @@ function Stick({
   autoFlipHorizontally,
   autoFlipVertically,
   onClickOutside,
+  style,
+  className,
+  classNames,
   ...rest
-}: PropsT) {
+}: StickPropsT) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
   const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
@@ -59,6 +61,16 @@ function Stick({
     !!autoFlipVertically,
     position || DEFAULT_POSITION,
     align || getDefaultAlign(position || DEFAULT_POSITION)
+  )
+
+  const styles = useStyles(
+    defaultStyles,
+    { style, className, classNames },
+    getModifiers({
+      position: resolvedPosition,
+      align: resolvedAlign,
+      sameWidth,
+    })
   )
 
   useEffect(() => {
@@ -122,10 +134,6 @@ function Stick({
 
   useWatcher(measure, { updateOnAnimationFrame: !!updateOnAnimationFrame })
 
-  const resolvedStyle = style(
-    getModifiers({ position: resolvedPosition, align: resolvedAlign })
-  )
-
   const handleReposition = useCallback(() => {
     if (nodeRef.current && anchorRef.current) {
       checkAlignment(nodeRef.current, anchorRef.current)
@@ -139,7 +147,7 @@ function Stick({
           {...rest}
           position={resolvedPosition}
           align={resolvedAlign}
-          style={resolvedStyle}
+          style={styles}
           node={
             node && (
               <StickNode
@@ -195,7 +203,7 @@ function Stick({
             </StickNode>
           )
         }
-        style={resolvedStyle}
+        style={styles}
         nestingKey={nestingKey}
         containerRef={containerRef}
         onReposition={handleReposition}
@@ -221,7 +229,13 @@ function isOutside(anchorRef, containerRef, target: HTMLElement) {
     const nestedStickNodes = document.querySelectorAll(
       `[data-stickNestingKey^='${nestingKey}']`
     )
-    return !some(nestedStickNodes, (stickNode) => stickNode.contains(target))
+
+    return (
+      !nestedStickNodes ||
+      !Array.from(nestedStickNodes).some((stickNode) =>
+        stickNode.contains(target)
+      )
+    )
   }
 
   return true
@@ -273,15 +287,4 @@ function calculateWidth(
   return 0
 }
 
-const styled: HOC<*, ApiPropsT> = defaultStyle(
-  {
-    node: {
-      position: 'absolute',
-      zIndex: 99,
-      textAlign: 'left',
-    },
-  },
-  getModifiers
-)
-
-export default styled(Stick)
+export default Stick
