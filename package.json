@@ -48,7 +48,7 @@
     "eslint-plugin-import": "2.20.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.20.0",
-    "eslint-plugin-react-hooks": "4.0.3",
+    "eslint-plugin-react-hooks": "4.0.4",
     "flow-bin": "0.125.1",
     "flow-copy-source": "2.0.9",
     "glamor": "2.20.40",
