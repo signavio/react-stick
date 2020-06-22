@@ -10,8 +10,10 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
+    "prebuild": "yarn clean",
     "build": "nwb build-react-component --no-demo",
     "postbuild": "flow-copy-source -v src lib && flow-copy-source -v src es",
+    "prepublishOnly": "yarn build",
     "build-demo": "webpack",
     "clean": "nwb clean-module && nwb clean-demo",
     "flow": "flow check",
