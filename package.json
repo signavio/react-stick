@@ -4,6 +4,7 @@
   "description": "React component to stick a portaled node to an anchor node",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "files": ["lib/*", "es/*"],
   "repository": "git@github.com:signavio/react-stick.git",
   "author": "Jan-Felix Schwarz <jan-felix.schwarz@signavio.com>",
   "license": "MIT",
