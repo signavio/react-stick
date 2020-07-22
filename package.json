@@ -62,7 +62,7 @@
     "prettier": "2.0.5",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "regenerator-runtime": "0.13.6",
+    "regenerator-runtime": "0.13.7",
     "semantic-release": "17.1.1",
     "substyle-glamor": "4.0.2",
     "webpack": "4.43.0",
