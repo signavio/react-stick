@@ -65,7 +65,7 @@
     "regenerator-runtime": "0.13.7",
     "semantic-release": "17.1.1",
     "substyle-glamor": "4.0.2",
-    "webpack": "4.44.0",
+    "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
   },
