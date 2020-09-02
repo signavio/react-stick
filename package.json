@@ -52,7 +52,7 @@
     "eslint-plugin-jsx-a11y": "6.3.1",
     "eslint-plugin-react": "7.20.6",
     "eslint-plugin-react-hooks": "4.1.0",
-    "flow-bin": "0.132.0",
+    "flow-bin": "0.133.0",
     "flow-copy-source": "2.0.9",
     "glamor": "2.20.40",
     "html-webpack-harddisk-plugin": "1.0.2",
