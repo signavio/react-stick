@@ -1,40 +1,90 @@
+// @flow
 import expect from 'expect'
-import React, { cloneElement } from 'react'
-import { render as renderBase, unmountComponentAtNode } from 'react-dom'
+import invariant from 'invariant'
+import React from 'react'
 
-import Stick from 'src/'
+import Stick from '../src/'
+import {
+  type AlignT,
+  type HorizontalTargetT,
+  type PositionT,
+  type VerticalTargetT,
+} from '../src/flowTypes'
+import { render } from './utils'
+
+const getPosition = (
+  vertical: VerticalTargetT,
+  horizontal: HorizontalTargetT
+): PositionT => {
+  const position = [vertical, horizontal].join(' ')
+
+  invariant(
+    position === 'bottom left' ||
+      position === 'bottom center' ||
+      position === 'bottom right' ||
+      position === 'middle left' ||
+      position === 'middle center' ||
+      position === 'middle right' ||
+      position === 'top left' ||
+      position === 'top center' ||
+      position === 'top right',
+    `Invalid position: "${position}"`
+  )
+
+  return position
+}
+
+const getAlign = (
+  vertical: VerticalTargetT,
+  horizontal: HorizontalTargetT
+): AlignT => {
+  const align = [vertical, horizontal].join(' ')
+
+  invariant(
+    align === 'bottom left' ||
+      align === 'bottom center' ||
+      align === 'bottom right' ||
+      align === 'middle left' ||
+      align === 'middle center' ||
+      align === 'middle right' ||
+      align === 'top left' ||
+      align === 'top center' ||
+      align === 'top right',
+    `Invalid align: "${align}"`
+  )
+
+  return align
+}
 
 describe('positioning', () => {
-  let host
-
-  const verticals = ['top', 'middle', 'bottom']
-  const horizontals = ['left', 'center', 'right']
+  const verticals: $ReadOnlyArray<VerticalTargetT> = ['top', 'middle', 'bottom']
+  const horizontals: $ReadOnlyArray<HorizontalTargetT> = [
+    'left',
+    'center',
+    'right',
+  ]
 
   const BODY_PADDING = 8
 
   const NODE_WIDTH = 10
   const NODE_HEIGHT = 20
   const node = (
-    <div id="node" style={{ width: NODE_WIDTH, height: NODE_HEIGHT }} />
+    <div
+      data-testid="node"
+      style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
+    />
   )
 
   const ANCHOR_WIDTH = 30
   const ANCHOR_HEIGHT = 40
   const anchor = (
-    <div id="anchor" style={{ width: ANCHOR_WIDTH, height: ANCHOR_HEIGHT }} />
+    <div
+      data-testid="anchor"
+      style={{ width: ANCHOR_WIDTH, height: ANCHOR_HEIGHT }}
+    />
   )
 
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
-
-  const widthFactor = position => {
+  const widthFactor = (position) => {
     switch (position) {
       case 'left':
         return 0
@@ -43,11 +93,11 @@ describe('positioning', () => {
       case 'right':
         return 1
       default:
-        return
+        throw new Error(`Invalid position "${position}"`)
     }
   }
 
-  const heightFactor = position => {
+  const heightFactor = (position) => {
     switch (position) {
       case 'top':
         return 0
@@ -56,7 +106,7 @@ describe('positioning', () => {
       case 'bottom':
         return 1
       default:
-        return
+        throw new Error(`Invalid position "${position}"`)
     }
   }
 
@@ -70,71 +120,51 @@ describe('positioning', () => {
     heightFactor(position) * ANCHOR_HEIGHT -
     heightFactor(align) * NODE_HEIGHT
 
-  // wrap render to invoke callback only after the node has actually been mounted
-  const render = (stick, host, callback) => {
-    let called = false
-    renderBase(
-      // wrap in inline-block container so that the stick container adjusts to anchor size
-      <div style={{ display: 'inline-block ' }}>
-        {cloneElement(stick, {
-          node: cloneElement(stick.props.node, {
-            ref: el => !!el && !called && window.setTimeout(callback, 1),
-          }),
-        })}
-      </div>,
-      host
-    )
-  }
-
-  verticals.forEach(verticalPosition => {
-    horizontals.forEach(horizontalPosition => {
-      const position = `${verticalPosition} ${horizontalPosition}`
+  verticals.forEach((verticalPosition) => {
+    horizontals.forEach((horizontalPosition) => {
+      const position = getPosition(verticalPosition, horizontalPosition)
 
       describe(`position="${position}"`, () => {
-        verticals.forEach(verticalAlign => {
-          horizontals.forEach(horizontalAlign => {
-            const align = `${verticalAlign} ${horizontalAlign}`
+        verticals.forEach((verticalAlign) => {
+          horizontals.forEach((horizontalAlign) => {
+            const align = getAlign(verticalAlign, horizontalAlign)
 
             const expectedLeft = calcLeft(horizontalPosition, horizontalAlign)
             const expectedTop = calcTop(verticalPosition, verticalAlign)
 
             describe(`align="${align}"`, () => {
-              it(`should place at left: ${expectedLeft} top: ${expectedTop}`, done => {
-                render(
+              it(`should place at left: ${expectedLeft} top: ${expectedTop}`, () => {
+                const { getByTestId } = render(
                   <Stick node={node} position={position} align={align}>
                     {anchor}
-                  </Stick>,
-                  host,
-                  () => {
-                    const nodeElement = document.getElementById('node')
-                    const { left, top } = nodeElement.getBoundingClientRect()
-                    expect(left).toEqual(expectedLeft)
-                    expect(top).toEqual(expectedTop)
-                    done()
-                  }
+                  </Stick>
                 )
+
+                const { left, top } = getByTestId(
+                  'node'
+                ).getBoundingClientRect()
+                expect(left).toEqual(expectedLeft)
+                expect(top).toEqual(expectedTop)
               })
 
-              it(`should place at left: ${expectedLeft} top: ${expectedTop} with \`inline\` prop`, done => {
-                render(
+              it(`should place at left: ${expectedLeft} top: ${expectedTop} with \`inline\` prop`, () => {
+                const { getByTestId } = render(
                   <Stick inline node={node} position={position} align={align}>
                     {anchor}
-                  </Stick>,
-                  host,
-                  () => {
-                    const nodeElement = document.getElementById('node')
-                    const { left, top } = nodeElement.getBoundingClientRect()
-                    expect(left).toEqual(expectedLeft)
-                    expect(top).toEqual(expectedTop)
-                    done()
-                  }
+                  </Stick>
                 )
+
+                const { left, top } = getByTestId(
+                  'node'
+                ).getBoundingClientRect()
+                expect(left).toEqual(expectedLeft)
+                expect(top).toEqual(expectedTop)
               })
             })
           })
         })
 
-        it('should use the correct default `align`', done => {
+        it('should use the correct default `align`', () => {
           const defaultAligns = {
             'top left': 'bottom left',
             'top center': 'bottom center',
@@ -161,22 +191,19 @@ describe('positioning', () => {
               {anchor}
             </Stick>
           )
-          render(stick, host, () => {
-            const nodeElement = document.getElementById('node')
-            const { left, top } = nodeElement.getBoundingClientRect()
 
-            render(otherStick, host, () => {
-              const nodeElement = document.getElementById('node')
-              const {
-                left: otherLeft,
-                top: otherTop,
-              } = nodeElement.getBoundingClientRect()
+          const { rerender, getByTestId } = render(stick)
 
-              expect(left).toBe(otherLeft)
-              expect(top).toBe(otherTop)
-              done()
-            })
-          })
+          const { left, top } = getByTestId('node').getBoundingClientRect()
+
+          rerender(otherStick)
+
+          const { left: otherLeft, top: otherTop } = getByTestId(
+            'node'
+          ).getBoundingClientRect()
+
+          expect(left).toBe(otherLeft)
+          expect(top).toBe(otherTop)
         })
       })
     })

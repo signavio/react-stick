@@ -1,107 +1,75 @@
+// @flow
 import expect, { createSpy } from 'expect'
-import React, { cloneElement } from 'react'
-import { render as renderBase, unmountComponentAtNode } from 'react-dom'
+import React from 'react'
 
-import Stick from 'src/'
+import { fireEvent, render } from '@testing-library/react'
+
+import Stick from '../src/'
 
 describe('`onClickOutside` event', () => {
-  let host
+  const anchor = <div data-testid="anchor" />
+  const node = <div data-testid="node" />
 
-  const anchor = <div id="anchor" />
-  const node = <div id="node" />
-
-  // wrap render to invoke callback only after the node has actually been mounted
-  const render = (stick, host, callback) => {
-    let called = false
-    renderBase(
-      cloneElement(stick, {
-        node: cloneElement(stick.props.node, {
-          ref: el => !!el && !called && window.setTimeout(callback, 1),
-        }),
-      }),
-      host
-    )
-  }
-
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
-
-  it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', done => {
+  it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', () => {
     const spy = createSpy()
-    render(
+    const { container } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        const outsideNode = document.createElement('div')
-        document.body.appendChild(outsideNode)
-        outsideNode.click()
-        expect(spy).toHaveBeenCalled()
-        spy.reset()
-
-        document.body.click()
-        expect(spy).toHaveBeenCalled()
-        done()
-      }
+      </Stick>
     )
+
+    fireEvent.click(container)
+
+    expect(spy).toHaveBeenCalled()
+    spy.reset()
+
+    document.body?.click()
+    expect(spy).toHaveBeenCalled()
   })
 
-  it('should not call `onClickOutside` on click on the anchor element or stick node', done => {
+  it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
     const spy = createSpy()
-    render(
+    const { getByTestId } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        document.getElementById('anchor').click()
-        expect(spy).toNotHaveBeenCalled()
-
-        document.getElementById('node').click()
-        expect(spy).toNotHaveBeenCalled()
-
-        done()
-      }
+      </Stick>
     )
+
+    fireEvent.click(getByTestId('anchor'))
+    expect(spy).toNotHaveBeenCalled()
+
+    fireEvent.click(getByTestId('node'))
+    expect(spy).toNotHaveBeenCalled()
   })
 
   const inlineOptions = [false, true]
-  inlineOptions.forEach(outerInline => {
-    inlineOptions.forEach(innerInline => {
+  inlineOptions.forEach((outerInline) => {
+    inlineOptions.forEach((innerInline) => {
       describe(`<Stick ${innerInline ? 'inline ' : ''}/> in node of <Stick ${
         outerInline ? 'inline ' : ''
       }/>`, () => {
-        it('should not call `onClickOutside` on click on the nested stick node', done => {
+        it('should not call `onClickOutside` on click on the nested stick node', () => {
           const spy = createSpy()
-          render(
+          const { getByTestId } = render(
             <Stick
               inline={outerInline}
               onClickOutside={spy}
               node={
-                <div id="node">
-                  <Stick inline={innerInline} node={<div id="nested-node" />}>
-                    <span>foo</span>
-                  </Stick>
-                </div>
+                <Stick
+                  inline={innerInline}
+                  node={<div data-testid="nested-node" />}
+                >
+                  <span>foo</span>
+                </Stick>
               }
             >
               <div />
-            </Stick>,
-            host,
-            () => {
-              document.getElementById('nested-node').click()
-              expect(spy).toNotHaveBeenCalled()
-              done()
-            }
+            </Stick>
           )
+
+          fireEvent.click(getByTestId('nested-node'))
+
+          expect(spy).toNotHaveBeenCalled()
         })
       })
     })
