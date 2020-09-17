@@ -1,50 +1,35 @@
+// @flow
 import expect from 'expect'
-import React, { cloneElement } from 'react'
-import { render as renderBase, unmountComponentAtNode } from 'react-dom'
+import React from 'react'
 
-import Stick from 'src/'
+import { render as renderBase } from '@testing-library/react'
+
+import Stick from '../src/'
 
 describe('stick node width', () => {
-  let host, scrollWidth
-
   const longText = new Array(50).fill('Lorem ipsum dolor sit amet.').join(' ')
-  const anchor = <div id="anchor" />
-  const node = <div id="node">{longText}</div>
+  const anchor = <div />
+  const node = (
+    <div data-testid="node" style={{ wordBreak: 'break-all' }}>
+      {longText}
+    </div>
+  )
 
-  // wrap render to invoke callback only after the node has actually been mounted
-  const render = (stick, host, callback) => {
-    let called = false
-    renderBase(
-      // sets documentElement's scroll width to 1008
-      <div style={{ width: 1000, height: 9999 }}>
-        <div style={{ position: 'absolute', width: 100, left: 100 }}>
-          {cloneElement(stick, {
-            node: cloneElement(stick.props.node, {
-              ref: (el) => !!el && !called && window.setTimeout(callback, 1),
-            }),
-          })}
-        </div>
-      </div>,
-      host
-    )
-    scrollWidth = document.documentElement.scrollWidth
-  }
+  const PositionWrapper = ({ children }) => (
+    <div style={{ width: 1000, height: 9999 }}>
+      <div style={{ position: 'absolute', width: 100, left: 100 }}>
+        {children}
+      </div>
+    </div>
+  )
 
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
+  const render = (stick) => renderBase(stick, { wrapper: PositionWrapper })
 
   const inlineOptions = [false, true]
   inlineOptions.forEach((inline) => {
-    describe(`inline={${inline}}`, () => {
-      it('should make sure that a left aligned node stretches to the right screen border', (done) => {
-        render(
+    describe(`inline={${inline.toString()}}`, () => {
+      it('should make sure that a left aligned node stretches to the right screen border', () => {
+        const { getByTestId } = render(
           <Stick
             inline={inline}
             position="middle right"
@@ -52,19 +37,15 @@ describe('stick node width', () => {
             node={node}
           >
             {anchor}
-          </Stick>,
-          host,
-          () => {
-            const nodeElement = document.getElementById('node')
-            const { right } = nodeElement.getBoundingClientRect()
-            expect(right).toEqual(scrollWidth)
-            done()
-          }
+          </Stick>
         )
+
+        const { right } = getByTestId('node').getBoundingClientRect()
+        expect(right).toEqual(document.documentElement?.scrollWidth)
       })
 
-      it('should make sure that a right aligned node stretches to the left screen border', (done) => {
-        render(
+      it('should make sure that a right aligned node stretches to the left screen border', () => {
+        const { getByTestId } = render(
           <Stick
             inline={inline}
             position="middle left"
@@ -72,31 +53,24 @@ describe('stick node width', () => {
             node={node}
           >
             {anchor}
-          </Stick>,
-          host,
-          () => {
-            const nodeElement = document.getElementById('node')
-            const { left } = nodeElement.getBoundingClientRect()
-            expect(left).toEqual(0)
-            done()
-          }
+          </Stick>
         )
+
+        const { left } = getByTestId('node').getBoundingClientRect()
+
+        expect(left).toEqual(0)
       })
 
       describe('sameWidth={true}', () => {
-        it('should make sure that the stick node has the same width as the anchor', (done) => {
-          render(
+        it('should make sure that the stick node has the same width as the anchor', () => {
+          const { getByTestId } = render(
             <Stick inline={inline} sameWidth node={node}>
               {anchor}
-            </Stick>,
-            host,
-            () => {
-              const nodeElement = document.getElementById('node')
-              const { width } = nodeElement.getBoundingClientRect()
-              expect(width).toEqual(100)
-              done()
-            }
+            </Stick>
           )
+
+          const { width } = getByTestId('node').getBoundingClientRect()
+          expect(width).toEqual(100)
         })
       })
     })

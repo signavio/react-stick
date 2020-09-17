@@ -1,6 +1,8 @@
+// @flow
 import expect from 'expect'
 import React from 'react'
-import { unmountComponentAtNode } from 'react-dom'
+
+import { fireEvent } from '@testing-library/react'
 
 import Stick from '../src'
 import { render } from './utils'
@@ -9,25 +11,14 @@ const windowHeight = window.innerHeight
 const windowWidth = window.innerWidth
 
 describe('autoPositioning', () => {
-  let host
-
-  beforeEach(() => {
-    host = document.createElement('div')
-
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
-
-  const node = <div id="node" style={{ height: 100, width: 100 }} />
-  const anchor = <div id="anchor" style={{ height: 100, width: 100 }} />
+  const node = <div data-testid="node" style={{ height: 100, width: 100 }} />
+  const anchor = (
+    <div data-testid="anchor" style={{ height: 100, width: 100 }} />
+  )
 
   describe('vertical', () => {
-    it('should move the node from bottom to top if there is not enough space at the bottom.', done => {
-      render(
+    it('should move the node from bottom to top if there is not enough space at the bottom.', () => {
+      const { getByTestId } = render(
         <Stick
           autoFlipVertically
           position="bottom center"
@@ -35,29 +26,19 @@ describe('autoPositioning', () => {
           style={{ marginTop: windowHeight }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const {
-              top: nodeTop,
-              height: nodeHeight,
-            } = nodeElement.getBoundingClientRect()
-            const { top: anchorTop } = anchorElement.getBoundingClientRect()
-
-            expect(anchorTop).toEqual(nodeTop + nodeHeight)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      const { top: nodeTop, height: nodeHeight } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { top: anchorTop } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorTop).toEqual(nodeTop + nodeHeight)
     })
 
-    it('should move the node back to its original intended position if space clears up (initial position: "bottom center").', done => {
-      render(
+    it('should move the node back to its original intended position if space clears up (initial position: "bottom center").', () => {
+      const { getByTestId, rerender } = render(
         <Stick
           autoFlipVertically
           position="bottom center"
@@ -65,86 +46,40 @@ describe('autoPositioning', () => {
           style={{ marginTop: windowHeight }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            render(
-              <Stick
-                autoFlipVertically
-                position="bottom center"
-                node={node}
-                style={{ marginTop: 0 }}
-              >
-                {anchor}
-              </Stick>,
-              host,
-              () => {
-                setTimeout(() => {
-                  const nodeElement = document.getElementById('node')
-                  const anchorElement = document.getElementById('anchor')
-
-                  const { top: nodeTop } = nodeElement.getBoundingClientRect()
-                  const {
-                    top: anchorTop,
-                    height: anchorHeight,
-                  } = anchorElement.getBoundingClientRect()
-
-                  expect(nodeTop).toEqual(anchorTop + anchorHeight)
-
-                  done()
-                }, 100)
-              }
-            )
-          }, 100)
-        }
+        </Stick>
       )
+
+      rerender(
+        <Stick
+          autoFlipVertically
+          position="bottom center"
+          node={node}
+          style={{ marginTop: 0 }}
+        >
+          {anchor}
+        </Stick>
+      )
+
+      fireEvent.scroll(window)
+
+      const { top: nodeTop } = getByTestId('node').getBoundingClientRect()
+      const { top: anchorTop, height: anchorHeight } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      console.log(anchorTop)
+
+      expect(nodeTop).toEqual(anchorTop + anchorHeight)
     })
 
-    it('should move the node back to its original intended position if space clears up (initial position: "top center").', done => {
-      render(
+    it('should move the node back to its original intended position if space clears up (initial position: "top center").', () => {
+      const { getByTestId, rerender } = render(
         <Stick autoFlipVertically position="top center" node={node}>
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            render(
-              <Stick
-                autoFlipVertically
-                position="top center"
-                node={node}
-                style={{ marginTop: windowHeight }}
-              >
-                {anchor}
-              </Stick>,
-              host,
-              () => {
-                setTimeout(() => {
-                  const nodeElement = document.getElementById('node')
-                  const anchorElement = document.getElementById('anchor')
-
-                  const {
-                    top: nodeTop,
-                    height: nodeHeight,
-                  } = nodeElement.getBoundingClientRect()
-                  const {
-                    top: anchorTop,
-                  } = anchorElement.getBoundingClientRect()
-
-                  expect(anchorTop).toEqual(nodeTop + nodeHeight)
-
-                  done()
-                }, 100)
-              }
-            )
-          }, 100)
-        }
+        </Stick>
       )
-    })
 
-    it('should not move the node from top to bottom if there is not enough space a the top.', done => {
-      render(
+      rerender(
         <Stick
           autoFlipVertically
           position="top center"
@@ -152,29 +87,41 @@ describe('autoPositioning', () => {
           style={{ marginTop: windowHeight }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const {
-              top: nodeTop,
-              height: nodeHeight,
-            } = nodeElement.getBoundingClientRect()
-            const { top: anchorTop } = anchorElement.getBoundingClientRect()
-
-            expect(anchorTop).toEqual(nodeTop + nodeHeight)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      fireEvent.scroll(window)
+
+      const { top: nodeTop, height: nodeHeight } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { top: anchorTop } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorTop).toEqual(nodeTop + nodeHeight)
     })
 
-    it('should not move the node from top to bottom if there is neither enough space at the top nor the botom.', done => {
-      render(
+    it('should not move the node from top to bottom if there is not enough space a the top.', () => {
+      const { getByTestId } = render(
+        <Stick
+          autoFlipVertically
+          position="top center"
+          node={node}
+          style={{ marginTop: windowHeight }}
+        >
+          {anchor}
+        </Stick>
+      )
+
+      const { top: nodeTop, height: nodeHeight } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { top: anchorTop } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorTop).toEqual(nodeTop + nodeHeight)
+    })
+
+    it('should not move the node from top to bottom if there is neither enough space at the top nor the botom.', () => {
+      const { getByTestId } = render(
         <Stick
           autoFlipVertically
           position="top center"
@@ -182,81 +129,54 @@ describe('autoPositioning', () => {
           style={{ height: windowHeight }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const {
-              top: nodeTop,
-              height: nodeHeight,
-            } = nodeElement.getBoundingClientRect()
-            const { top: anchorTop } = anchorElement.getBoundingClientRect()
-
-            expect(anchorTop).toEqual(nodeTop + nodeHeight)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      const { top: nodeTop, height: nodeHeight } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { top: anchorTop } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorTop).toEqual(nodeTop + nodeHeight)
     })
 
-    it('should not move the node from bottom to top if there is neither enough space at the bottom nor the top.', done => {
-      render(
+    it('should not move the node from bottom to top if there is neither enough space at the bottom nor the top.', () => {
+      const { getByTestId } = render(
         <Stick autoFlipVertically position="bottom center" node={node}>
-          <div id="anchor" style={{ width: 100, height: windowHeight }} />
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const { top: nodeTop } = nodeElement.getBoundingClientRect()
-            const {
-              top: anchorTop,
-              height: anchorHeight,
-            } = anchorElement.getBoundingClientRect()
-
-            expect(nodeTop).toEqual(anchorTop + anchorHeight)
-
-            done()
-          }, 100)
-        }
+          <div
+            data-testid="anchor"
+            style={{ width: 100, height: windowHeight }}
+          />
+        </Stick>
       )
+
+      const { top: nodeTop } = getByTestId('node').getBoundingClientRect()
+      const { top: anchorTop, height: anchorHeight } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      expect(nodeTop).toEqual(anchorTop + anchorHeight)
     })
   })
 
   describe('horizontal', () => {
-    it('should move the node from left to right if there is not enough space at the left.', done => {
-      render(
+    it('should move the node from left to right if there is not enough space at the left.', () => {
+      const { getByTestId } = render(
         <Stick autoFlipHorizontally position="middle left" node={node}>
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const { left: nodeLeft } = nodeElement.getBoundingClientRect()
-            const {
-              left: anchorLeft,
-              width: anchorWidth,
-            } = anchorElement.getBoundingClientRect()
-
-            expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      const { left: nodeLeft } = getByTestId('node').getBoundingClientRect()
+      const { left: anchorLeft, width: anchorWidth } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
     })
 
-    it('should move the node back to its original intended position if space clears up (initial position: "middle right").', done => {
-      render(
+    it('should move the node back to its original intended position if space clears up (initial position: "middle right").', () => {
+      const { getByTestId, rerender } = render(
         <Stick
           autoFlipHorizontally
           position="middle right"
@@ -264,92 +184,66 @@ describe('autoPositioning', () => {
           style={{ marginLeft: windowWidth }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            render(
-              <Stick
-                autoFlipHorizontally
-                position="middle right"
-                node={node}
-                style={{ marginLeft: 0 }}
-              >
-                {anchor}
-              </Stick>,
-              host,
-              () => {
-                setTimeout(() => {
-                  const nodeElement = document.getElementById('node')
-                  const anchorElement = document.getElementById('anchor')
-
-                  const { left: nodeLeft } = nodeElement.getBoundingClientRect()
-                  const {
-                    left: anchorLeft,
-                    width: anchorWidth,
-                  } = anchorElement.getBoundingClientRect()
-
-                  expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
-
-                  done()
-                }, 100)
-              }
-            )
-          }, 100)
-        }
+        </Stick>
       )
+
+      rerender(
+        <Stick
+          autoFlipHorizontally
+          position="middle right"
+          node={node}
+          style={{ marginLeft: 0 }}
+        >
+          {anchor}
+        </Stick>
+      )
+
+      fireEvent.scroll(window)
+
+      const { left: nodeLeft } = getByTestId('node').getBoundingClientRect()
+      const { left: anchorLeft, width: anchorWidth } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
     })
 
-    it('should move the node back to its original intended position if space clears up (initial position: "middle left").', done => {
-      render(
+    it('should move the node back to its original intended position if space clears up (initial position: "middle left").', () => {
+      const { getByTestId, rerender } = render(
         <Stick autoFlipHorizontally position="middle left" node={node}>
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            render(
-              <Stick
-                autoFlipHorizontally
-                position="middle left"
-                style={{
-                  marginLeft: windowWidth,
-                }}
-                node={node}
-              >
-                {anchor}
-              </Stick>,
-
-              host,
-              () => {
-                setTimeout(() => {
-                  const nodeElement = document.getElementById('node')
-                  const anchorElement = document.getElementById('anchor')
-
-                  const {
-                    left: nodeLeft,
-                    width: nodeWidth,
-                  } = nodeElement.getBoundingClientRect()
-                  const {
-                    left: anchorLeft,
-                    width: anchorWidth,
-                  } = anchorElement.getBoundingClientRect()
-
-                  console.log(nodeWidth, nodeLeft, anchorWidth, anchorLeft)
-
-                  expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
-
-                  done()
-                }, 100)
-              }
-            )
-          }, 100)
-        }
+        </Stick>
       )
+
+      rerender(
+        <Stick
+          autoFlipHorizontally
+          position="middle left"
+          style={{
+            marginLeft: windowWidth,
+          }}
+          node={node}
+        >
+          {anchor}
+        </Stick>
+      )
+
+      fireEvent.scroll(window)
+
+      const { left: nodeLeft, width: nodeWidth } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { left: anchorLeft, width: anchorWidth } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      console.log(nodeWidth, nodeLeft, anchorWidth, anchorLeft)
+
+      expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
     })
 
-    it('should move the node from right to left if there is not enough space a the right.', done => {
-      render(
+    it('should move the node from right to left if there is not enough space a the right.', () => {
+      const { getByTestId } = render(
         <Stick
           autoFlipHorizontally
           position="middle right"
@@ -357,29 +251,19 @@ describe('autoPositioning', () => {
           style={{ marginLeft: windowWidth }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const {
-              left: nodeLeft,
-              width: nodeWidth,
-            } = nodeElement.getBoundingClientRect()
-            const { left: anchorLeft } = anchorElement.getBoundingClientRect()
-
-            expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      const { left: nodeLeft, width: nodeWidth } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { left: anchorLeft } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
     })
 
-    it('should not move the node from left to right if there is neither enough space at the left nor the right.', done => {
-      render(
+    it('should not move the node from left to right if there is neither enough space at the left nor the right.', () => {
+      const { getByTestId } = render(
         <Stick
           autoFlipHorizontally
           position="middle left"
@@ -387,50 +271,33 @@ describe('autoPositioning', () => {
           style={{ width: windowWidth }}
         >
           {anchor}
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const {
-              left: nodeLeft,
-              width: nodeWidth,
-            } = nodeElement.getBoundingClientRect()
-            const { left: anchorLeft } = anchorElement.getBoundingClientRect()
-
-            expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
-
-            done()
-          }, 100)
-        }
+        </Stick>
       )
+
+      const { left: nodeLeft, width: nodeWidth } = getByTestId(
+        'node'
+      ).getBoundingClientRect()
+      const { left: anchorLeft } = getByTestId('anchor').getBoundingClientRect()
+
+      expect(anchorLeft).toEqual(nodeLeft + nodeWidth)
     })
 
-    it('should not move the node from right to left if there is neither enough space at the right nor the left.', done => {
-      render(
+    it('should not move the node from right to left if there is neither enough space at the right nor the left.', () => {
+      const { getByTestId } = render(
         <Stick autoFlipHorizontally position="middle right" node={node}>
-          <div id="anchor" style={{ height: 100, width: windowWidth }} />
-        </Stick>,
-        host,
-        () => {
-          setTimeout(() => {
-            const nodeElement = document.getElementById('node')
-            const anchorElement = document.getElementById('anchor')
-
-            const { left: nodeLeft } = nodeElement.getBoundingClientRect()
-            const {
-              left: anchorLeft,
-              width: anchorWidth,
-            } = anchorElement.getBoundingClientRect()
-
-            expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
-
-            done()
-          }, 100)
-        }
+          <div
+            data-testid="anchor"
+            style={{ height: 100, width: windowWidth }}
+          />
+        </Stick>
       )
+
+      const { left: nodeLeft } = getByTestId('node').getBoundingClientRect()
+      const { left: anchorLeft, width: anchorWidth } = getByTestId(
+        'anchor'
+      ).getBoundingClientRect()
+
+      expect(nodeLeft).toEqual(anchorLeft + anchorWidth)
     })
   })
 })

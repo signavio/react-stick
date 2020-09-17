@@ -1,41 +1,24 @@
+// @flow
 import expect from 'expect'
-import React, { cloneElement } from 'react'
-import { render as renderBase, unmountComponentAtNode } from 'react-dom'
+import React from 'react'
 
-import Stick from 'src/'
+import { render as renderBase } from '@testing-library/react'
+
+import Stick from '../src/'
 
 describe('customize wrapper component', () => {
-  let host
+  const node = <div data-testid="node" />
 
-  const node = <div id="node" />
-
+  const SvgWrapper = ({ children }) => (
+    <svg width="400" height="200">
+      {children}
+    </svg>
+  )
   // wrap render in an svg element
-  const renderSvg = (stick, host, callback) => {
-    let called = false
-    renderBase(
-      <svg width="400" height="200">
-        {cloneElement(stick, {
-          node: cloneElement(stick.props.node, {
-            ref: el => !!el && !called && window.setTimeout(callback, 1),
-          }),
-        })}
-      </svg>,
-      host
-    )
-  }
+  const render = (stick) => renderBase(stick, { wrapper: SvgWrapper })
 
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
-
-  it('should be possible to render in SVG by passing `"g"` as `component`', done => {
-    renderSvg(
+  it('should be possible to render in SVG by passing `"g"` as `component`', () => {
+    const { getByTestId } = render(
       <Stick component="g" position="top center" node={node}>
         <ellipse
           cx="200"
@@ -44,15 +27,11 @@ describe('customize wrapper component', () => {
           ry="50"
           style={{ fill: 'rgb(24, 170, 177)' }}
         />
-      </Stick>,
-      host,
-      () => {
-        const nodeElement = document.getElementById('node')
-        const { left, top } = nodeElement.getBoundingClientRect()
-        expect(left).toEqual(208)
-        expect(top).toEqual(58)
-        done()
-      }
+      </Stick>
     )
+
+    const { left, top } = getByTestId('node').getBoundingClientRect()
+    expect(left).toEqual(208)
+    expect(top).toEqual(58)
   })
 })

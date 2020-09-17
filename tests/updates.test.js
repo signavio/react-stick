@@ -1,157 +1,126 @@
+// @flow
 import expect from 'expect'
-import React, { cloneElement } from 'react'
-import { render as renderBase, unmountComponentAtNode } from 'react-dom'
-import { act } from 'react-dom/test-utils'
-import Stick from 'src/'
+import invariant from 'invariant'
+import React from 'react'
+
+import { render as renderBase } from '@testing-library/react'
+
+import Stick from '../src/'
 
 describe('updates', () => {
-  let host
+  const anchor = <div data-testid="anchor" />
+  const node = <div data-testid="node" />
 
-  const anchor = <div id="anchor" />
-  const node = <div id="node" />
+  const PositionWrapper = ({ children }) => (
+    <div style={{ width: 10, height: 10 }}>{children}</div>
+  )
 
   // wrap render to invoke callback only after the node has actually been mounted
-  const render = (stick, host, callback) => {
-    let called = false
+  const render = (stick, host, callback) =>
+    renderBase(stick, { wrapper: PositionWrapper })
 
-    act(() => {
-      renderBase(
-        <div style={{ width: 10, height: 10 }}>
-          {cloneElement(stick, {
-            node:
-              stick.props.node &&
-              cloneElement(stick.props.node, {
-                ref: (el) => !!el && !called && window.setTimeout(callback, 1),
-              }),
-          })}
-        </div>,
-        host
-      )
-    })
-  }
+  it('should work if the node is only provided after the initial mount', () => {
+    const { rerender, getByTestId } = render(
+      <Stick position="middle right" node={null}>
+        {anchor}
+      </Stick>
+    )
 
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.appendChild(host)
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(host)
-    document.body.removeChild(host)
-  })
-
-  it('should work if the node is only provided after the initial mount', (done) => {
-    render(<Stick position="middle right">{anchor}</Stick>, host)
-    render(
+    rerender(
       <Stick position="middle right" node={node}>
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        const nodeElement = document.getElementById('node')
-        const { left, top } = nodeElement.getBoundingClientRect()
-        expect(left).toEqual(18)
-        expect(top).toEqual(8)
-        done()
-      }
+      </Stick>
     )
+
+    const { left, top } = getByTestId('node').getBoundingClientRect()
+
+    expect(left).toEqual(18)
+    expect(top).toEqual(8)
   })
 
-  it('should unmount node container if no node is passed anymore', (done) => {
-    render(<Stick node={node}>{anchor}</Stick>, host, () => {
-      const bodyChildrenCountWithStick = document.body.childElementCount
-      render(<Stick>{anchor}</Stick>, host)
+  it('should unmount node container if no node is passed anymore', () => {
+    const { rerender, queryByTestId } = render(
+      <Stick node={node}>{anchor}</Stick>
+    )
 
-      expect(document.getElementById('node')).toBe(null)
-      expect(document.body.childElementCount).toBe(
-        bodyChildrenCountWithStick - 1
-      )
+    const body = document.body
 
-      done()
-    })
+    invariant(body, 'No body element present.')
+
+    const bodyChildrenCountWithStick = body.childElementCount
+
+    rerender(<Stick node={null}>{anchor}</Stick>)
+
+    expect(queryByTestId('node')).toBe(null)
+
+    expect(body?.childElementCount).toBe(bodyChildrenCountWithStick - 1)
   })
 
-  it('should correctly apply `sameWidth` if set after initial mount', (done) => {
-    render(<Stick node={node}>{anchor}</Stick>, host, () => {
-      render(
-        <Stick node={node} sameWidth>
-          {anchor}
-        </Stick>,
-        host,
-        () =>
-          window.setTimeout(() => {
-            // we have to wait for first measure to be applied
-            const nodeElement = document.getElementById('node')
-            const { width } = nodeElement.getBoundingClientRect()
-            expect(width).toEqual(10)
-            done()
-          }, 100)
-      )
-    })
+  it('should correctly apply `sameWidth` if set after initial mount', () => {
+    const { rerender, getByTestId } = render(
+      <Stick node={node}>{anchor}</Stick>
+    )
+
+    rerender(
+      <Stick node={node} sameWidth>
+        {anchor}
+      </Stick>
+    )
+
+    // we have to wait for first measure to be applied
+    const { width } = getByTestId('node').getBoundingClientRect()
+
+    expect(width).toEqual(10)
   })
 
-  it('should correctly handle clearing of `sameWidth` after initial mount', (done) => {
-    render(
+  it('should correctly handle clearing of `sameWidth` after initial mount', () => {
+    const { rerender, getByTestId } = render(
       <Stick sameWidth node={node}>
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        render(<Stick node={node}>{anchor}</Stick>, host, () => {
-          const nodeElement = document.getElementById('node')
-          const { width } = nodeElement.getBoundingClientRect()
-          expect(width).toEqual(0) // empty content means zero width
-          done()
-        })
-      }
+      </Stick>
     )
+
+    rerender(<Stick node={node}>{anchor}</Stick>)
+
+    const { width } = getByTestId('node').getBoundingClientRect()
+    expect(width).toEqual(0) // empty content means zero width
   })
 
-  it('should handle switching to `updateOnAnimationFrame` correctly', (done) => {
-    render(
+  it('should handle switching to `updateOnAnimationFrame` correctly', () => {
+    const { rerender, getByTestId } = render(
       <Stick node={node} position="middle right">
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        render(
-          <Stick node={node} position="middle right" updateOnAnimationFrame>
-            {anchor}
-          </Stick>,
-          host,
-          () => {
-            const nodeElement = document.getElementById('node')
-            const { left, top } = nodeElement.getBoundingClientRect()
-            expect(left).toEqual(18)
-            expect(top).toEqual(8)
-            done()
-          }
-        )
-      }
+      </Stick>
     )
-  })
 
-  it('should handle switching back from `updateOnAnimationFrame` correctly', (done) => {
-    render(
+    rerender(
       <Stick node={node} position="middle right" updateOnAnimationFrame>
         {anchor}
-      </Stick>,
-      host,
-      () => {
-        render(
-          <Stick node={node} position="middle right">
-            {anchor}
-          </Stick>,
-          host,
-          () => {
-            const nodeElement = document.getElementById('node')
-            const { left, top } = nodeElement.getBoundingClientRect()
-            expect(left).toEqual(18)
-            expect(top).toEqual(8)
-            done()
-          }
-        )
-      }
+      </Stick>
     )
+
+    const { left, top } = getByTestId('node').getBoundingClientRect()
+
+    expect(left).toEqual(18)
+    expect(top).toEqual(8)
+  })
+
+  it('should handle switching back from `updateOnAnimationFrame` correctly', () => {
+    const { rerender, getByTestId } = render(
+      <Stick node={node} position="middle right" updateOnAnimationFrame>
+        {anchor}
+      </Stick>
+    )
+
+    rerender(
+      <Stick node={node} position="middle right">
+        {anchor}
+      </Stick>
+    )
+
+    const { left, top } = getByTestId('node').getBoundingClientRect()
+
+    expect(left).toEqual(18)
+    expect(top).toEqual(8)
   })
 })
