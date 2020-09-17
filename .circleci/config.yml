@@ -64,7 +64,7 @@ jobs:
 
       - run:
           name: Test
-          command: yarn test:coverage
+          command: yarn test --coverage
 
       - run:
           name: Codecov
