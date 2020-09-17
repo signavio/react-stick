@@ -2394,7 +2394,7 @@
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@testing-library/react@^11.0.4":
+"@testing-library/react@11.0.4":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.0.4.tgz#c84082bfe1593d8fcd475d46baee024452f31dee"
   integrity sha512-U0fZO2zxm7M0CB5h1+lh31lbAwMSmDMEMGpMT3BUPJwIjDEKYWOV4dx7lb3x2Ue0Pyt77gmz/VropuJnSz/Iew==
