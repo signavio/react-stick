@@ -70,15 +70,6 @@ jobs:
           name: Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
-  release-preview:
-    <<: *defaults
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Post release preview
-          command: "[[ $CI_PULL_REQUEST != '' ]] && yarn semantic-release-preview || exit 0"
-
   release:
     <<: *defaults
     steps:
@@ -108,20 +99,11 @@ workflows:
       - test:
           requires:
             - install
-      - release-preview:
-          requires:
-            - lint
-            - flow
-            - test
           filters:
             branches:
               ignore: master
       - release:
           context: NPM
-          requires:
-            - lint
-            - flow
-            - test
           filters:
             branches:
               only: master
