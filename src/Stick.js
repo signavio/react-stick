@@ -29,17 +29,17 @@ const defaultStyles = {
 }
 
 function Stick({
-  inline,
+  inline = false,
   node,
-  sameWidth,
+  sameWidth = false,
   children,
-  updateOnAnimationFrame,
+  updateOnAnimationFrame = false,
   position,
   align,
   component,
   transportTo,
-  autoFlipHorizontally,
-  autoFlipVertically,
+  autoFlipHorizontally = false,
+  autoFlipVertically = false,
   onClickOutside,
   style,
   className,
@@ -57,8 +57,8 @@ function Stick({
   const containerRef = useRef()
 
   const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
-    !!autoFlipHorizontally,
-    !!autoFlipVertically,
+    autoFlipHorizontally,
+    autoFlipVertically,
     position || DEFAULT_POSITION,
     align || getDefaultAlign(position || DEFAULT_POSITION)
   )
@@ -132,7 +132,7 @@ function Stick({
     }
   }, [resolvedAlign, resolvedPosition, sameWidth, width])
 
-  useWatcher(measure, { updateOnAnimationFrame: !!updateOnAnimationFrame })
+  useWatcher(measure, { updateOnAnimationFrame })
 
   const handleReposition = useCallback(() => {
     if (nodeRef.current && anchorRef.current) {
@@ -154,8 +154,8 @@ function Stick({
                 width={width}
                 position={resolvedPosition}
                 align={resolvedAlign}
-                sameWidth={!!sameWidth}
-                nodeRef={nodeRef}
+                sameWidth={sameWidth}
+                ref={nodeRef}
               >
                 {node}
               </StickNode>
@@ -178,7 +178,7 @@ function Stick({
     <StickContext.Provider value={nestingKey}>
       <StickPortal
         {...rest}
-        updateOnAnimationFrame={!!updateOnAnimationFrame}
+        updateOnAnimationFrame={updateOnAnimationFrame}
         transportTo={transportTo}
         component={component}
         ref={(node) => {
@@ -196,8 +196,8 @@ function Stick({
               width={width}
               position={resolvedPosition}
               align={resolvedAlign}
-              sameWidth={!!sameWidth}
-              nodeRef={nodeRef}
+              sameWidth={sameWidth}
+              ref={nodeRef}
             >
               {node}
             </StickNode>
