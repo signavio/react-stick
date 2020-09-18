@@ -1,8 +1,7 @@
-// @flow
-import { type PositionT, type AlignT } from '../flowTypes'
+import { AlignT, PositionT } from '../flowTypes'
 
 type DefaultAlignT = {
-  [position: PositionT]: AlignT,
+  [P in PositionT]: AlignT
 }
 
 const defaultAligns: DefaultAlignT = {

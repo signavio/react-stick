@@ -1,19 +1,18 @@
-// @flow
 import { useEffect } from 'react'
 
 type WatcherFuncT = () => void
-type OptionsT = {|
-  updateOnAnimationFrame: boolean,
+type OptionsT = {
+  updateOnAnimationFrame: boolean
   enabled: boolean
-|}
+}
 
 function useWatcher(
   watcher: WatcherFuncT,
   { updateOnAnimationFrame, enabled }: OptionsT
 ): void {
   useEffect(() => {
-    let animationFrameId
-    let idleCallbackId
+    let animationFrameId: number
+    let idleCallbackId: number
 
     // do not track in node
     if (enabled && typeof window.requestAnimationFrame !== 'undefined') {

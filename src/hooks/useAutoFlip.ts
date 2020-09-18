@@ -1,13 +1,12 @@
-// @flow
 import invariant from 'invariant'
 import { useCallback, useState } from 'react'
 
 import { positions } from '../defaultPosition'
 import {
-  type AlignT,
-  type HorizontalTargetT,
-  type PositionT,
-  type VerticalTargetT,
+  AlignT,
+  HorizontalTargetT,
+  PositionT,
+  VerticalTargetT,
 } from '../flowTypes'
 import {
   fitsOnBottom,
@@ -83,15 +82,15 @@ const useAutoFlip = (
 
 export default useAutoFlip
 
-type OptionsT = {|
-  enabled: boolean,
+type OptionsT = {
+  enabled: boolean
 
-  initialPosition: PositionT,
-  currentPosition: PositionT,
+  initialPosition: PositionT
+  currentPosition: PositionT
 
-  initialAlign: AlignT,
-  currentAlign: AlignT,
-|}
+  initialAlign: AlignT
+  currentAlign: AlignT
+}
 
 const autoFlipVertically = (
   nodeRef: HTMLElement,
@@ -179,13 +178,13 @@ const switchVerticalPosition = (
   position: PositionT,
   target: VerticalTargetT
 ) => {
-  const newPosition: ?PositionT = positions.find(
+  const newPosition: void | PositionT = positions.find(
     (standardPosition: PositionT) =>
       standardPosition === `${target} ${position.split(' ')[1]}`
   )
 
   invariant(
-    newPosition,
+    newPosition != null,
     `Could not determine new position. Old position "${position}", new vertical target "${target}"`
   )
 
@@ -195,13 +194,13 @@ const switchHorizontalPosition = (
   position: PositionT,
   target: HorizontalTargetT
 ) => {
-  const newPosition: ?PositionT = positions.find(
+  const newPosition: void | PositionT = positions.find(
     (standardPosition: PositionT) =>
       standardPosition === `${position.split(' ')[0]} ${target}`
   )
 
   invariant(
-    newPosition,
+    newPosition != null,
     `Could not determine new position. Old position "${position}", new horizontal target "${target}"`
   )
 

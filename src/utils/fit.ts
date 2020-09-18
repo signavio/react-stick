@@ -1,5 +1,4 @@
-// @flow
-import { type PositionT } from '../flowTypes'
+import { PositionT } from '../flowTypes'
 
 export const isPositionedToTop = (position: PositionT): boolean => {
   const [positionMarker] = position.split(' ')

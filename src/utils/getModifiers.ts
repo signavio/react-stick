@@ -1,12 +1,11 @@
-// @flow
 import DEFAULT_POSITION from '../defaultPosition'
-import { type AlignT, type PositionT } from '../flowTypes'
+import { AlignT, PositionT } from '../flowTypes'
 import getDefaultAlign from './getDefaultAlign'
 
 type PropsT = {
-  align: AlignT,
-  position: PositionT,
-  sameWidth?: boolean,
+  align: AlignT
+  position: PositionT
+  sameWidth?: boolean
 }
 
 const getModifiers = ({ align, position, sameWidth }: PropsT) => {

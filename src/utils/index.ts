@@ -1,4 +1,3 @@
-// @flow
 export * from './scroll'
 export * from './fit'
 

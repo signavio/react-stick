@@ -1,37 +1,39 @@
 // @flow
-import React from 'react'
+import React, { Ref, createElement, forwardRef } from 'react'
 import useStyles from 'substyle'
 
-import { type StickInlinePropsT } from './flowTypes'
+import { AllowedContainers, StickInlinePropsT } from './flowTypes'
 import { getModifiers } from './utils'
 
-function StickInline({
-  node,
-  children,
-  component,
-  containerRef,
-  nestingKey,
-  align,
-  position,
-  style,
-  ...rest
-}: StickInlinePropsT) {
+function StickInline<T extends AllowedContainers>(
+  {
+    node,
+    children,
+    component,
+    nestingKey,
+    align,
+    position,
+    style,
+    ...rest
+  }: StickInlinePropsT<T>,
+  ref: Ref<HTMLElement>
+) {
   const styles = useStyles(
     defaultStyle,
     { style },
     getModifiers({ align, position })
   )
-  const Component = component || 'div'
-  return (
-    <Component
-      {...rest}
-      {...styles}
-      ref={containerRef}
-      data-sticknestingkey={nestingKey}
-    >
-      {children}
-      {node && <div {...styles('node')}>{node}</div>}
-    </Component>
+
+  return createElement(
+    component,
+    {
+      ...rest,
+      ...styles,
+      ref,
+      'data-stickynestingkey': nestingKey,
+    },
+    children,
+    node ? <div {...styles('node')}>{node}</div> : null
   )
 }
 
@@ -77,4 +79,4 @@ const defaultStyle = {
   },
 }
 
-export default StickInline
+export default forwardRef(StickInline)

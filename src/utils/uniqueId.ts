@@ -1,5 +1,3 @@
-// @flow
-
 let counter = 1
 
 function uniqueId(): number {

@@ -1,5 +1,4 @@
-// @flow
-import { type PositionT } from './flowTypes'
+import { PositionT } from './flowTypes'
 
 const DEFAULT_POSITION = 'bottom left'
 

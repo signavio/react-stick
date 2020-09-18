@@ -1,9 +1,10 @@
-// @flow
 import 'requestidlecallback'
 
 import invariant from 'invariant'
 import React, {
+  Ref,
   createContext,
+  createElement,
   forwardRef,
   useCallback,
   useContext,
@@ -15,14 +16,14 @@ import React, {
 import { createPortal } from 'react-dom'
 import { inline } from 'substyle'
 
-import type { StickPortalPropsT } from './flowTypes'
+import { AllowedContainers, PositionT, StickPortalPropsT } from './flowTypes'
 import { useWatcher } from './hooks'
 import { scrollX, scrollY } from './utils'
 
-function StickPortal(
+function StickPortal<T extends AllowedContainers>(
   {
     children,
-    component,
+    component: Component,
     style,
     transportTo,
     nestingKey,
@@ -32,12 +33,12 @@ function StickPortal(
     updateOnAnimationFrame,
     onReposition,
     ...rest
-  }: StickPortalPropsT,
-  ref
+  }: StickPortalPropsT<T>,
+  ref: Ref<HTMLElement>
 ) {
-  const nodeRef = useRef()
-  const [top, setTop] = useState(null)
-  const [left, setLeft] = useState(null)
+  const nodeRef = useRef<null | Element>(null)
+  const [top, setTop] = useState<null | number>(null)
+  const [left, setLeft] = useState<null | number>(null)
   const [visible, setVisible] = useState(!!node)
 
   const [host, hostParent] = useHost(transportTo)
@@ -83,66 +84,114 @@ function StickPortal(
 
   useWatcher(measure, { updateOnAnimationFrame, enabled: visible })
 
-  const Component = component || 'div'
-  return (
-    <Component
-      {...rest}
-      {...style}
-      ref={(node) => {
+  return createElement(
+    Component,
+    {
+      ...rest,
+      ...style,
+      ref: (node: null | HTMLElement) => {
         if (typeof ref === 'function') {
           ref(node)
         } else {
+          // @ts-ignore
           ref.current = node
         }
 
         nodeRef.current = node
-      }}
-    >
-      {children}
-
-      {top != null && left != null && (
-        <PortalContext.Provider value={host.parentNode || defaultRoot}>
-          {createPortal(
-            <div
-              ref={containerRef}
-              data-sticknestingkey={nestingKey}
-              {...inline(style('node'), {
-                position: 'absolute',
-                top,
-                left,
-              })}
-            >
-              {node}
-            </div>,
-            host
-          )}
-        </PortalContext.Provider>
-      )}
-    </Component>
+      },
+    },
+    children,
+    top != null && left != null && (
+      <PortalContext.Provider value={host.parentNode || defaultRoot}>
+        {createPortal(
+          <div
+            ref={(node) => {
+              containerRef.current = node
+            }}
+            data-sticknestingkey={nestingKey}
+            {...inline(style('node'), {
+              position: 'absolute',
+              top,
+              left,
+            })}
+          >
+            {node}
+          </div>,
+          host
+        )}
+      </PortalContext.Provider>
+    )
   )
+
+  // return (
+  //   <Component
+  //     {...rest}
+  //     {...style}
+  //     ref={(node: null | HTMLElement) => {
+  //       if (typeof ref === 'function') {
+  //         ref(node)
+  //       } else {
+  //         ref.current = node
+  //       }
+
+  //       nodeRef.current = node
+  //     }}
+  //   >
+  //     {children}
+
+  //     {top != null && left != null && (
+  //       <PortalContext.Provider value={host.parentNode}>
+  //         {createPortal(
+  //           <div
+  //             ref={containerRef}
+  //             data-sticknestingkey={nestingKey}
+  //             {...inline(style('node'), {
+  //               position: 'absolute',
+  //               top,
+  //               left,
+  //             })}
+  //           >
+  //             {node}
+  //           </div>,
+  //           host
+  //         )}
+  //       </PortalContext.Provider>
+  //     )}
+  //   </Component>
+  // )
 }
 
-invariant(document.body, 'Stick can only be used in a browser environment.')
+invariant(
+  document.body != null,
+  'Stick can only be used in a browser environment.'
+)
 
 const defaultRoot = document.body
 
 export const PortalContext = createContext<Node>(defaultRoot)
 
-export default forwardRef<StickPortalPropsT, ?HTMLElement>(StickPortal)
+export default forwardRef(StickPortal)
 
-function useHost(transportTo) {
+function useHost(transportTo: void | HTMLElement): [Element, Node] {
   const [host] = useState(() => document.createElement('div'))
 
   const portalHost = useContext(PortalContext)
 
   const hostParent = transportTo || portalHost
 
-  invariant(hostParent, 'Could not determine a parent for the host node.')
+  invariant(
+    hostParent != null,
+    'Could not determine a parent for the host node.'
+  )
 
   return [host, hostParent]
 }
 
-function calculateTop(node, position, host) {
+function calculateTop(
+  node: Element,
+  position: PositionT,
+  host: Element
+): number {
   const { top, height, bottom } = node.getBoundingClientRect()
   const fixedHost = getFixedParent(host)
 
@@ -166,7 +215,11 @@ function calculateTop(node, position, host) {
   return result + scrollY()
 }
 
-function calculateLeft(node, position, host) {
+function calculateLeft(
+  node: Element,
+  position: PositionT,
+  host: Element
+): number {
   const { left, width, right } = node.getBoundingClientRect()
 
   const fixedHost = getFixedParent(host)
@@ -196,7 +249,7 @@ function calculateLeft(node, position, host) {
   return result + scrollX(node)
 }
 
-function getScrollParent(element) {
+function getScrollParent(element: null | Element): null | Element {
   if (!element) {
     return null
   }
@@ -216,7 +269,7 @@ function getScrollParent(element) {
     : null
 }
 
-function getFixedParent(element: Element): ?Element {
+function getFixedParent(element: Element): null | Element {
   if (element.nodeName === 'BODY' || element.nodeName === 'HTML') {
     return null
   }

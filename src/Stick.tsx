@@ -3,6 +3,8 @@ import 'requestidlecallback'
 
 import invariant from 'invariant'
 import React, {
+  Ref,
+  RefObject,
   useCallback,
   useContext,
   useEffect,
@@ -16,7 +18,7 @@ import StickInline from './StickInline'
 import StickNode from './StickNode'
 import StickPortal from './StickPortal'
 import DEFAULT_POSITION from './defaultPosition'
-import { type AlignT, type PositionT, type StickPropsT } from './flowTypes'
+import { AlignT, AllowedContainers, PositionT, StickPropsT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
@@ -28,7 +30,7 @@ const defaultStyles = {
   },
 }
 
-function Stick({
+function Stick<T extends AllowedContainers>({
   inline = false,
   node,
   sameWidth = false,
@@ -45,16 +47,16 @@ function Stick({
   className,
   classNames,
   ...rest
-}: StickPropsT) {
+}: StickPropsT<T>) {
   const [width, setWidth] = useState(0)
   const [containerNestingKeyExtension] = useState(() => uniqueId())
   const nestingKey = [useContext(StickContext), containerNestingKeyExtension]
     .filter((key) => !!key)
     .join('_')
 
-  const anchorRef = useRef()
-  const nodeRef = useRef()
-  const containerRef = useRef()
+  const anchorRef = useRef<null | HTMLElement>(null)
+  const nodeRef = useRef<null | HTMLDivElement>(null)
+  const containerRef = useRef<null | HTMLElement>(null)
 
   const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
     autoFlipHorizontally,
@@ -149,7 +151,7 @@ function Stick({
           align={resolvedAlign}
           style={styles}
           node={
-            node && (
+            node ? (
               <StickNode
                 width={width}
                 position={resolvedPosition}
@@ -159,14 +161,14 @@ function Stick({
               >
                 {node}
               </StickNode>
-            )
+            ) : null
           }
           nestingKey={nestingKey}
-          containerRef={(node) => {
+          ref={(node) => {
             anchorRef.current = node
             containerRef.current = node
           }}
-          component={component}
+          component={component || 'div'}
         >
           {children}
         </StickInline>
@@ -180,7 +182,7 @@ function Stick({
         {...rest}
         updateOnAnimationFrame={updateOnAnimationFrame}
         transportTo={transportTo}
-        component={component}
+        component={component || 'div'}
         ref={(node) => {
           invariant(
             !node || node instanceof Element,
@@ -191,7 +193,7 @@ function Stick({
         }}
         position={resolvedPosition}
         node={
-          node && (
+          node ? (
             <StickNode
               width={width}
               position={resolvedPosition}
@@ -201,7 +203,7 @@ function Stick({
             >
               {node}
             </StickNode>
-          )
+          ) : null
         }
         style={styles}
         nestingKey={nestingKey}
@@ -214,7 +216,11 @@ function Stick({
   )
 }
 
-function isOutside(anchorRef, containerRef, target: HTMLElement) {
+function isOutside(
+  anchorRef: RefObject<HTMLElement>,
+  containerRef: RefObject<HTMLElement>,
+  target: HTMLElement
+) {
   if (anchorRef.current && anchorRef.current.contains(target)) {
     return false
   }
@@ -242,16 +248,19 @@ function isOutside(anchorRef, containerRef, target: HTMLElement) {
 }
 
 function calculateWidth(
-  anchorRef,
+  anchor: HTMLElement,
   position: PositionT,
   align: AlignT,
   { left, width, right }: ClientRect
 ): number {
-  if (!anchorRef) {
+  if (!anchor) {
     return 0
   }
 
-  invariant(document.documentElement, 'Could not find document root node.')
+  invariant(
+    document.documentElement != null,
+    'Could not find document root node.'
+  )
 
   const scrollWidth = document.documentElement.scrollWidth
 
@@ -270,7 +279,7 @@ function calculateWidth(
     right,
   }
 
-  const absLeft = scrollX(anchorRef) + positionAdjustments[horizontalPosition]
+  const absLeft = scrollX(anchor) + positionAdjustments[horizontalPosition]
 
   if (align.indexOf('left') !== -1) {
     return scrollWidth - absLeft

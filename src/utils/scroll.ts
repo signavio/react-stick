@@ -1,5 +1,4 @@
-// @flow
-export function scrollX(node: ?Node): number {
+export function scrollX(node: null | Node): number {
   if (!node) {
     return 0
   }

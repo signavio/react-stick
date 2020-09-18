@@ -1,23 +1,23 @@
 // @flow
-import React, { type Node, forwardRef } from 'react'
+import React, { ReactNode, Ref, forwardRef } from 'react'
 import useStyles, { inline } from 'substyle'
 
-import { type AlignT, type PositionT } from './flowTypes'
+import { AlignT, PositionT } from './flowTypes'
 import { getModifiers } from './utils'
 
-type PropsT = {|
-  width: number,
+type PropsT = {
+  width: number
 
-  position: PositionT,
-  align: AlignT,
-  sameWidth: boolean,
+  position: PositionT
+  align: AlignT
+  sameWidth: boolean
 
-  children: Node,
-|}
+  children: ReactNode
+}
 
 function StickNode(
   { children, width, align, position, sameWidth }: PropsT,
-  ref
+  ref: Ref<HTMLDivElement>
 ) {
   const styles = useStyles(
     defaultStyle,
@@ -85,4 +85,4 @@ const defaultStyle = {
   },
 }
 
-export default forwardRef<PropsT, HTMLDivElement>(StickNode)
+export default forwardRef<HTMLDivElement, PropsT>(StickNode)
