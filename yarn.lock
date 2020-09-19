@@ -7411,23 +7411,23 @@ infer-owner@^1.0.3, infer-owner@^1.0.4:
   resolved "https://registry.yarnpkg.com/infer-owner/-/infer-owner-1.0.4.tgz#c4cefcaa8e51051c2a40ba2ce8a3d27295af9467"
   integrity sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A==
 
-inferno-shared@7.4.3:
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/inferno-shared/-/inferno-shared-7.4.3.tgz#9fbc8cf66f1d6e3d5ad0d5db9a1d90f0bbe38e9f"
-  integrity sha512-g2e50wtzreOZflFAoMLkOF9uCjqHx7582vEA6SV+fxS8Hp8BCXcbD85ovbrRaUNtmlzRVFfvbFN1G/yb+ZINbQ==
+inferno-shared@7.4.4:
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/inferno-shared/-/inferno-shared-7.4.4.tgz#de0fbe5f0dc3bfa52c2daf1528e456355c97d6b4"
+  integrity sha512-HqnNCKCg30Wmt8/7MVwPr9JapIfa++dwrHvNhRWmSCcsKhF4MOJiZ1C9EunTPzSLua3n8TLrj6W3UB4gXk6kMQ==
 
-inferno-vnode-flags@7.4.3:
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/inferno-vnode-flags/-/inferno-vnode-flags-7.4.3.tgz#267879b18ea89579be40a2b8d9a2221c19126ab0"
-  integrity sha512-NRaE5O64w2GZltBc2Eh0sof2BKOE19BxCj2xRdE6q9lHlQoirtPhMttYgWVBHDbXEy1BWesLla/IMj3MEca48g==
+inferno-vnode-flags@7.4.4:
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/inferno-vnode-flags/-/inferno-vnode-flags-7.4.4.tgz#79491d8b0b2f918cdf13a5d630774f4902a4b8e2"
+  integrity sha512-Wyx7S/T8vKgGP4nTeqN5MYm9ryzh1xvZ1mJ4eZWXklqqnNx66kYeEUwMviqncG6uExcqnue1z8FA/rVjx/Y8yQ==
 
-inferno@7.4.3:
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/inferno/-/inferno-7.4.3.tgz#91f9f22227963f010ef2b6fa37e17f0c9897e2a6"
-  integrity sha512-ZUk7dUKGQRlkU8ssGEHTuRmzJP0X0BYjn+xQg26uTUeFZZarjmQGXLtzJZvQY7r7uvzZjSDMvz0xwg/Ai+T8Rg==
+inferno@7.4.4:
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/inferno/-/inferno-7.4.4.tgz#98c823e63ec51f08d23becf77bb727e35d2bcbb7"
+  integrity sha512-ITPZ/Li1EvyDDNjRY7+R1MRRlPz5+fYg8wGMhgfUSMg8QcQWoeM0hP5BEYxdDz4K/aGWHfey7CgHXY6HGWylqA==
   dependencies:
-    inferno-shared "7.4.3"
-    inferno-vnode-flags "7.4.3"
+    inferno-shared "7.4.4"
+    inferno-vnode-flags "7.4.4"
     opencollective-postinstall "^2.0.2"
 
 inflight@^1.0.4, inflight@~1.0.6:
