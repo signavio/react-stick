@@ -1,5 +1,8 @@
-import { Component } from 'react'
-
 declare module 'substyle-glamor' {
-  export type StylesAsDataAttributes = Component<{}>
+  import { Component, ReactNode } from 'react'
+
+  type EnhancerPropsT = {
+    children: ReactNode
+  }
+  export function StylesAsDataAttributes(props: EnhancerPropsT): JSX.Element
 }
