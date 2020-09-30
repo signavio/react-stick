@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useRef, useState } from 'react'
 
 import Stick, { HorizontalAlign, Position, VerticalAlign } from '..//src'
 import { useWatcher } from './hooks'
@@ -112,53 +112,86 @@ function PositionAlignOverview() {
         />
         <FramesPerSecond updateOnAnimationFrame={updateOnAnimationFrame} />
       </div>
-      <div>
+      <Grid>
         {positionGroups.map((position, i) => (
-          <div key={i}>
-            <pre>position="{position.join(' ')}"</pre>
-            <br />
-            <div style={{ display: 'inline-block' }}>
-              <Stick
-                inline={inline}
-                updateOnAnimationFrame={updateOnAnimationFrame}
-                position={position}
-                node={showNode && <Node />}
-              >
-                <Anchor />
-              </Stick>
-            </div>
+          <GridCell key={i}>
+            <code>position</code>
+            <code>{JSON.stringify(position)}</code>
 
-            <div>
+            <Stick
+              style={{ margin: 20 }}
+              inline={inline}
+              updateOnAnimationFrame={updateOnAnimationFrame}
+              position={position}
+              node={showNode && <Node />}
+            >
+              <Anchor />
+            </Stick>
+
+            <Grid>
               {alignmentGroups.map((alignment, j) => (
-                <div key={j}>
-                  {/* <td
-                        key={alignment}
-                        style={{
-                          padding: '0 10px 10px 10px',
-                          borderLeft: '1px solid gray',
-                          borderBottom: '1px solid gray',
-                          fontSize: 11,
-                        }}
-                      > */}
-                  <pre>align="{alignment}"</pre>
-                  <br />
-                  <div style={{ display: 'inline-block' }}>
-                    <Stick
-                      position={position}
-                      align={alignment}
-                      inline={inline}
-                      updateOnAnimationFrame={updateOnAnimationFrame}
-                      node={showNode && <Node />}
-                    >
-                      <Anchor />
-                    </Stick>
-                  </div>
-                </div>
+                <GridCell key={j}>
+                  <code>align</code>
+                  <code>{JSON.stringify(alignment)}</code>
+
+                  <Stick
+                    style={{ margin: 20 }}
+                    position={position}
+                    align={alignment}
+                    inline={inline}
+                    updateOnAnimationFrame={updateOnAnimationFrame}
+                    node={showNode && <Node />}
+                  >
+                    <Anchor />
+                  </Stick>
+                </GridCell>
               ))}
-            </div>
-          </div>
+            </Grid>
+          </GridCell>
         ))}
-      </div>
+      </Grid>
+    </div>
+  )
+}
+
+type GridPropsT = {
+  children: ReactNode
+}
+
+function Grid({ children }: GridPropsT) {
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'auto auto auto',
+        borderTop: '1px solid black',
+        borderRight: '1px solid black',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+type GridCellPropsT = {
+  children: ReactNode
+}
+
+function GridCell({ children }: GridCellPropsT) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+
+        borderLeft: '1px solid black',
+        borderBottom: '1px solid black',
+
+        padding: 5,
+      }}
+    >
+      {children}
     </div>
   )
 }
