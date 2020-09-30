@@ -10,10 +10,9 @@ type PropsT = {
 
 const getModifiers = ({ align, position, sameWidth }: PropsT) => {
   const finalPosition = position || DEFAULT_POSITION
-  const [verticalPosition, horizontalPosition] = finalPosition.split(' ')
-  const [verticalAlign, horizontalAlign] = (
+  const [verticalPosition, horizontalPosition] = finalPosition
+  const [verticalAlign, horizontalAlign] =
     align || getDefaultAlign(finalPosition)
-  ).split(' ')
   return {
     [`&position-${horizontalPosition}`]: true,
     [`&position-${verticalPosition}`]: true,

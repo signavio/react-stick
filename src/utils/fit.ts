@@ -1,25 +1,25 @@
 import { PositionT } from '../flowTypes'
 
 export const isPositionedToTop = (position: PositionT): boolean => {
-  const [positionMarker] = position.split(' ')
+  const [positionMarker] = position
 
   return positionMarker === 'top'
 }
 
 export const isPositionedToBottom = (position: PositionT): boolean => {
-  const [positionMarker] = position.split(' ')
+  const [positionMarker] = position
 
   return positionMarker === 'bottom'
 }
 
 export const isPositionedToRight = (position: PositionT): boolean => {
-  const positionMarker = position.split(' ')[1]
+  const [, positionMarker] = position
 
   return positionMarker === 'right'
 }
 
 export const isPositionedToLeft = (position: PositionT): boolean => {
-  const positionMarker = position.split(' ')[1]
+  const [, positionMarker] = position
 
   return positionMarker === 'left'
 }

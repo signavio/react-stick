@@ -264,7 +264,7 @@ function calculateWidth(
 
   const scrollWidth = document.documentElement.scrollWidth
 
-  const [, horizontalPosition] = position.split(' ')
+  const [, horizontalPosition] = position
 
   invariant(
     horizontalPosition === 'left' ||

@@ -175,33 +175,33 @@ const autoFlipHorizontally = (
 }
 
 const switchVerticalPosition = (
-  position: PositionT,
-  target: VerticalTargetT
+  [, horizontalTarget]: PositionT,
+  verticalTarget: VerticalTargetT
 ) => {
   const newPosition: void | PositionT = positions.find(
-    (standardPosition: PositionT) =>
-      standardPosition === `${target} ${position.split(' ')[1]}`
+    ([verticalAlign, horizontalAlign]: PositionT) =>
+      verticalAlign === verticalTarget && horizontalAlign === horizontalTarget
   )
 
   invariant(
     newPosition != null,
-    `Could not determine new position. Old position "${position}", new vertical target "${target}"`
+    `Could not determine new position. Old horizontal target "${horizontalTarget}", new vertical target "${verticalTarget}"`
   )
 
   return newPosition
 }
 const switchHorizontalPosition = (
-  position: PositionT,
-  target: HorizontalTargetT
+  [verticalTarget]: PositionT,
+  horizontalTarget: HorizontalTargetT
 ) => {
   const newPosition: void | PositionT = positions.find(
-    (standardPosition: PositionT) =>
-      standardPosition === `${position.split(' ')[0]} ${target}`
+    ([verticalAlign, horizontalAlign]: PositionT) =>
+      verticalTarget === verticalAlign && horizontalTarget === horizontalAlign
   )
 
   invariant(
     newPosition != null,
-    `Could not determine new position. Old position "${position}", new horizontal target "${target}"`
+    `Could not determine new position. Old vertical target "${verticalTarget}", new horizontal target "${horizontalTarget}"`
   )
 
   return newPosition

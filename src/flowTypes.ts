@@ -1,23 +1,23 @@
-import { ComponentProps, MutableRefObject, ReactHTML, ReactNode } from 'react'
+import {
+  ComponentProps,
+  MutableRefObject,
+  ReactHTML,
+  ReactNode,
+  ReactSVG,
+} from 'react'
 import { StylingProps, Substyle } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
 export type HorizontalTargetT = 'left' | 'center' | 'right'
 
-export type PositionT =
-  | 'bottom left'
-  | 'bottom center'
-  | 'bottom right'
-  | 'middle left'
-  | 'middle center'
-  | 'middle right'
-  | 'top left'
-  | 'top center'
-  | 'top right'
+export type PositionT = [VerticalTargetT, HorizontalTargetT]
 
 export type AlignT = PositionT
 
-export type AllowedContainers = keyof ReactHTML
+type AllowedHTMLContainers = keyof ReactHTML
+type AllowedSVGContainers = keyof ReactSVG
+
+export type AllowedContainers = AllowedHTMLContainers | AllowedSVGContainers
 
 export type StickPropsT<T extends AllowedContainers> = StylingProps &
   ComponentProps<T> & {
@@ -33,7 +33,7 @@ export type StickPropsT<T extends AllowedContainers> = StylingProps &
 
     component?: T
 
-    transportTo?: HTMLElement
+    transportTo?: HTMLElement | null
 
     node: void | ReactNode
     children: ReactNode

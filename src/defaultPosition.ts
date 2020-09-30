@@ -1,17 +1,17 @@
 import { PositionT } from './flowTypes'
 
-const DEFAULT_POSITION = 'bottom left'
+const DEFAULT_POSITION: PositionT = ['bottom', 'left']
 
 export default DEFAULT_POSITION
 
 export const positions: Array<PositionT> = [
-  'bottom left',
-  'bottom center',
-  'bottom right',
-  'middle left',
-  'middle center',
-  'middle right',
-  'top left',
-  'top center',
-  'top right',
+  ['bottom', 'left'],
+  ['bottom', 'center'],
+  ['bottom', 'right'],
+  ['middle', 'left'],
+  ['middle', 'center'],
+  ['middle', 'right'],
+  ['top', 'left'],
+  ['top', 'center'],
+  ['top', 'right'],
 ]

@@ -1,21 +1,42 @@
-import { AlignT, PositionT } from '../flowTypes'
+import {
+  AlignT,
+  HorizontalTargetT,
+  PositionT,
+  VerticalTargetT,
+} from '../flowTypes'
 
-type DefaultAlignT = {
-  [P in PositionT]: AlignT
+const defaultVerticalAlign: { [T in VerticalTargetT]: VerticalTargetT } = {
+  top: 'bottom',
+  middle: 'middle',
+  bottom: 'top',
 }
 
-const defaultAligns: DefaultAlignT = {
-  'top left': 'bottom left',
-  'top center': 'bottom center',
-  'top right': 'bottom right',
-  'middle left': 'middle right',
-  'middle center': 'middle center',
-  'middle right': 'middle left',
-  'bottom left': 'top left',
-  'bottom center': 'top center',
-  'bottom right': 'top right',
+const defaultHorizontalAlign: {
+  [T in VerticalTargetT]: { [T in HorizontalTargetT]: HorizontalTargetT }
+} = {
+  top: {
+    left: 'left',
+    center: 'center',
+    right: 'right',
+  },
+  middle: {
+    left: 'right',
+    center: 'center',
+    right: 'left',
+  },
+  bottom: {
+    left: 'left',
+    center: 'center',
+    right: 'right',
+  },
 }
 
-const getDefaultAlign = (position: PositionT): AlignT => defaultAligns[position]
+const getDefaultAlign = ([
+  verticalAlign,
+  horizontalAlign,
+]: PositionT): AlignT => [
+  defaultVerticalAlign[verticalAlign],
+  defaultHorizontalAlign[verticalAlign][horizontalAlign],
+]
 
 export default getDefaultAlign
