@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 export default function SameWidth() {
@@ -15,7 +15,7 @@ export default function SameWidth() {
       <svg width="400" height="200">
         <Stick
           component="g"
-          position="top center"
+          position={['top', 'center']}
           node={
             <div
               style={{

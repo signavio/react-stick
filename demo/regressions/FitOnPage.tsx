@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 type PropsT = {
@@ -43,7 +43,7 @@ export default function FitOnPage() {
       description="Stick nodes should always fit into the page and never cause a horizontal scrollbar to appear, even after resize"
     >
       <div style={{ display: 'inline-block', width: '90%' }}>
-        <Stick position="bottom right" node={node}>
+        <Stick position={['bottom', 'right']} node={node}>
           <Anchor />
         </Stick>
       </div>

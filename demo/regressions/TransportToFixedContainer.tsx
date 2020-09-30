@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 export default function TransportToFixedContainer() {
   const [isOpen, setIsOpen] = useState(false)
-  const [container, setContainer] = useState()
+  const [container, setContainer] = useState<null | HTMLDivElement>()
 
   return (
     <Regression
@@ -31,7 +31,7 @@ export default function TransportToFixedContainer() {
             border: '1px solid silver',
             zIndex: 100,
           }}
-          ref={node => setContainer(node)}
+          ref={(node) => setContainer(node)}
         >
           <Stick transportTo={container} node="Yes, here it is!">
             <div>There should be a line of text below me</div>

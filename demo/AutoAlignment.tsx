@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Stick from '../../es'
+import Stick from '../../src'
 
 function AutoAlignment() {
   return (
@@ -40,7 +40,7 @@ function AutoAlignment() {
         <div style={{ height: 350, width: 5000 }}>
           <Stick
             autoFlipHorizontally
-            position="middle left"
+            position={['middle', 'left']}
             style={{ display: 'inline-block', marginLeft: 250 }}
             node={
               <div

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 function StickOnHover() {
@@ -30,7 +30,7 @@ function Popover() {
 
   return (
     <Stick
-      position="top center"
+      position={['top', 'center']}
       node={hover && <Node />}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -50,7 +50,11 @@ const Anchor = () => (
   />
 )
 
-const Node = ({ children }) => (
+type NodePropsT = {
+  children?: ReactNode
+}
+
+const Node = ({ children }: NodePropsT) => (
   <div
     style={{
       backgroundColor: '#ae0d5c',

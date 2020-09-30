@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
-const Anchor = ({ width }) => (
+type AnchorPropsT = {
+  width: number
+}
+
+const Anchor = ({ width }: AnchorPropsT) => (
   <div
     style={{
       height: 15,
@@ -13,7 +17,11 @@ const Anchor = ({ width }) => (
   />
 )
 
-const Node = ({ children }) => (
+type NodePropsT = {
+  children: ReactNode
+}
+
+const Node = ({ children }: NodePropsT) => (
   <div
     style={{
       backgroundColor: '#ae0d5c',
@@ -24,7 +32,11 @@ const Node = ({ children }) => (
   </div>
 )
 
-const Examples = ({ inline }) => (
+type ExamplesPropsT = {
+  inline?: boolean
+}
+
+const Examples = ({ inline }: ExamplesPropsT) => (
   <div
     style={{
       display: 'flex',
@@ -36,7 +48,7 @@ const Examples = ({ inline }) => (
   >
     <Stick
       inline={inline}
-      position="middle right"
+      position={['middle', 'right']}
       node={<Node>This text should stay on one line</Node>}
     >
       <Anchor width={15} />
@@ -44,7 +56,7 @@ const Examples = ({ inline }) => (
 
     <Stick
       inline={inline}
-      position="middle right"
+      position={['middle', 'right']}
       node={<Node>This text should stay on one line</Node>}
     >
       <Anchor width={150} />
@@ -53,7 +65,7 @@ const Examples = ({ inline }) => (
     <div style={{ position: 'absolute', right: 150 }}>
       <Stick
         inline={inline}
-        position="middle right"
+        position={['middle', 'right']}
         node={
           <Node>
             This text must line-break as it would reach off-screen otherwise.

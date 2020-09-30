@@ -1,7 +1,7 @@
 import React from 'react'
 import { StylesAsDataAttributes } from 'substyle-glamor'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 export default function StyledWithDataAttributes() {
@@ -16,7 +16,7 @@ export default function StyledWithDataAttributes() {
       <StylesAsDataAttributes>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Stick
-            position="bottom center"
+            position={['bottom', 'center']}
             node={
               <div
                 style={{

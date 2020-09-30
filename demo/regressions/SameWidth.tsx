@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 type AnchorPropsT = {
@@ -54,16 +54,16 @@ export default function SameWidth() {
           marginRight: 250,
         }}
       >
-        <Stick sameWidth position="bottom center" node={<Node />}>
+        <Stick sameWidth position={['bottom', 'center']} node={<Node />}>
           <Anchor>The stick node below should have the same width</Anchor>
         </Stick>
-        <Stick sameWidth inline position="bottom center" node={<Node />}>
+        <Stick sameWidth inline position={['bottom', 'center']} node={<Node />}>
           <Anchor>
             The inline stick node below should have the same width
           </Anchor>
         </Stick>
         <Stick
-          position="bottom center"
+          position={['bottom', 'center']}
           sameWidth
           node={
             <Node>This text should break to respect the anchor's width</Node>

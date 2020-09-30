@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Stick from '../../../es'
+import Stick from '../../../src'
 import Regression from './Regression'
 
 export default function ButtonOverlay() {
