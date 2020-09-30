@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import Stick from '../../../es'
 import Regression from './Regression'
 
-const Anchor = ({ width, children }) => (
+type AnchorPropsT = {
+  width?: number
+  children?: ReactNode
+}
+
+const Anchor = ({ width, children }: AnchorPropsT) => (
   <div
     style={{
       height: 18,
@@ -16,7 +21,11 @@ const Anchor = ({ width, children }) => (
   </div>
 )
 
-const Node = ({ children }) => (
+type NodePropsT = {
+  children?: ReactNode
+}
+
+const Node = ({ children }: NodePropsT) => (
   <div
     style={{
       backgroundColor: '#ae0d5c',

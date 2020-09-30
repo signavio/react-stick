@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import Stick from '../../../es'
 import Regression from './Regression'
@@ -36,7 +36,11 @@ function ScrollPosition() {
   )
 }
 
-const Anchor = ({ children }) => (
+type AnchorPropsT = {
+  children: ReactNode
+}
+
+const Anchor = ({ children }: AnchorPropsT) => (
   <div
     style={{
       padding: 10,
@@ -48,7 +52,11 @@ const Anchor = ({ children }) => (
   </div>
 )
 
-const Node = ({ children }) => (
+type NodePropsT = {
+  children: ReactNode
+}
+
+const Node = ({ children }: NodePropsT) => (
   <div
     style={{
       backgroundColor: '#ae0d5c',

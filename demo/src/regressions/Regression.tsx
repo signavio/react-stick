@@ -1,22 +1,21 @@
-// @flow
-import * as React from 'react'
+import React, { ReactNode } from 'react'
 
 type PropsT = {
-  firefox?: boolean,
-  chrome?: boolean,
-  ie?: boolean,
-  edge?: boolean,
-  safari: boolean,
-  opera?: boolean,
-  allBrowsers?: boolean,
-  fixed?: boolean,
-  open?: boolean,
+  firefox?: boolean
+  chrome?: boolean
+  ie?: boolean
+  edge?: boolean
+  safari?: boolean
+  opera?: boolean
+  allBrowsers?: boolean
+  fixed?: boolean
+  open?: boolean
 
-  title: string,
-  description: string,
-  version: string,
+  title: string
+  description: string
+  version?: string
 
-  children: React.Node,
+  children: ReactNode
 }
 
 function Regression({
