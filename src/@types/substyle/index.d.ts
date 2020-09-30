@@ -1,40 +1,44 @@
-type PlainStyleT = {
-  [string]: string | number
-}
-
-type StyleT = {
-  [string]: string | number | StyleT
-}
-
-type ClassNamesT = {
-  [string]: string
-}
-
-type ModifiersT = {
-  [string]: boolean
-}
-
 declare module 'substyle' {
-  export type StylingProps = {
-    style?: StyleT | Substyle
-    className?: string
-    classNames?: ClassNamesT
+  type PlainStyleT = {
+    [key: string]: string | number
   }
 
-  export type Substyle = {
-    (select: KeysT, defaultStyle?: StyleT): SubstyleT
-
-    style?: PlainStyleT
-    className?: string
+  type StyleT = {
+    [key: string]: string | number | StyleT
   }
 
-  export function inline(base: Substyle, styles: StyleT): Substyle
+  type ClassNamesT = {
+    [key: string]: string
+  }
+
+  type ModifiersT = {
+    [key: string]: boolean
+  }
+
+  type KeysT = string | Array<string> | ModifiersT
+
+  namespace useStyles {
+    export type StylingProps = {
+      style?: StyleT | Substyle
+      className?: string
+      classNames?: ClassNamesT
+    }
+
+    export type Substyle = {
+      (select: KeysT, defaultStyle?: StyleT): Substyle
+
+      style?: PlainStyleT
+      className?: string
+    }
+
+    export function inline(base: Substyle, styles: StyleT): Substyle
+  }
 
   function useStyles(
     defaultStyle: void | StyleT,
-    stylingProps: StylingProps,
+    stylingProps: useStyles.StylingProps,
     modifiers?: ModifiersT
-  ): Substyle
+  ): useStyles.Substyle
 
   export = useStyles
 }

@@ -1,5 +1,4 @@
-// @flow
-import React, { type Element } from 'react'
+import React, { Element } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 

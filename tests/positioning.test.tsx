@@ -1,14 +1,13 @@
-// @flow
 import expect from 'expect'
 import invariant from 'invariant'
 import React from 'react'
 
 import Stick from '../src/'
 import {
-  type AlignT,
-  type HorizontalTargetT,
-  type PositionT,
-  type VerticalTargetT,
+  AlignT,
+  HorizontalTargetT,
+  PositionT,
+  VerticalTargetT,
 } from '../src/flowTypes'
 import { render } from './utils'
 

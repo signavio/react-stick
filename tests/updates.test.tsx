@@ -1,4 +1,3 @@
-// @flow
 import expect from 'expect'
 import invariant from 'invariant'
 import React from 'react'

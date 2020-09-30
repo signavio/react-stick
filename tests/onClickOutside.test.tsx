@@ -1,4 +1,3 @@
-// @flow
 import expect, { createSpy } from 'expect'
 import React from 'react'
 

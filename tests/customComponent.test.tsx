@@ -1,10 +1,9 @@
-// @flow
 import expect from 'expect'
 import React from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 
-import Stick from '../src/'
+import Stick from '../src'
 
 describe('customize wrapper component', () => {
   const node = <div data-testid="node" />
