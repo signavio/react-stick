@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import Stick from '../../../src'
+import Stick from '../..//src'
 import Regression from './Regression'
 
 function ScrollPosition() {

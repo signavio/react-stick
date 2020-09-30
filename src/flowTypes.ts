@@ -63,7 +63,7 @@ export type StickInlinePropsT<
 export type StickPortalPropsT<
   T extends AllowedContainers
 > = SpecificStickBasePropsT<T> & {
-  transportTo: void | HTMLElement
+  transportTo: HTMLElement | null | undefined
 
   position: PositionT
 

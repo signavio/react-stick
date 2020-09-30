@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 
-import Stick, { HorizontalAlign, Position, VerticalAlign } from '../../src'
+import Stick, { HorizontalAlign, Position, VerticalAlign } from '..//src'
 import { useWatcher } from './hooks'
 
 const formPairs = (

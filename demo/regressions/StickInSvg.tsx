@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Stick from '../../../src'
+import Stick from '../..//src'
 import Regression from './Regression'
 
 export default function SameWidth() {

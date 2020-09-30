@@ -122,43 +122,6 @@ function StickPortal<T extends AllowedContainers>(
       </PortalContext.Provider>
     )
   )
-
-  // return (
-  //   <Component
-  //     {...rest}
-  //     {...style}
-  //     ref={(node: null | HTMLElement) => {
-  //       if (typeof ref === 'function') {
-  //         ref(node)
-  //       } else {
-  //         ref.current = node
-  //       }
-
-  //       nodeRef.current = node
-  //     }}
-  //   >
-  //     {children}
-
-  //     {top != null && left != null && (
-  //       <PortalContext.Provider value={host.parentNode}>
-  //         {createPortal(
-  //           <div
-  //             ref={containerRef}
-  //             data-sticknestingkey={nestingKey}
-  //             {...inline(style('node'), {
-  //               position: 'absolute',
-  //               top,
-  //               left,
-  //             })}
-  //           >
-  //             {node}
-  //           </div>,
-  //           host
-  //         )}
-  //       </PortalContext.Provider>
-  //     )}
-  //   </Component>
-  // )
 }
 
 invariant(
@@ -172,7 +135,7 @@ export const PortalContext = createContext<Node>(defaultRoot)
 
 export default forwardRef(StickPortal)
 
-function useHost(transportTo: void | HTMLElement): [Element, Node] {
+function useHost(transportTo: HTMLElement | null | undefined): [Element, Node] {
   const [host] = useState(() => document.createElement('div'))
 
   const portalHost = useContext(PortalContext)

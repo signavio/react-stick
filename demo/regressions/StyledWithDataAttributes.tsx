@@ -1,7 +1,7 @@
 import React from 'react'
 import { StylesAsDataAttributes } from 'substyle-glamor'
 
-import Stick from '../../../src'
+import Stick from '../..//src'
 import Regression from './Regression'
 
 export default function StyledWithDataAttributes() {

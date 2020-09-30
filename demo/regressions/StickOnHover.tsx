@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 
-import Stick from '../../../src'
+import Stick from '../..//src'
 import Regression from './Regression'
 
 function StickOnHover() {

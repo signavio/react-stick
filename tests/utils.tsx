@@ -1,15 +1,15 @@
-import React, { Element } from 'react'
+import React, { FunctionComponent, ReactElement } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 
 import Stick from '../src'
 
-const InlineWrapper = ({ children }) => (
-  <div style={{ display: 'inline-block' }}>{children}</div>
+const InlineWrapper: FunctionComponent<{}> = (props) => (
+  <div style={{ display: 'inline-block' }} {...props} />
 )
 
 export const render = (
-  stick: Element<typeof Stick>
-): $Call<typeof renderBase> => {
+  stick: ReactElement<typeof Stick>
+): ReturnType<typeof renderBase> => {
   return renderBase(stick, { wrapper: InlineWrapper })
 }

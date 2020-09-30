@@ -27,11 +27,14 @@ module.exports = {
     }),
     new HTMLWebpackHarddiskPlugin(),
   ],
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+  },
   module: {
     rules: [
       {
         test: /\.ts(x)?$/,
-        include: /demo/,
+        exclude: /node_modules/,
         loader: 'ts-loader',
       },
     ],
