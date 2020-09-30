@@ -30,6 +30,7 @@ module.exports = {
           jsx: 'react',
           allowJs: true,
           allowSyntheticDefaultImports: true,
+          moduleResolution: 'node',
         },
       },
     },

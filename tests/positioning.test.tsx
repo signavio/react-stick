@@ -1,67 +1,11 @@
-import expect from 'expect'
-import invariant from 'invariant'
 import React from 'react'
 
-import Stick from '../src/'
-import {
-  AlignT,
-  HorizontalTargetT,
-  PositionT,
-  VerticalTargetT,
-} from '../src/flowTypes'
+import Stick, { Align, HorizontalAlign, Position, VerticalAlign } from '../src/'
 import { render } from './utils'
 
-const getPosition = (
-  vertical: VerticalTargetT,
-  horizontal: HorizontalTargetT
-): PositionT => {
-  const position = [vertical, horizontal].join(' ')
-
-  invariant(
-    position === 'bottom left' ||
-      position === 'bottom center' ||
-      position === 'bottom right' ||
-      position === 'middle left' ||
-      position === 'middle center' ||
-      position === 'middle right' ||
-      position === 'top left' ||
-      position === 'top center' ||
-      position === 'top right',
-    `Invalid position: "${position}"`
-  )
-
-  return position
-}
-
-const getAlign = (
-  vertical: VerticalTargetT,
-  horizontal: HorizontalTargetT
-): AlignT => {
-  const align = [vertical, horizontal].join(' ')
-
-  invariant(
-    align === 'bottom left' ||
-      align === 'bottom center' ||
-      align === 'bottom right' ||
-      align === 'middle left' ||
-      align === 'middle center' ||
-      align === 'middle right' ||
-      align === 'top left' ||
-      align === 'top center' ||
-      align === 'top right',
-    `Invalid align: "${align}"`
-  )
-
-  return align
-}
-
 describe('positioning', () => {
-  const verticals: $ReadOnlyArray<VerticalTargetT> = ['top', 'middle', 'bottom']
-  const horizontals: $ReadOnlyArray<HorizontalTargetT> = [
-    'left',
-    'center',
-    'right',
-  ]
+  const verticals: VerticalAlign[] = ['top', 'middle', 'bottom']
+  const horizontals: HorizontalAlign[] = ['left', 'center', 'right']
 
   const BODY_PADDING = 8
 
@@ -83,7 +27,7 @@ describe('positioning', () => {
     />
   )
 
-  const widthFactor = (position) => {
+  const widthFactor = (position: HorizontalAlign) => {
     switch (position) {
       case 'left':
         return 0
@@ -96,7 +40,7 @@ describe('positioning', () => {
     }
   }
 
-  const heightFactor = (position) => {
+  const heightFactor = (position: VerticalAlign) => {
     switch (position) {
       case 'top':
         return 0
@@ -109,24 +53,24 @@ describe('positioning', () => {
     }
   }
 
-  const calcLeft = (position, align) =>
+  const calcLeft = (position: HorizontalAlign, align: HorizontalAlign) =>
     BODY_PADDING +
     widthFactor(position) * ANCHOR_WIDTH -
     widthFactor(align) * NODE_WIDTH
 
-  const calcTop = (position, align) =>
+  const calcTop = (position: VerticalAlign, align: VerticalAlign) =>
     BODY_PADDING +
     heightFactor(position) * ANCHOR_HEIGHT -
     heightFactor(align) * NODE_HEIGHT
 
   verticals.forEach((verticalPosition) => {
     horizontals.forEach((horizontalPosition) => {
-      const position = getPosition(verticalPosition, horizontalPosition)
+      const position: Position = [verticalPosition, horizontalPosition]
 
       describe(`position="${position}"`, () => {
         verticals.forEach((verticalAlign) => {
           horizontals.forEach((horizontalAlign) => {
-            const align = getAlign(verticalAlign, horizontalAlign)
+            const align: Align = [verticalAlign, horizontalAlign]
 
             const expectedLeft = calcLeft(horizontalPosition, horizontalAlign)
             const expectedTop = calcTop(verticalPosition, verticalAlign)
@@ -164,16 +108,16 @@ describe('positioning', () => {
         })
 
         it('should use the correct default `align`', () => {
-          const defaultAligns = {
-            'top left': 'bottom left',
-            'top center': 'bottom center',
-            'top right': 'bottom right',
-            'middle left': 'middle right',
-            'middle center': 'middle center',
-            'middle right': 'middle left',
-            'bottom left': 'top left',
-            'bottom center': 'top center',
-            'bottom right': 'top right',
+          const defaultAligns: { [key: string]: Align } = {
+            'top left': ['bottom', 'left'],
+            'top center': ['bottom', 'center'],
+            'top right': ['bottom', 'right'],
+            'middle left': ['middle', 'right'],
+            'middle center': ['middle', 'center'],
+            'middle right': ['middle', 'left'],
+            'bottom left': ['top', 'left'],
+            'bottom center': ['top', 'center'],
+            'bottom right': ['top', 'right'],
           }
 
           const stick = (
@@ -185,7 +129,7 @@ describe('positioning', () => {
             <Stick
               node={node}
               position={position}
-              align={defaultAligns[position]}
+              align={defaultAligns[position.join(' ')]}
             >
               {anchor}
             </Stick>

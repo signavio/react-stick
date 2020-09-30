@@ -1,4 +1,3 @@
-import expect from 'expect'
 import React from 'react'
 
 import { fireEvent } from '@testing-library/react'
@@ -20,7 +19,7 @@ describe('autoPositioning', () => {
       const { getByTestId } = render(
         <Stick
           autoFlipVertically
-          position="bottom center"
+          position={['bottom', 'center']}
           node={node}
           style={{ marginTop: windowHeight }}
         >
@@ -40,7 +39,7 @@ describe('autoPositioning', () => {
       const { getByTestId, rerender } = render(
         <Stick
           autoFlipVertically
-          position="bottom center"
+          position={['bottom', 'center']}
           node={node}
           style={{ marginTop: windowHeight }}
         >
@@ -51,7 +50,7 @@ describe('autoPositioning', () => {
       rerender(
         <Stick
           autoFlipVertically
-          position="bottom center"
+          position={['bottom', 'center']}
           node={node}
           style={{ marginTop: 0 }}
         >
@@ -73,7 +72,7 @@ describe('autoPositioning', () => {
 
     it('should move the node back to its original intended position if space clears up (initial position: "top center").', () => {
       const { getByTestId, rerender } = render(
-        <Stick autoFlipVertically position="top center" node={node}>
+        <Stick autoFlipVertically position={['top', 'center']} node={node}>
           {anchor}
         </Stick>
       )
@@ -81,7 +80,7 @@ describe('autoPositioning', () => {
       rerender(
         <Stick
           autoFlipVertically
-          position="top center"
+          position={['top', 'center']}
           node={node}
           style={{ marginTop: windowHeight }}
         >
@@ -103,7 +102,7 @@ describe('autoPositioning', () => {
       const { getByTestId } = render(
         <Stick
           autoFlipVertically
-          position="top center"
+          position={['top', 'center']}
           node={node}
           style={{ marginTop: windowHeight }}
         >
@@ -123,7 +122,7 @@ describe('autoPositioning', () => {
       const { getByTestId } = render(
         <Stick
           autoFlipVertically
-          position="top center"
+          position={['top', 'center']}
           node={node}
           style={{ height: windowHeight }}
         >
@@ -141,7 +140,7 @@ describe('autoPositioning', () => {
 
     it('should not move the node from bottom to top if there is neither enough space at the bottom nor the top.', () => {
       const { getByTestId } = render(
-        <Stick autoFlipVertically position="bottom center" node={node}>
+        <Stick autoFlipVertically position={['bottom', 'center']} node={node}>
           <div
             data-testid="anchor"
             style={{ width: 100, height: windowHeight }}
@@ -161,7 +160,7 @@ describe('autoPositioning', () => {
   describe('horizontal', () => {
     it('should move the node from left to right if there is not enough space at the left.', () => {
       const { getByTestId } = render(
-        <Stick autoFlipHorizontally position="middle left" node={node}>
+        <Stick autoFlipHorizontally position={['middle', 'left']} node={node}>
           {anchor}
         </Stick>
       )
@@ -178,7 +177,7 @@ describe('autoPositioning', () => {
       const { getByTestId, rerender } = render(
         <Stick
           autoFlipHorizontally
-          position="middle right"
+          position={['middle', 'right']}
           node={node}
           style={{ marginLeft: windowWidth }}
         >
@@ -189,7 +188,7 @@ describe('autoPositioning', () => {
       rerender(
         <Stick
           autoFlipHorizontally
-          position="middle right"
+          position={['middle', 'right']}
           node={node}
           style={{ marginLeft: 0 }}
         >
@@ -209,7 +208,7 @@ describe('autoPositioning', () => {
 
     it('should move the node back to its original intended position if space clears up (initial position: "middle left").', () => {
       const { getByTestId, rerender } = render(
-        <Stick autoFlipHorizontally position="middle left" node={node}>
+        <Stick autoFlipHorizontally position={['middle', 'left']} node={node}>
           {anchor}
         </Stick>
       )
@@ -217,7 +216,7 @@ describe('autoPositioning', () => {
       rerender(
         <Stick
           autoFlipHorizontally
-          position="middle left"
+          position={['middle', 'left']}
           style={{
             marginLeft: windowWidth,
           }}
@@ -245,7 +244,7 @@ describe('autoPositioning', () => {
       const { getByTestId } = render(
         <Stick
           autoFlipHorizontally
-          position="middle right"
+          position={['middle', 'right']}
           node={node}
           style={{ marginLeft: windowWidth }}
         >
@@ -265,7 +264,7 @@ describe('autoPositioning', () => {
       const { getByTestId } = render(
         <Stick
           autoFlipHorizontally
-          position="middle left"
+          position={['middle', 'left']}
           node={node}
           style={{ width: windowWidth }}
         >
@@ -283,7 +282,7 @@ describe('autoPositioning', () => {
 
     it('should not move the node from right to left if there is neither enough space at the right nor the left.', () => {
       const { getByTestId } = render(
-        <Stick autoFlipHorizontally position="middle right" node={node}>
+        <Stick autoFlipHorizontally position={['middle', 'right']} node={node}>
           <div
             data-testid="anchor"
             style={{ height: 100, width: windowWidth }}

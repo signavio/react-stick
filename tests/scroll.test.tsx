@@ -1,28 +1,24 @@
-import expect from 'expect'
-import React from 'react'
+import React, { FunctionComponent, ReactElement } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 
 import Stick from '../src/'
 
 describe('positioning in scrolling window', () => {
-  let fixedElement
+  let fixedElement: HTMLElement
 
   const longText = new Array(50).fill('Lorem ipsum dolor sit amet.').join(' ')
   const anchor = <div data-testid="anchor" />
   const node = <div data-testid="node">{longText}</div>
 
-  const PositionWrapper = (
-    { children } // sets documentElement's scroll width to 1008
-  ) => (
+  const PositionWrapper: FunctionComponent<{}> = (props) => (
     <div style={{ width: 1000, height: 10000 }}>
-      <div style={{ position: 'absolute', height: 0, top: 5000 }}>
-        {children}
-      </div>
+      <div style={{ position: 'absolute', height: 0, top: 5000 }} {...props} />
     </div>
   )
 
-  const render = (stick) => renderBase(stick, { wrapper: PositionWrapper })
+  const render = (stick: ReactElement) =>
+    renderBase(stick, { wrapper: PositionWrapper })
 
   beforeEach(() => {
     fixedElement = document.createElement('div')
@@ -40,7 +36,7 @@ describe('positioning in scrolling window', () => {
 
   it('should keep the correct the node position when scrolling', () => {
     const { getByTestId } = render(
-      <Stick position="bottom left" align="top left" node={node}>
+      <Stick position={['bottom', 'left']} align={['top', 'left']} node={node}>
         {anchor}
       </Stick>
     )
@@ -58,8 +54,8 @@ describe('positioning in scrolling window', () => {
   it('should keep the correct the node position when transported to a fixed container', () => {
     const { getByTestId } = render(
       <Stick
-        position="bottom left"
-        align="top left"
+        position={['bottom', 'left']}
+        align={['top', 'left']}
         node={node}
         transportTo={fixedElement}
       >

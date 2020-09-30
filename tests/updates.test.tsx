@@ -1,6 +1,5 @@
-import expect from 'expect'
 import invariant from 'invariant'
-import React from 'react'
+import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 
@@ -10,23 +9,23 @@ describe('updates', () => {
   const anchor = <div data-testid="anchor" />
   const node = <div data-testid="node" />
 
-  const PositionWrapper = ({ children }) => (
-    <div style={{ width: 10, height: 10 }}>{children}</div>
+  const PositionWrapper: FunctionComponent<{}> = (props) => (
+    <div style={{ width: 10, height: 10 }} {...props} />
   )
 
   // wrap render to invoke callback only after the node has actually been mounted
-  const render = (stick, host, callback) =>
+  const render = (stick: ReactElement) =>
     renderBase(stick, { wrapper: PositionWrapper })
 
   it('should work if the node is only provided after the initial mount', () => {
     const { rerender, getByTestId } = render(
-      <Stick position="middle right" node={null}>
+      <Stick position={['middle', 'right']} node={null}>
         {anchor}
       </Stick>
     )
 
     rerender(
-      <Stick position="middle right" node={node}>
+      <Stick position={['middle', 'right']} node={node}>
         {anchor}
       </Stick>
     )
@@ -44,7 +43,7 @@ describe('updates', () => {
 
     const body = document.body
 
-    invariant(body, 'No body element present.')
+    invariant(body != null, 'No body element present.')
 
     const bodyChildrenCountWithStick = body.childElementCount
 
@@ -87,13 +86,13 @@ describe('updates', () => {
 
   it('should handle switching to `updateOnAnimationFrame` correctly', () => {
     const { rerender, getByTestId } = render(
-      <Stick node={node} position="middle right">
+      <Stick node={node} position={['middle', 'right']}>
         {anchor}
       </Stick>
     )
 
     rerender(
-      <Stick node={node} position="middle right" updateOnAnimationFrame>
+      <Stick node={node} position={['middle', 'right']} updateOnAnimationFrame>
         {anchor}
       </Stick>
     )
@@ -106,13 +105,13 @@ describe('updates', () => {
 
   it('should handle switching back from `updateOnAnimationFrame` correctly', () => {
     const { rerender, getByTestId } = render(
-      <Stick node={node} position="middle right" updateOnAnimationFrame>
+      <Stick node={node} position={['middle', 'right']} updateOnAnimationFrame>
         {anchor}
       </Stick>
     )
 
     rerender(
-      <Stick node={node} position="middle right">
+      <Stick node={node} position={['middle', 'right']}>
         {anchor}
       </Stick>
     )

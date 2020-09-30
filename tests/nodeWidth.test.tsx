@@ -1,5 +1,4 @@
-import expect from 'expect'
-import React from 'react'
+import React, { FunctionComponent, ReactElement } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 
@@ -14,15 +13,14 @@ describe('stick node width', () => {
     </div>
   )
 
-  const PositionWrapper = ({ children }) => (
+  const PositionWrapper: FunctionComponent<{}> = (props) => (
     <div style={{ width: 1000, height: 9999 }}>
-      <div style={{ position: 'absolute', width: 100, left: 100 }}>
-        {children}
-      </div>
+      <div style={{ position: 'absolute', width: 100, left: 100 }} {...props} />
     </div>
   )
 
-  const render = (stick) => renderBase(stick, { wrapper: PositionWrapper })
+  const render = (stick: ReactElement) =>
+    renderBase(stick, { wrapper: PositionWrapper })
 
   const inlineOptions = [false, true]
   inlineOptions.forEach((inline) => {
@@ -31,8 +29,8 @@ describe('stick node width', () => {
         const { getByTestId } = render(
           <Stick
             inline={inline}
-            position="middle right"
-            align="middle left"
+            position={['middle', 'right']}
+            align={['middle', 'left']}
             node={node}
           >
             {anchor}
@@ -47,8 +45,8 @@ describe('stick node width', () => {
         const { getByTestId } = render(
           <Stick
             inline={inline}
-            position="middle left"
-            align="middle right"
+            position={['middle', 'left']}
+            align={['middle', 'right']}
             node={node}
           >
             {anchor}
