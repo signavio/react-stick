@@ -1,5 +1,6 @@
+import expect from 'expect'
 import invariant from 'invariant'
-import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
+import React, { FunctionComponent, ReactElement } from 'react'
 
 import { render as renderBase } from '@testing-library/react'
 

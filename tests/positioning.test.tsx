@@ -1,3 +1,4 @@
+import expect from 'expect'
 import React from 'react'
 
 import Stick, { Align, HorizontalAlign, Position, VerticalAlign } from '../src/'

@@ -1,4 +1,6 @@
+import expect from 'expect'
 import React from 'react'
+import sinon from 'sinon'
 
 import { fireEvent, render } from '@testing-library/react'
 
@@ -9,7 +11,7 @@ describe('`onClickOutside` event', () => {
   const node = <div data-testid="node" />
 
   it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', () => {
-    const spy = jest.fn()
+    const spy = sinon.spy()
     const { container } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
@@ -18,15 +20,16 @@ describe('`onClickOutside` event', () => {
 
     fireEvent.click(container)
 
-    expect(spy).toHaveBeenCalled()
-    spy.mockReset()
+    expect(spy.calledOnce).toBe(true)
 
-    document.body?.click()
-    expect(spy).toHaveBeenCalled()
+    document.body.click()
+
+    expect(spy.calledTwice).toBe(true)
   })
 
   it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
-    const spy = jest.fn()
+    const spy = sinon.spy()
+
     const { getByTestId } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
@@ -34,10 +37,10 @@ describe('`onClickOutside` event', () => {
     )
 
     fireEvent.click(getByTestId('anchor'))
-    expect(spy).not.toHaveBeenCalled()
+    expect(spy.called).toBe(false)
 
     fireEvent.click(getByTestId('node'))
-    expect(spy).not.toHaveBeenCalled()
+    expect(spy.called).toBe(false)
   })
 
   const inlineOptions = [false, true]
@@ -47,7 +50,7 @@ describe('`onClickOutside` event', () => {
         outerInline ? 'inline ' : ''
       }/>`, () => {
         it('should not call `onClickOutside` on click on the nested stick node', () => {
-          const spy = jest.fn()
+          const spy = sinon.spy()
           const { getByTestId } = render(
             <Stick
               inline={outerInline}
@@ -67,7 +70,7 @@ describe('`onClickOutside` event', () => {
 
           fireEvent.click(getByTestId('nested-node'))
 
-          expect(spy).not.toHaveBeenCalled()
+          expect(spy.called).toBe(false)
         })
       })
     })

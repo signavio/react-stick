@@ -1,3 +1,4 @@
+import expect from 'expect'
 import React, { FunctionComponent, ReactElement } from 'react'
 
 import { render as renderBase } from '@testing-library/react'

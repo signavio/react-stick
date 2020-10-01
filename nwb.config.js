@@ -4,26 +4,37 @@ module.exports = {
     esModules: true,
     umd: false,
   },
+  webpack: {
+    extra: {
+      resolve: {
+        extensions: ['.js', '.ts', '.tsx'],
+      },
+      module: {
+        rules: [
+          {
+            test: /\.ts(x)?$/,
+            exclude: /node_modules/,
+            loader: 'ts-loader',
+          },
+        ],
+      },
+    },
+  },
   karma: {
-    frameworks: ['karma-typescript'],
+    frameworks: ['mocha', 'karma-typescript'],
     plugins: ['karma-typescript'],
+    testFiles: 'tests/**/*.tsx',
     extra: {
       files: ['src/**/*.ts', 'src/**/*.tsx'],
       preprocessors: {
-        '**/*.ts': 'karma-typescript',
-        '**/*.tsx': 'karma-typescript',
+        '**/*.ts': ['karma-typescript'],
+        '**/*.tsx': ['karma-typescript'],
       },
 
       karmaTypescriptConfig: {
         compilerOptions: {
           esModuleInterop: true,
-          target: 'es5',
-          module: 'commonjs',
-          jsx: 'react',
-          allowJs: true,
-          allowSyntheticDefaultImports: true,
-          moduleResolution: 'node',
-          rootDirs: ['src', 'test'],
+          sourceMap: true,
         },
       },
     },
