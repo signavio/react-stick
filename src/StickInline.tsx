@@ -2,7 +2,7 @@
 import React, { Ref, createElement, forwardRef } from 'react'
 import useStyles from 'substyle'
 
-import { AllowedContainers, StickInlinePropsT } from './flowTypes'
+import { AllowedContainers, StickInlinePropsT } from './types'
 import { getModifiers } from './utils'
 
 function StickInline<T extends AllowedContainers>(

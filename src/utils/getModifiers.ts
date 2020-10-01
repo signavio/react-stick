@@ -1,5 +1,5 @@
 import DEFAULT_POSITION from '../defaultPosition'
-import { AlignT, PositionT } from '../flowTypes'
+import { AlignT, PositionT } from '../types'
 import getDefaultAlign from './getDefaultAlign'
 
 type PropsT = {

@@ -16,8 +16,8 @@ import React, {
 import { createPortal } from 'react-dom'
 import { inline } from 'substyle'
 
-import { AllowedContainers, PositionT, StickPortalPropsT } from './flowTypes'
 import { useWatcher } from './hooks'
+import { AllowedContainers, PositionT, StickPortalPropsT } from './types'
 import { scrollX, scrollY } from './utils'
 
 function StickPortal<T extends AllowedContainers>(

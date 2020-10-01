@@ -5,4 +5,4 @@ export {
   AlignT as Align,
   VerticalTargetT as VerticalAlign,
   HorizontalTargetT as HorizontalAlign,
-} from './flowTypes'
+} from './types'

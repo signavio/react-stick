@@ -2,12 +2,7 @@ import invariant from 'invariant'
 import { useCallback, useState } from 'react'
 
 import { positions } from '../defaultPosition'
-import {
-  AlignT,
-  HorizontalTargetT,
-  PositionT,
-  VerticalTargetT,
-} from '../flowTypes'
+import { AlignT, HorizontalTargetT, PositionT, VerticalTargetT } from '../types'
 import {
   fitsOnBottom,
   fitsOnLeft,

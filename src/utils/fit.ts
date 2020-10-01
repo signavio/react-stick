@@ -1,4 +1,4 @@
-import { PositionT } from '../flowTypes'
+import { PositionT } from '../types'
 
 export const isPositionedToTop = (position: PositionT): boolean => {
   const [positionMarker] = position

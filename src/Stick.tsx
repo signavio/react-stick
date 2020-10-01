@@ -17,8 +17,8 @@ import StickInline from './StickInline'
 import StickNode from './StickNode'
 import StickPortal from './StickPortal'
 import DEFAULT_POSITION from './defaultPosition'
-import { AlignT, AllowedContainers, PositionT, StickPropsT } from './flowTypes'
 import { useAutoFlip, useWatcher } from './hooks'
+import { AlignT, AllowedContainers, PositionT, StickPropsT } from './types'
 import { getDefaultAlign, getModifiers, scrollX, uniqueId } from './utils'
 
 const defaultStyles = {

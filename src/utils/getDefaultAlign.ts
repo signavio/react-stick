@@ -1,9 +1,4 @@
-import {
-  AlignT,
-  HorizontalTargetT,
-  PositionT,
-  VerticalTargetT,
-} from '../flowTypes'
+import { AlignT, HorizontalTargetT, PositionT, VerticalTargetT } from '../types'
 
 const defaultVerticalAlign: { [T in VerticalTargetT]: VerticalTargetT } = {
   top: 'bottom',

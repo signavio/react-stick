@@ -2,7 +2,7 @@
 import React, { ReactNode, Ref, forwardRef } from 'react'
 import useStyles, { inline } from 'substyle'
 
-import { AlignT, PositionT } from './flowTypes'
+import { AlignT, PositionT } from './types'
 import { getModifiers } from './utils'
 
 type PropsT = {
