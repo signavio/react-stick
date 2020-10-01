@@ -3,7 +3,6 @@ import 'requestidlecallback'
 
 import invariant from 'invariant'
 import React, {
-  Ref,
   RefObject,
   useCallback,
   useContext,
@@ -100,7 +99,7 @@ function Stick<T extends AllowedContainers>({
       const { target } = ev
       if (
         target instanceof window.HTMLElement &&
-        isOutside(anchorRef, containerRef, target)
+        isOutside(anchorRef, nestingKey, target)
       ) {
         onClickOutside(ev)
       }
@@ -111,7 +110,7 @@ function Stick<T extends AllowedContainers>({
     return () => {
       document.removeEventListener('click', handleClickOutside, true)
     }
-  }, [onClickOutside])
+  }, [nestingKey, onClickOutside])
 
   const measure = useCallback(() => {
     if (!anchorRef.current) {
@@ -218,33 +217,25 @@ function Stick<T extends AllowedContainers>({
 
 function isOutside(
   anchorRef: RefObject<HTMLElement>,
-  containerRef: RefObject<HTMLElement>,
+  nestingKey: string,
   target: HTMLElement
 ) {
   if (anchorRef.current && anchorRef.current.contains(target)) {
     return false
   }
 
-  const nestingKey =
-    containerRef.current &&
-    containerRef.current.getAttribute('data-sticknestingkey')
+  // Find all stick nodes nested inside our own stick node and check if the click
+  // happened on any of these (our own stick node will also be part of the query result)
+  const nestedStickNodes = document.querySelectorAll(
+    `[data-sticknestingkey^='${nestingKey}']`
+  )
 
-  if (nestingKey) {
-    // Find all stick nodes nested inside our own stick node and check if the click
-    // happened on any of these (our own stick node will also be part of the query result)
-    const nestedStickNodes = document.querySelectorAll(
-      `[data-stickNestingKey^='${nestingKey}']`
+  return (
+    !nestedStickNodes ||
+    !Array.from(nestedStickNodes).some((stickNode) =>
+      stickNode.contains(target)
     )
-
-    return (
-      !nestedStickNodes ||
-      !Array.from(nestedStickNodes).some((stickNode) =>
-        stickNode.contains(target)
-      )
-    )
-  }
-
-  return true
+  )
 }
 
 function calculateWidth(

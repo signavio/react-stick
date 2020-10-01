@@ -30,7 +30,7 @@ function StickInline<T extends AllowedContainers>(
       ...rest,
       ...styles,
       ref,
-      'data-stickynestingkey': nestingKey,
+      'data-sticknestingkey': nestingKey,
     },
     children,
     node ? <div {...styles('node')}>{node}</div> : null
