@@ -12768,12 +12768,6 @@ substyle@^9.3.0:
     "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"
 
-"substyle@file:../substyle/packages/substyle":
-  version "9.2.0"
-  dependencies:
-    "@babel/runtime" "^7.3.4"
-    invariant "^2.2.4"
-
 supports-color@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-6.0.0.tgz#76cfe742cf1f41bb9b1c29ad03068c05b4c0e40a"

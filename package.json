@@ -29,7 +29,7 @@
   "dependencies": {
     "invariant": "^2.2.4",
     "requestidlecallback": "^0.3.0",
-    "substyle": "file:///Users/philipp.giese/repositories/substyle/packages/substyle"
+    "substyle": "^9.3.0"
   },
   "devDependencies": {
     "@testing-library/react": "11.0.4",
