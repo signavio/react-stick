@@ -18,7 +18,7 @@
     "prepublishOnly": "yarn build",
     "build-demo": "webpack",
     "clean": "rimraf lib es build",
-    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
+    "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,tests,demo}/**/*.ts(x)\"",
     "lint": "eslint --max-warnings=0 src tests demo",
     "prenow-build": "yarn build",
     "now-build": "webpack",
