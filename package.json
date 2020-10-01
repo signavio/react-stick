@@ -14,18 +14,16 @@
   "sideEffects": false,
   "scripts": {
     "prebuild": "yarn clean",
-    "build": "tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.commonjs.json && tsc --build tsconfig.es2015.json",
     "prepublishOnly": "yarn build",
     "build-demo": "webpack",
-    "clean": "nwb clean-module && nwb clean-demo",
-    "flow": "flow check",
+    "clean": "rimraf lib es build",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
     "prenow-build": "yarn build",
     "now-build": "webpack",
     "start": "NODE_ENV=development webpack-dev-server",
     "semantic-release": "semantic-release",
-    "semantic-release-preview": "semantic-release-github-pr",
     "test": "nwb test-react"
   },
   "dependencies": {
@@ -61,6 +59,7 @@
     "react-dom": "16.14.0",
     "regenerator-runtime": "0.13.7",
     "semantic-release": "17.2.2",
+    "rimraf": "3.0.2",
     "substyle-glamor": "4.1.0",
     "ts-loader": "8.0.4",
     "webpack": "4.44.2",
