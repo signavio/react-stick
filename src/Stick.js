@@ -73,15 +73,6 @@ function Stick({
     })
   )
 
-  /* Check alignment on first render */
-  useEffect(() => {
-    if (!nodeRef.current || !anchorRef.current) {
-      return
-    }
-
-    checkAlignment(nodeRef.current, anchorRef.current)
-  }, [nodeRef.current, anchorRef.current])
-
   useEffect(() => {
     const handleScroll = () => {
       if (!nodeRef.current || !anchorRef.current) {
@@ -91,6 +82,7 @@ function Stick({
       checkAlignment(nodeRef.current, anchorRef.current)
     }
 
+    handleScroll(); // Check alignment on first render
     window.addEventListener('scroll', handleScroll)
 
     return () => {
