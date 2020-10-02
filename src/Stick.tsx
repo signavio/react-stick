@@ -1,4 +1,3 @@
-// @flow
 import 'requestidlecallback'
 
 import invariant from 'invariant'
