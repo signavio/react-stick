@@ -1,4 +1,3 @@
-// @flow
 import React, { Ref, createElement, forwardRef } from 'react'
 import useStyles from 'substyle'
 
