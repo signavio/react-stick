@@ -65,7 +65,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "regenerator-runtime": "0.13.7",
-    "semantic-release": "17.2.0",
+    "semantic-release": "17.2.1",
     "substyle-glamor": "4.1.0",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12",
