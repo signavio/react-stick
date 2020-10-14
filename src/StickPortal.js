@@ -122,7 +122,7 @@ function StickPortal(
   )
 }
 
-const PortalContext = createContext<?Node>(null)
+export const PortalContext = createContext<?Node>(document.body)
 
 export default forwardRef<StickPortalPropsT, ?HTMLElement>(StickPortal)
 
@@ -131,7 +131,7 @@ function useHost(transportTo) {
 
   const portalHost = useContext(PortalContext)
 
-  const hostParent = transportTo || portalHost || document.body
+  const hostParent = transportTo || portalHost
 
   invariant(hostParent, 'Could not determine a parent for the host node.')
 
