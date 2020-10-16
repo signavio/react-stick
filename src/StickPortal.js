@@ -101,7 +101,7 @@ function StickPortal(
       {children}
 
       {top != null && left != null && (
-        <PortalContext.Provider value={host.parentNode}>
+        <PortalContext.Provider value={host.parentNode || defaultRoot}>
           {createPortal(
             <div
               ref={containerRef}
@@ -122,7 +122,11 @@ function StickPortal(
   )
 }
 
-export const PortalContext = createContext<?Node>(document.body)
+invariant(document.body, 'Stick can only be used in a browser environment.')
+
+const defaultRoot = document.body
+
+export const PortalContext = createContext<Node>(defaultRoot)
 
 export default forwardRef<StickPortalPropsT, ?HTMLElement>(StickPortal)
 
