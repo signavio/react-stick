@@ -4,18 +4,19 @@ import { useEffect } from 'react'
 type WatcherFuncT = () => void
 type OptionsT = {|
   updateOnAnimationFrame: boolean,
+  enabled: boolean
 |}
 
 function useWatcher(
   watcher: WatcherFuncT,
-  { updateOnAnimationFrame }: OptionsT
+  { updateOnAnimationFrame, enabled }: OptionsT
 ): void {
   useEffect(() => {
     let animationFrameId
     let idleCallbackId
 
     // do not track in node
-    if (typeof window.requestAnimationFrame !== 'undefined') {
+    if (enabled && typeof window.requestAnimationFrame !== 'undefined') {
       const callback = () => {
         watcher()
 
@@ -38,7 +39,7 @@ function useWatcher(
         cancelIdleCallback(idleCallbackId)
       }
     }
-  }, [updateOnAnimationFrame, watcher])
+  }, [updateOnAnimationFrame, watcher, enabled])
 }
 
 export default useWatcher
