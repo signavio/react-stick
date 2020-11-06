@@ -132,7 +132,7 @@ function Stick({
     }
   }, [resolvedAlign, resolvedPosition, sameWidth, width])
 
-  useWatcher(measure, { updateOnAnimationFrame })
+  useWatcher(measure,  {updateOnAnimationFrame, enabled: !!node} )
 
   const handleReposition = useCallback(() => {
     if (nodeRef.current && anchorRef.current) {

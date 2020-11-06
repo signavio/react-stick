@@ -81,7 +81,7 @@ function StickPortal(
     }
   }, [host, left, position, top, visible])
 
-  useWatcher(measure, { updateOnAnimationFrame })
+  useWatcher(measure, { updateOnAnimationFrame, enabled: visible })
 
   const Component = component || 'div'
   return (
