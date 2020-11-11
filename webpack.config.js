@@ -11,7 +11,7 @@ const inDev = NODE_ENV === 'development'
 module.exports = {
   mode: inDev ? 'development' : 'production',
   devtool: 'source-map',
-  entry: [path.resolve(__dirname, 'demo/src/index.js')],
+  entry: [path.resolve(__dirname, 'demo/index.tsx')],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].[chunkhash].js',
@@ -22,17 +22,20 @@ module.exports = {
     new HTMLWebpackPlugin({
       alwaysWriteToDisk: true,
       minify: true,
-      template: path.resolve(__dirname, 'demo/src/index.html'),
+      template: path.resolve(__dirname, 'demo/index.html'),
       filename: path.resolve(__dirname, 'build/index.html'),
     }),
     new HTMLWebpackHarddiskPlugin(),
   ],
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        include: /demo/,
-        loader: 'babel-loader',
+        test: /\.ts(x)?$/,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
       },
     ],
   },
