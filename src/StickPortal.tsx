@@ -105,9 +105,7 @@ function StickPortal<T extends AllowedContainers>(
       <PortalContext.Provider value={host.parentNode || defaultRoot}>
         {createPortal(
           <div
-            ref={(node) => {
-              containerRef.current = node
-            }}
+            ref={containerRef}
             data-sticknestingkey={nestingKey}
             {...inline(style('node'), {
               position: 'absolute',

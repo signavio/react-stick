@@ -54,7 +54,7 @@ function Stick<T extends AllowedContainers>({
 
   const anchorRef = useRef<null | HTMLElement>(null)
   const nodeRef = useRef<null | HTMLDivElement>(null)
-  const containerRef = useRef<null | HTMLElement>(null)
+  const containerRef = useRef<null | HTMLDivElement>(null)
 
   const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
     autoFlipHorizontally,
@@ -132,7 +132,7 @@ function Stick<T extends AllowedContainers>({
     }
   }, [resolvedAlign, resolvedPosition, sameWidth, width])
 
-  useWatcher(measure,  {updateOnAnimationFrame, enabled: !!node} )
+  useWatcher(measure, { updateOnAnimationFrame, enabled: !!node })
 
   const handleReposition = useCallback(() => {
     if (nodeRef.current && anchorRef.current) {

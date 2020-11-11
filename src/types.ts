@@ -1,10 +1,4 @@
-import {
-  ComponentProps,
-  MutableRefObject,
-  ReactHTML,
-  ReactNode,
-  ReactSVG,
-} from 'react'
+import { ComponentProps, ReactHTML, ReactNode, ReactSVG, Ref } from 'react'
 import { StylingProps, Substyle } from 'substyle'
 
 export type VerticalTargetT = 'bottom' | 'middle' | 'top'
@@ -68,7 +62,7 @@ export type StickPortalPropsT<
   position: PositionT
 
   updateOnAnimationFrame: boolean
-  containerRef: MutableRefObject<null | HTMLElement>
+  containerRef: Ref<HTMLDivElement>
 
   onReposition: (nodeRef: Element) => void
 }
