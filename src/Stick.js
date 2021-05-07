@@ -82,6 +82,7 @@ function Stick({
       checkAlignment(nodeRef.current, anchorRef.current)
     }
 
+    handleScroll(); // Check alignment on first render
     window.addEventListener('scroll', handleScroll)
 
     return () => {
