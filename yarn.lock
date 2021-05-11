@@ -13792,13 +13792,13 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-substyle-glamor@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-4.1.1.tgz#2dcc579b437b47c8f731d434f19ee71711a54fc7"
-  integrity sha512-Nq4MUOx6xVC/cIUVzwCZbDFZTyi5T8R7ehbqwIVPckcIuMa8t4GF4K33Jm8uesN6UQrofTZT9MMBjmzuDusfLg==
+substyle-glamor@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/substyle-glamor/-/substyle-glamor-4.1.2.tgz#46c279a41a1f7f07db2b3d813b1c8b89385c8b48"
+  integrity sha512-0GXtwkhdZzdel9IVfQWM+H7s1nrIs3XS0FcbUlAMdQW7E3Ly/VSMif7mNUHMKxAYXMWZ9ZdhZlhq/q/d8q9mAA==
   dependencies:
     "@babel/runtime" "^7.3.4"
-    substyle "^9.4.0"
+    substyle "^9.4.1"
 
 substyle@^9.1.0:
   version "9.1.0"
@@ -13808,10 +13808,10 @@ substyle@^9.1.0:
     "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"
 
-substyle@^9.4.0:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/substyle/-/substyle-9.4.0.tgz#df8548e63735f394c53cbdb1ca112bdf2fc1eed7"
-  integrity sha512-Uq44O87n5giXE20LKNbF9+ORsU3IH8KW0eUiyEk2dfofOBmiJ7tb1IL2Qadi/qC1AbY6NwTW45pwptzayCA76A==
+substyle@^9.4.1:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-9.4.1.tgz#6a4647f363bc14fecc51aac371d4dbeda082aa50"
+  integrity sha512-VOngeq/W1/UkxiGzeqVvDbGDPM8XgUyJVWjrqeh+GgKqspEPiLYndK+XRcsKUHM5Muz/++1ctJ1QCF/OqRiKWA==
   dependencies:
     "@babel/runtime" "^7.3.4"
     invariant "^2.2.4"
