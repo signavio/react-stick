@@ -1,6 +1,6 @@
 // @flow
 import invariant from 'invariant'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 
 import { positions } from '../defaultPosition'
 import {
@@ -33,6 +33,11 @@ const useAutoFlip = (
   const [currentAlign, setCurrentAlign] = useState(
     initialAlign || getDefaultAlign(initialPosition)
   )
+
+  useEffect(() => {
+    setCurrentPosition(initialPosition);
+    setCurrentAlign(initialAlign || getDefaultAlign(initialPosition));
+  }, [initialAlign, initialPosition]);
 
   const checkAlignment = useCallback(
     (nodeRef, anchorRef) => {
