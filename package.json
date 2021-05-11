@@ -24,7 +24,7 @@
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
     "prenow-build": "yarn build",
     "now-build": "webpack",
-    "start": "NODE_ENV=development webpack-dev-server",
+    "start": "NODE_ENV=development webpack server",
     "semantic-release": "semantic-release",
     "semantic-release-preview": "semantic-release-github-pr",
     "test": "nwb test-react"
@@ -68,8 +68,7 @@
     "semantic-release": "17.4.2",
     "substyle-glamor": "4.1.2",
     "webpack": "4.46.0",
-    "webpack-cli": "4.7.0",
-    "webpack-dev-server": "3.11.2"
+    "webpack-cli": "4.7.0"
   },
   "peerDependencies": {
     "react": "^16.8.0",
