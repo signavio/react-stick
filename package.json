@@ -62,8 +62,8 @@
     "inferno": "7.4.8",
     "nwb": "0.25.2",
     "prettier": "2.3.2",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "regenerator-runtime": "0.13.7",
     "semantic-release": "17.4.4",
     "substyle-glamor": "4.1.2",
@@ -71,8 +71,8 @@
     "webpack-cli": "4.7.2"
   },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.0 || ^17.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0"
   },
   "browserslist": [
     "chrome >= 50",
