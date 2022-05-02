@@ -14,9 +14,9 @@ references:
   restore_cache: &restore_cache
     restore_cache:
       keys:
-        - deps-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
-        - deps-v2-{{ .Branch }}
-        - deps-v2
+        - deps-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        - deps-v4-{{ .Branch }}
+        - deps-v4
 
 jobs:
   install:
@@ -30,7 +30,7 @@ jobs:
       - run: yarn
 
       - save_cache:
-          key: deps-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: deps-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 
