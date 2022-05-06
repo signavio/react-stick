@@ -18,4 +18,18 @@ module.exports = {
     '@babel/transform-runtime',
     '@babel/plugin-proposal-object-rest-spread',
   ],
+  "env": {
+    "test": {
+      "plugins": [
+        [
+          "istanbul", {
+            "exclude": [
+              "node_modules/",
+              "tests/"
+            ]
+          }
+        ]
+      ]
+    }
+  }
 }
