@@ -14,7 +14,7 @@
   "sideEffects": false,
   "scripts": {
     "prebuild": "yarn clean",
-    "build": "nwb build-react-component --no-demo",
+    "build": "vite build",
     "postbuild": "flow-copy-source -v src lib && flow-copy-source -v src es",
     "prepublishOnly": "yarn build",
     "build-demo": "webpack",
@@ -27,9 +27,7 @@
     "start": "NODE_ENV=development webpack server",
     "semantic-release": "semantic-release",
     "semantic-release-preview": "semantic-release-github-pr",
-    "test": "nwb test-react",
-    "vitebuild": "vite build",
-    "karmatest": "NODE_ENV=test karma start"
+    "test": "NODE_ENV=test karma start"
   },
   "dependencies": {
     "invariant": "^2.2.4",
@@ -98,5 +96,8 @@
       "master"
     ],
     "verifyConditions": "condition-circle"
+  },
+  "engines": {
+    "node": ">=14.x"
   }
 }
