@@ -31,14 +31,16 @@ export default defineConfig({
           dir: path.resolve(__dirname, 'lib'),
           preserveModules: true,
           preserveModulesRoot: 'src',
-          entryFileNames: '[name].js'
+          entryFileNames: '[name].js',
+          exports: 'named'
         },
         {
           format: 'es',
           dir: path.resolve(__dirname, 'es'),
           preserveModules: true,
           preserveModulesRoot: 'src',
-          entryFileNames: '[name].js'
+          entryFileNames: '[name].js',
+          exports: 'named'
         }
       ]
     }
