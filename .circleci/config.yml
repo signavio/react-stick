@@ -109,6 +109,8 @@ workflows:
               ignore: master
       - release:
           context: NPM
+          requires:
+            - install
           filters:
             branches:
               only: master
