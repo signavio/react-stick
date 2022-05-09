@@ -12,6 +12,13 @@ const regexesOfPackages = externalPackages.map(
   (packageName) => new RegExp(`^${packageName}(/.*)?`),
 );
 
+const commonOutputOptions = {
+  preserveModules: true,
+  preserveModulesRoot: 'src',
+  entryFileNames: '[name].js',
+  exports: 'named'
+}
+
 export default defineConfig({
   plugins: [react({
     babel: {
@@ -21,26 +28,20 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, './src/index.js'),
-      formats: ['es', 'cjs']
+      name: 'ReactStick'
     },
     rollupOptions: {
       external: regexesOfPackages,
       output: [
         {
+          ...commonOutputOptions,
           format: 'commonjs',
-          dir: path.resolve(__dirname, 'lib'),
-          preserveModules: true,
-          preserveModulesRoot: 'src',
-          entryFileNames: '[name].js',
-          exports: 'named'
+          dir: path.resolve(__dirname, 'lib')
         },
         {
+          ...commonOutputOptions,
           format: 'es',
-          dir: path.resolve(__dirname, 'es'),
-          preserveModules: true,
-          preserveModulesRoot: 'src',
-          entryFileNames: '[name].js',
-          exports: 'named'
+          dir: path.resolve(__dirname, 'es')
         }
       ]
     }
