@@ -14,8 +14,8 @@ module.exports = {
   entry: [path.resolve(__dirname, 'demo/src/index.js')],
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].js',
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[hash].js',
   },
   plugins: [
     new webpack.HashedModuleIdsPlugin(),
