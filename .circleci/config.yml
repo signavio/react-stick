@@ -14,7 +14,7 @@ references:
   restore_cache: &restore_cache
     restore_cache:
       keys:
-        - deps-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        - deps-v4-{{ .Branch }}-{{ checksum "package-lock.json" }}
         - deps-v4-{{ .Branch }}
         - deps-v4
 
@@ -27,10 +27,10 @@ jobs:
 
       - *restore_cache
 
-      - run: yarn
+      - run: npm ci
 
       - save_cache:
-          key: deps-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: deps-v4-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
 
@@ -44,7 +44,7 @@ jobs:
 
       - run:
           name: Lint
-          command: yarn lint
+          command: npm run lint
 
   flow:
     <<: *defaults
@@ -56,7 +56,7 @@ jobs:
 
       - run:
           name: Flow
-          command: yarn flow
+          command: npm run flow
 
   test:
     <<: *defaults
@@ -69,7 +69,7 @@ jobs:
 
       - run:
           name: Test
-          command: yarn test --coverage
+          command: npm run test --coverage
 
       - run:
           name: Codecov
@@ -85,10 +85,10 @@ jobs:
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Build
-          command: yarn build
+          command: npm run build
       - run:
           name: Release
-          command: yarn semantic-release
+          command: npm run semantic-release
 
 workflows:
   version: 2
