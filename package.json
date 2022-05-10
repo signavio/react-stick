@@ -30,6 +30,7 @@
     "test": "NODE_ENV=test karma start"
   },
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
     "invariant": "^2.2.4",
     "requestidlecallback": "^0.3.0",
     "substyle": "^9.1.0"
