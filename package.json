@@ -13,16 +13,16 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "npm run clean",
     "build": "vite build",
     "postbuild": "flow-copy-source -v src lib && flow-copy-source -v src es",
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "npm run build",
     "build-demo": "webpack",
     "clean": "rimraf coverage es lib demo/dist build",
     "flow": "flow check",
     "format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .js src tests demo/src",
-    "prenow-build": "yarn build",
+    "prenow-build": "npm run build",
     "now-build": "webpack",
     "start": "NODE_ENV=development webpack server",
     "semantic-release": "semantic-release",
@@ -101,6 +101,7 @@
     "verifyConditions": "condition-circle"
   },
   "engines": {
-    "node": ">=14.x"
+    "node": ">=16.11",
+    "npm": ">=8.x"
   }
 }
