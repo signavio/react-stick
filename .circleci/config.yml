@@ -9,7 +9,7 @@ references:
     docker:
       - image: cimg/node:16.15-browsers
         environment:
-          CHROME_BIN: '/usr/bin/google-chrome'
+          CHROME_BIN: "/usr/bin/google-chrome"
 
   restore_cache: &restore_cache
     restore_cache:
@@ -46,18 +46,6 @@ jobs:
           name: Lint
           command: npm run lint
 
-  flow:
-    <<: *defaults
-
-    steps:
-      - checkout
-
-      - *restore_cache
-
-      - run:
-          name: Flow
-          command: npm run flow
-
   test:
     <<: *defaults
     steps:
@@ -69,7 +57,7 @@ jobs:
 
       - run:
           name: Test
-          command: npm run test --coverage
+          command: npm run test
 
       - run:
           name: Codecov
@@ -96,9 +84,6 @@ workflows:
     jobs:
       - install
       - lint:
-          requires:
-            - install
-      - flow:
           requires:
             - install
       - test:
