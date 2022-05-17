@@ -27,7 +27,7 @@ jobs:
 
       - *restore_cache
 
-      - run: npm ci
+      - run: npm ci --force
 
       - save_cache:
           key: deps-v4-{{ .Branch }}-{{ checksum "package-lock.json" }}
