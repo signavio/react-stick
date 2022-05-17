@@ -1,44 +1,44 @@
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
-type WatcherFuncT = () => void;
+type WatcherFuncT = () => void
 
 export type WatcherOptions = {
-  updateOnAnimationFrame: boolean;
-};
+  updateOnAnimationFrame: boolean
+}
 
 function useWatcher(
   watcher: WatcherFuncT,
   { updateOnAnimationFrame }: WatcherOptions
 ): void {
   useEffect(() => {
-    let animationFrameId: number;
-    let idleCallbackId: number;
+    let animationFrameId: number
+    let idleCallbackId: number
 
     // do not track in node
-    if (typeof window.requestAnimationFrame !== "undefined") {
+    if (typeof window.requestAnimationFrame !== 'undefined') {
       const callback = () => {
-        watcher();
+        watcher()
 
         if (updateOnAnimationFrame) {
-          animationFrameId = requestAnimationFrame(callback);
+          animationFrameId = requestAnimationFrame(callback)
         } else {
-          idleCallbackId = requestIdleCallback(callback);
+          idleCallbackId = requestIdleCallback(callback)
         }
-      };
+      }
 
-      callback();
+      callback()
     }
 
     return () => {
       if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
+        cancelAnimationFrame(animationFrameId)
       }
 
       if (idleCallbackId) {
-        cancelIdleCallback(idleCallbackId);
+        cancelIdleCallback(idleCallbackId)
       }
-    };
-  }, [updateOnAnimationFrame, watcher]);
+    }
+  }, [updateOnAnimationFrame, watcher])
 }
 
-export default useWatcher;
+export default useWatcher

@@ -152,39 +152,37 @@ function PositionAlignOverview() {
                         borderRight: '1px solid gray',
                       }}
                     >
-                      {alignmentGroups.map(
-                        (alignments, j) => (
-                          <tr key={j}>
-                            {alignments.map((alignment) => (
-                              <td
-                                key={alignment}
-                                style={{
-                                  padding: '0 10px 10px 10px',
-                                  borderLeft: '1px solid gray',
-                                  borderBottom: '1px solid gray',
-                                  fontSize: 11,
-                                }}
-                              >
-                                <pre>align="{alignment}"</pre>
-                                <br />
-                                <div style={{ display: 'inline-block' }}>
-                                  <Stick
-                                    position={position}
-                                    align={alignment}
-                                    inline={inline}
-                                    updateOnAnimationFrame={
-                                      updateOnAnimationFrame
-                                    }
-                                    node={showNode && <Node />}
-                                  >
-                                    <Anchor />
-                                  </Stick>
-                                </div>
-                              </td>
-                            ))}
-                          </tr>
-                        )
-                      )}
+                      {alignmentGroups.map((alignments, j) => (
+                        <tr key={j}>
+                          {alignments.map((alignment) => (
+                            <td
+                              key={alignment}
+                              style={{
+                                padding: '0 10px 10px 10px',
+                                borderLeft: '1px solid gray',
+                                borderBottom: '1px solid gray',
+                                fontSize: 11,
+                              }}
+                            >
+                              <pre>align="{alignment}"</pre>
+                              <br />
+                              <div style={{ display: 'inline-block' }}>
+                                <Stick
+                                  position={position}
+                                  align={alignment}
+                                  inline={inline}
+                                  updateOnAnimationFrame={
+                                    updateOnAnimationFrame
+                                  }
+                                  node={showNode && <Node />}
+                                >
+                                  <Anchor />
+                                </Stick>
+                              </div>
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </td>

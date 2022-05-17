@@ -13,7 +13,7 @@ describe('positioning in scrolling window', () => {
   const node = <div data-testid="node">{longText}</div>
 
   const PositionWrapper = (
-    { children }: {children: React.ReactNode} // sets documentElement's scroll width to 1008
+    { children }: { children: React.ReactNode } // sets documentElement's scroll width to 1008
   ) => (
     <div style={{ width: 1000, height: 10000 }}>
       <div style={{ position: 'absolute', height: 0, top: 5000 }}>
@@ -22,7 +22,8 @@ describe('positioning in scrolling window', () => {
     </div>
   )
 
-  const render = (stick: React.ReactElement) => renderBase(stick, { wrapper: PositionWrapper })
+  const render = (stick: React.ReactElement) =>
+    renderBase(stick, { wrapper: PositionWrapper })
 
   beforeEach(() => {
     fixedElement = document.createElement('div')

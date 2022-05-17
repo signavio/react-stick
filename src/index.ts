@@ -1,2 +1,2 @@
-export { default } from "./Stick";
-export { PortalContext } from "./StickPortal";
+export { default } from './Stick'
+export { PortalContext } from './StickPortal'

@@ -1,3 +1,3 @@
-import { createContext } from "react";
+import { createContext } from 'react'
 
-export const StickContext = createContext<string | undefined | null>(null);
+export const StickContext = createContext<string | undefined | null>(null)

@@ -31,7 +31,7 @@ export default function TransportToFixedContainer() {
             border: '1px solid silver',
             zIndex: 100,
           }}
-          ref={node => setContainer(node || undefined)}
+          ref={(node) => setContainer(node || undefined)}
         >
           <Stick transportTo={container} node="Yes, here it is!">
             <div>There should be a line of text below me</div>

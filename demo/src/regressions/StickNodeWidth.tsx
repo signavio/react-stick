@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import Stick from '../../../es'
 import Regression from './Regression'
 
-const Anchor = ({ width }: PropsWithChildren<{width?:number}>) => (
+const Anchor = ({ width }: PropsWithChildren<{ width?: number }>) => (
   <div
     style={{
       height: 15,
@@ -24,7 +24,7 @@ const Node = ({ children }: PropsWithChildren<{}>) => (
   </div>
 )
 
-const Examples = ({ inline }:{inline?: boolean}) => (
+const Examples = ({ inline }: { inline?: boolean }) => (
   <div
     style={{
       display: 'flex',

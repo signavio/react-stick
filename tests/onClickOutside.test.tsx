@@ -1,54 +1,54 @@
-import expect, { createSpy } from "expect";
-import React from "react";
+import expect, { createSpy } from 'expect'
+import React from 'react'
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render } from '@testing-library/react'
 
-import Stick from "../src/";
+import Stick from '../src/'
 
-describe("`onClickOutside` event", () => {
-  const anchor = <div data-testid="anchor" />;
-  const node = <div data-testid="node" />;
+describe('`onClickOutside` event', () => {
+  const anchor = <div data-testid="anchor" />
+  const node = <div data-testid="node" />
 
-  it("should call `onClickOutside` on click on any element outside of the stick node an anchor element", () => {
-    const spy = createSpy();
+  it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', () => {
+    const spy = createSpy()
     const { container } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
       </Stick>
-    );
+    )
 
-    fireEvent.click(container);
+    fireEvent.click(container)
 
-    expect(spy).toHaveBeenCalled();
-    spy.reset();
+    expect(spy).toHaveBeenCalled()
+    spy.reset()
 
-    document.body?.click();
-    expect(spy).toHaveBeenCalled();
-  });
+    document.body?.click()
+    expect(spy).toHaveBeenCalled()
+  })
 
-  it("should not call `onClickOutside` on click on the anchor element or stick node", () => {
-    const spy = createSpy();
+  it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
+    const spy = createSpy()
     const { getByTestId } = render(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
       </Stick>
-    );
+    )
 
-    fireEvent.click(getByTestId("anchor"));
-    expect(spy).toNotHaveBeenCalled();
+    fireEvent.click(getByTestId('anchor'))
+    expect(spy).toNotHaveBeenCalled()
 
-    fireEvent.click(getByTestId("node"));
-    expect(spy).toNotHaveBeenCalled();
-  });
+    fireEvent.click(getByTestId('node'))
+    expect(spy).toNotHaveBeenCalled()
+  })
 
-  const inlineOptions = [false, true];
+  const inlineOptions = [false, true]
   inlineOptions.forEach((outerInline) => {
     inlineOptions.forEach((innerInline) => {
-      describe(`<Stick ${innerInline ? "inline " : ""}/> in node of <Stick ${
-        outerInline ? "inline " : ""
+      describe(`<Stick ${innerInline ? 'inline ' : ''}/> in node of <Stick ${
+        outerInline ? 'inline ' : ''
       }/>`, () => {
-        it("should not call `onClickOutside` on click on the nested stick node", () => {
-          const spy = createSpy();
+        it('should not call `onClickOutside` on click on the nested stick node', () => {
+          const spy = createSpy()
           const { getByTestId } = render(
             <Stick
               inline={outerInline}
@@ -64,13 +64,13 @@ describe("`onClickOutside` event", () => {
             >
               <div />
             </Stick>
-          );
+          )
 
-          fireEvent.click(getByTestId("nested-node"));
+          fireEvent.click(getByTestId('nested-node'))
 
-          expect(spy).toNotHaveBeenCalled();
-        });
-      });
-    });
-  });
-});
+          expect(spy).toNotHaveBeenCalled()
+        })
+      })
+    })
+  })
+})

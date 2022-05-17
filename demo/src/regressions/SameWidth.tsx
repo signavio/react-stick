@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import Stick from '../../../es'
 import Regression from './Regression'
 
-const Anchor = ({ width, children }: PropsWithChildren<{width?: number}>) => (
+const Anchor = ({ width, children }: PropsWithChildren<{ width?: number }>) => (
   <div
     style={{
       height: 18,
@@ -16,7 +16,7 @@ const Anchor = ({ width, children }: PropsWithChildren<{width?: number}>) => (
   </div>
 )
 
-const Node = ({ children }:PropsWithChildren<{}>) => (
+const Node = ({ children }: PropsWithChildren<{}>) => (
   <div
     style={{
       backgroundColor: '#ae0d5c',

@@ -1,8 +1,8 @@
-import React from "react";
-import useStyles from "substyle";
+import React from 'react'
+import useStyles from 'substyle'
 
-import { type StickInlinePropsT } from "./types";
-import { getModifiers } from "./utils";
+import { type StickInlinePropsT } from './types'
+import { getModifiers } from './utils'
 
 function StickInline({
   node,
@@ -19,8 +19,8 @@ function StickInline({
     defaultStyle,
     { style },
     getModifiers({ align, position })
-  );
-  const Component: any = component || "div";
+  )
+  const Component: any = component || 'div'
   return (
     <Component
       {...rest}
@@ -29,51 +29,51 @@ function StickInline({
       data-sticknestingkey={nestingKey}
     >
       {children}
-      {node && <div {...styles("node")}>{node}</div>}
+      {node && <div {...styles('node')}>{node}</div>}
     </Component>
-  );
+  )
 }
 
 const defaultStyle = {
-  position: "relative",
+  position: 'relative',
 
   node: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 99,
-    textAlign: "left",
+    textAlign: 'left',
   },
 
-  "&position-top": {
+  '&position-top': {
     node: {
       top: 0,
     },
   },
-  "&position-middle": {
+  '&position-middle': {
     node: {
-      top: "50%",
+      top: '50%',
     },
   },
-  "&position-bottom": {
+  '&position-bottom': {
     node: {
-      top: "100%",
+      top: '100%',
     },
   },
 
-  "&position-left": {
+  '&position-left': {
     node: {
       left: 0,
     },
   },
-  "&position-center": {
+  '&position-center': {
     node: {
-      left: "50%",
+      left: '50%',
     },
   },
-  "&position-right": {
+  '&position-right': {
     node: {
-      left: "100%",
+      left: '100%',
     },
   },
-};
+}
 
-export default StickInline;
+export default StickInline

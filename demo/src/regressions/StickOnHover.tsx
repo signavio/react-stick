@@ -12,7 +12,7 @@ function StickOnHover() {
       title="Node does not unmount on mouse leave"
       description="Move your mouse over the squares. When you're hovering one another node should be shown. However, there should always only be one node at the same time."
     >
-      <div style={{ display: 'flex', flexWrap: 'wrap' }} >
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {Array(100)
           .fill(null)
           .map((_, i) => (

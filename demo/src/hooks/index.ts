@@ -1,1 +1,1 @@
-export { default as useWatcher } from "./useWatcher";
+export { default as useWatcher } from './useWatcher'

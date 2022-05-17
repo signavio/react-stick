@@ -1,7 +1,7 @@
-let counter = 1;
+let counter = 1
 
 function uniqueId(): number {
-  return counter++;
+  return counter++
 }
 
-export default uniqueId;
+export default uniqueId
