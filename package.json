@@ -58,7 +58,7 @@
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.5.0",
     "expect": "1.20.2",
-    "flow-bin": "0.133.0",
+    "flow-bin": "0.178.1",
     "flow-copy-source": "2.0.9",
     "glamor": "2.20.40",
     "html-webpack-harddisk-plugin": "2.0.0",
