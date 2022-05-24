@@ -1,14 +1,13 @@
-import expect from 'expect'
 import invariant from 'invariant'
 import React from 'react'
 
-import Stick from '../src/'
+import Stick from '../../src/'
 import {
   type AlignT,
   type HorizontalTargetT,
   type PositionT,
   type VerticalTargetT,
-} from '../src/types'
+} from '../../src/types'
 import { render } from './utils'
 
 const getPosition = (
@@ -133,29 +132,31 @@ describe('positioning', () => {
 
             describe(`align="${align}"`, () => {
               it(`should place at left: ${expectedLeft} top: ${expectedTop}`, () => {
-                const { getByTestId } = render(
+                render(
                   <Stick node={node} position={position} align={align}>
                     {anchor}
                   </Stick>
                 )
 
-                const { left, top } =
-                  getByTestId('node').getBoundingClientRect()
-                expect(left).toEqual(expectedLeft)
-                expect(top).toEqual(expectedTop)
+                cy.findByTestId('node').then((node) => {
+                  const { left, top } = node[0].getBoundingClientRect()
+                  expect(left).equal(expectedLeft)
+                  expect(top).equal(expectedTop)
+                })
               })
 
               it(`should place at left: ${expectedLeft} top: ${expectedTop} with \`inline\` prop`, () => {
-                const { getByTestId } = render(
+                render(
                   <Stick inline node={node} position={position} align={align}>
                     {anchor}
                   </Stick>
                 )
 
-                const { left, top } =
-                  getByTestId('node').getBoundingClientRect()
-                expect(left).toEqual(expectedLeft)
-                expect(top).toEqual(expectedTop)
+                cy.findByTestId('node').then((node) => {
+                  const { left, top } = node[0].getBoundingClientRect()
+                  expect(left).equal(expectedLeft)
+                  expect(top).equal(expectedTop)
+                })
               })
             })
           })
@@ -189,17 +190,24 @@ describe('positioning', () => {
             </Stick>
           )
 
-          const { rerender, getByTestId } = render(stick)
+          render(stick).then(({ rerender }) =>
+            cy.findByTestId('node').then((node) => {
+              const { left, top } = node[0].getBoundingClientRect()
+              cy.wrap({ left, top }).as('stickPosition')
+              return rerender(otherStick)
+            })
+          )
 
-          const { left, top } = getByTestId('node').getBoundingClientRect()
-
-          rerender(otherStick)
-
-          const { left: otherLeft, top: otherTop } =
-            getByTestId('node').getBoundingClientRect()
-
-          expect(left).toBe(otherLeft)
-          expect(top).toBe(otherTop)
+          cy.findByTestId('node').then((node) => {
+            const { left: otherLeft, top: otherTop } =
+              node[0].getBoundingClientRect()
+            cy.get<{ left: number; top: number }>('@stickPosition').then(
+              ({ left, top }) => {
+                expect(left).to.be.equal(otherLeft)
+                expect(top).to.be.equal(otherTop)
+              }
+            )
+          })
         })
       })
     })

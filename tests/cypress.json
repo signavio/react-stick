@@ -1,0 +1,16 @@
+{
+  "$schema": "https://on.cypress.io/cypress.schema.json",
+  "component": {
+    "testFiles": "**/*.test.{ts,tsx}",
+    "componentFolder": "tests/src"
+  },
+  "viewportWidth": 1024,
+  "viewportHeight": 1024,
+  "downloadsFolder": "cypress/downloads",
+  "videosFolder": "cypress/videos",
+  "fixturesFolder": "cypress/fixtures",
+  "screenshotsFolder": "cypress/screenshots",
+  "integrationFolder": "cypress/integration",
+  "supportFile": "tests/support/index.js",
+  "pluginsFile": "tests/plugins/index.js"
+}
