@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // https://github.com/ryanclark/karma-webpack/issues/49#issuecomment-609073133
+    "noEmitOnError": true,
+    "sourceMap": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+  ],
+}
