@@ -9,9 +9,9 @@ references:
   restore_cache: &restore_cache
     restore_cache:
       keys:
-        - deps-v4-{{ .Branch }}-{{ checksum "package-lock.json" }}
-        - deps-v4-{{ .Branch }}
-        - deps-v4
+        - deps-v5-{{ .Branch }}-{{ checksum "package-lock.json" }}
+        - deps-v5-{{ .Branch }}
+        - deps-v5
 
 jobs:
   install:
@@ -25,9 +25,10 @@ jobs:
       - run: npm ci --force
 
       - save_cache:
-          key: deps-v4-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: deps-v5-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+            - ~/.cache/Cypress
 
   lint:
     <<: *defaults
