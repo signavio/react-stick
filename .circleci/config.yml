@@ -20,24 +20,24 @@ commands:
       translate_opts:
         type: string
         default: ""
-      steps:
-        - fortify/setup
-        - run:
-            name: Fortify translate << parameters.build_id >>
-            command: sourceanalyzer -b << parameters.build_id >> --verbose << parameters.translate_opts >> << parameters.path >>
-        - run:
-            name: Fortify scan << parameters.build_id >>
-            command: sourceanalyzer -b << parameters.build_id >> --verbose -scan -f << parameters.build_id >>.fpr
-        - run:
-            name: "Fortify upload"
-            command: |
-              fortifyclient \
-                -url "$FORTIFY_SSC" \
-                -authtoken "$SSC_API_TOKEN" \
-                uploadFPR \
-                -file << parameters.build_id >>.fpr \
-                -project signavio-react-stick \
-                -version production
+    steps:
+      - fortify/setup
+      - run:
+          name: Fortify translate << parameters.build_id >>
+          command: sourceanalyzer -b << parameters.build_id >> -verbose << parameters.translate_opts >> << parameters.path >>
+      - run:
+          name: Fortify scan << parameters.build_id >>
+          command: sourceanalyzer -b << parameters.build_id >> -verbose -scan -f << parameters.build_id >>.fpr
+      - run:
+          name: "Fortify: upload"
+          command: |
+            fortifyclient \
+               -url "$FORTIFY_SSC" \
+               -authtoken "$SSC_API_TOKEN" \
+               uploadFPR \
+               -file << parameters.build_id >>.fpr \
+               -project signavio-react-stick \
+               -version production
 
 references:
   defaults: &defaults
