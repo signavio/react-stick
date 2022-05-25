@@ -146,12 +146,12 @@ workflows:
               only: master
 
   blackduck-nightly-scan:
-    # triggers:
-    #   - schedule:
-    #       cron: "0 0 * * *" # UTC
-    #       filters:
-    #         branches:
-    #           only: master
+    triggers:
+      - schedule:
+          cron: "0 0 * * *" # UTC
+          filters:
+            branches:
+              only: master
     jobs:
       - install:
           context: ECR
