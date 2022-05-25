@@ -2,6 +2,42 @@ version: 2.1
 
 orbs:
   browser-tools: circleci/browser-tools@1.3.0
+  fortify: signavio/fortify@2.0.0
+
+executors:
+  fortify:
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: medium
+
+commands:
+  fortify_scan:
+    parameters:
+      build_id:
+        type: string
+      path:
+        type: string
+      translate_opts:
+        type: string
+        default: ""
+    steps:
+      - fortify/setup
+      - run:
+          name: Fortify translate << parameters.build_id >>
+          command: sourceanalyzer -b << parameters.build_id >> -verbose << parameters.translate_opts >> << parameters.path >>
+      - run:
+          name: Fortify scan << parameters.build_id >>
+          command: sourceanalyzer -b << parameters.build_id >> -verbose -scan -f << parameters.build_id >>.fpr
+      - run:
+          name: "Fortify: upload"
+          command: |
+            fortifyclient \
+               -url "$FORTIFY_SSC" \
+               -authtoken "$SSC_API_TOKEN" \
+               uploadFPR \
+               -file << parameters.build_id >>.fpr \
+               -project signavio-react-stick \
+               -version production
 
 references:
   defaults: &defaults
@@ -78,6 +114,14 @@ jobs:
           name: Release
           command: npm run semantic-release
 
+  fortify_scan:
+    executor: fortify
+    steps:
+      - checkout
+      - fortify_scan:
+          build_id: signavio-react-stick
+          path: src
+
 workflows:
   version: 2
   qa-publish-release:
@@ -99,3 +143,32 @@ workflows:
           filters:
             branches:
               only: master
+
+  # Run fortify scan twice a month schedueled
+  schedueled_fortify_scan:
+    triggers:
+      - schedule:
+          # every 1st and 15th of the month
+          cron: "0 0 1,15 * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - fortify_scan:
+          context: fortify
+
+  # Run fortify scan on demand
+  on_demand_fortify_scan:
+    jobs:
+      - approve-fortify-scan:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - fortify_scan:
+          requires:
+            - approve-fortify-scan
+          context:
+            - fortify
