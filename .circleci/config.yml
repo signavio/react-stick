@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   browser-tools: circleci/browser-tools@1.3.0
   fortify: signavio/fortify@2.0.0
+  blackduck: signavio/blackduck@1.11.0
 
 executors:
   fortify:
@@ -143,6 +144,26 @@ workflows:
           filters:
             branches:
               only: master
+
+  blackduck-nightly-scan:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *" # UTC
+          filters:
+            branches:
+              only: master
+    jobs:
+      - install:
+          context: ECR
+      - blackduck/blackduck-scan:
+          context:
+            - ECR
+            - BlackDuck
+          blackduck-project-group: SAP_Signavio_Process_Governance
+          blackduck-project-name: react-stick
+          blackduck-project-path: /home/circleci/project
+          requires:
+            - install
 
   # Run fortify scan twice a month schedueled
   schedueled_fortify_scan:
