@@ -163,10 +163,10 @@ workflows:
     jobs:
       - approve-fortify-scan:
           type: approval
-          # filters:
-          # branches:
-          #   only:
-          #     - master
+          filters:
+          branches:
+            only:
+              - master
       - fortify_scan:
           requires:
             - approve-fortify-scan
