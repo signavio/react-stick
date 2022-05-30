@@ -13,13 +13,14 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
+    "commit": "commit",
     "prebuild": "npm run clean",
     "build": "tsc -p ./src/tsconfig.json --outdir ./es && tsc -p ./src/tsconfig.json --module commonJS --outdir ./lib ",
     "prepublishOnly": "npm run build",
     "build-demo": "NODE_ENV=PRODUCTION webpack --config ./demo/webpack.config.js",
     "clean": "rimraf coverage es lib build",
-    "_format": "prettier --write --no-semi --single-quote --trailing-comma es5 \"{src,stories}/**/*.js\"",
     "lint": "eslint --max-warnings=0 --ext .ts --ext .tsx src tests demo/src",
+    "lint:fix": "npm run lint -- --fix",
     "prenow-build": "npm run build",
     "now-build": "npm run build-demo",
     "start": "NODE_ENV=development webpack server --mode=development --config demo/webpack.config.js",
@@ -39,9 +40,14 @@
     "@babel/preset-env": "7.18.2",
     "@babel/preset-react": "7.17.12",
     "@babel/preset-typescript": "^7.17.12",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
+    "@commitlint/prompt-cli": "^17.0.0",
     "@testing-library/react": "13.3.0",
     "@types/expect": "^1.20.4",
     "@types/mocha": "^9.1.1",
+    "@types/react": "^16.14.26",
+    "@types/react-dom": "^16.9.16",
     "babel-eslint": "10.1.0",
     "babel-loader": "^8.2.5",
     "babel-plugin-istanbul": "6.1.1",
@@ -105,5 +111,10 @@
       "eslint --max-warnings 0 --fix"
     ],
     "*.{json,md,yaml,yml}": "prettier --write"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
