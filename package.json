@@ -61,7 +61,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
-    "expect": "1.20.2",
+    "expect": "28.1.1",
     "glamor": "2.20.40",
     "html-webpack-harddisk-plugin": "2.0.0",
     "html-webpack-plugin": "5.5.0",
