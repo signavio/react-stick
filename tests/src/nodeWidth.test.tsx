@@ -1,9 +1,7 @@
-import expect from 'expect'
 import React from 'react'
 
-import { render as renderBase } from '@testing-library/react'
-
-import Stick from '../src'
+import Stick from '../../src'
+import { wrapRender } from './utils'
 
 describe('stick node width', () => {
   const longText = new Array(50).fill('Lorem ipsum dolor sit amet.').join(' ')
@@ -23,13 +21,13 @@ describe('stick node width', () => {
   )
 
   const render = (stick: React.ReactElement) =>
-    renderBase(stick, { wrapper: PositionWrapper })
+    wrapRender(stick, PositionWrapper)
 
   const inlineOptions = [false, true]
   inlineOptions.forEach((inline) => {
     describe(`inline={${inline.toString()}}`, () => {
       it('should make sure that a left aligned node stretches to the right screen border', () => {
-        const { getByTestId } = render(
+        render(
           <Stick
             inline={inline}
             position="middle right"
@@ -40,12 +38,14 @@ describe('stick node width', () => {
           </Stick>
         )
 
-        const { right } = getByTestId('node').getBoundingClientRect()
-        expect(right).toEqual(document.documentElement?.scrollWidth)
+        cy.findByTestId('node').then((node) => {
+          const { right } = node[0].getBoundingClientRect()
+          expect(right).equal(document.documentElement?.scrollWidth)
+        })
       })
 
       it('should make sure that a right aligned node stretches to the left screen border', () => {
-        const { getByTestId } = render(
+        render(
           <Stick
             inline={inline}
             position="middle left"
@@ -55,22 +55,24 @@ describe('stick node width', () => {
             {anchor}
           </Stick>
         )
+        cy.findByTestId('node').then((node) => {
+          const { left } = node[0].getBoundingClientRect()
 
-        const { left } = getByTestId('node').getBoundingClientRect()
-
-        expect(left).toEqual(0)
+          expect(left).equal(0)
+        })
       })
 
       describe('sameWidth={true}', () => {
         it('should make sure that the stick node has the same width as the anchor', () => {
-          const { getByTestId } = render(
+          render(
             <Stick inline={inline} sameWidth node={node}>
               {anchor}
             </Stick>
           )
-
-          const { width } = getByTestId('node').getBoundingClientRect()
-          expect(width).toEqual(100)
+          cy.findByTestId('node').then((node) => {
+            const { width } = node[0].getBoundingClientRect()
+            expect(width).equal(100)
+          })
         })
       })
     })

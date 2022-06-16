@@ -1,9 +1,7 @@
-import expect from 'expect'
 import React from 'react'
 
-import { render as renderBase } from '@testing-library/react'
-
-import Stick from '../src/'
+import Stick from '../../src/'
+import { wrapRender } from './utils'
 
 describe('customize wrapper component', () => {
   const node = <div data-testid="node" />
@@ -14,11 +12,10 @@ describe('customize wrapper component', () => {
     </svg>
   )
   // wrap render in an svg element
-  const render = (stick: React.ReactElement) =>
-    renderBase(stick, { wrapper: SvgWrapper })
+  const render = (stick: React.ReactElement) => wrapRender(stick, SvgWrapper)
 
   it('should be possible to render in SVG by passing `"g"` as `component`', () => {
-    const { getByTestId } = render(
+    render(
       <Stick component="g" position="top center" node={node}>
         <ellipse
           cx="200"
@@ -30,8 +27,10 @@ describe('customize wrapper component', () => {
       </Stick>
     )
 
-    const { left, top } = getByTestId('node').getBoundingClientRect()
-    expect(left).toEqual(208)
-    expect(top).toEqual(58)
+    cy.findByTestId('node').then((node) => {
+      const { left, top } = node[0].getBoundingClientRect()
+      expect(left).equal(208)
+      expect(top).equal(58)
+    })
   })
 })

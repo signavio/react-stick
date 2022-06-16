@@ -1,44 +1,47 @@
-import expect, { createSpy } from 'expect'
 import React from 'react'
+import { mount } from '@cypress/react'
 
-import { fireEvent, render } from '@testing-library/react'
-
-import Stick from '../src/'
+import Stick from '../../src/'
 
 describe('`onClickOutside` event', () => {
   const anchor = <div data-testid="anchor" />
   const node = <div data-testid="node" />
 
   it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', () => {
-    const spy = createSpy()
-    const { container } = render(
-      <Stick onClickOutside={spy} node={node}>
-        {anchor}
-      </Stick>
+    const spy = cy.stub().as('spy')
+    mount(
+      <div data-testid="container">
+        <Stick onClickOutside={spy} node={node}>
+          {anchor}
+        </Stick>
+      </div>
     )
 
-    fireEvent.click(container)
+    cy.findByTestId('container').click({ force: true })
+    cy.get('@spy')
+      .should('have.been.called')
+      .then(() => spy.reset())
 
-    expect(spy).toHaveBeenCalled()
-    spy.reset()
+    cy.get('body').click({ force: true })
 
-    document.body?.click()
-    expect(spy).toHaveBeenCalled()
+    cy.get('@spy').should('have.been.called')
   })
 
   it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
-    const spy = createSpy()
-    const { getByTestId } = render(
+    const spy = cy.stub().as('spy')
+
+    mount(
       <Stick onClickOutside={spy} node={node}>
         {anchor}
       </Stick>
     )
+    cy.findByTestId('anchor').click({ force: true })
+    cy.get('@spy')
+      .should('not.have.been.called')
+      .then(() => spy.reset())
 
-    fireEvent.click(getByTestId('anchor'))
-    expect(spy).toNotHaveBeenCalled()
-
-    fireEvent.click(getByTestId('node'))
-    expect(spy).toNotHaveBeenCalled()
+    cy.findByTestId('node').click({ force: true })
+    cy.get('@spy').should('not.have.been.called')
   })
 
   const inlineOptions = [false, true]
@@ -48,8 +51,8 @@ describe('`onClickOutside` event', () => {
         outerInline ? 'inline ' : ''
       }/>`, () => {
         it('should not call `onClickOutside` on click on the nested stick node', () => {
-          const spy = createSpy()
-          const { getByTestId } = render(
+          const spy = cy.stub().as('spy')
+          mount(
             <Stick
               inline={outerInline}
               onClickOutside={spy}
@@ -66,9 +69,8 @@ describe('`onClickOutside` event', () => {
             </Stick>
           )
 
-          fireEvent.click(getByTestId('nested-node'))
-
-          expect(spy).toNotHaveBeenCalled()
+          cy.findByTestId('nested-node').click({ force: true })
+          cy.get('@spy').should('not.have.been.called')
         })
       })
     })
