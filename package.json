@@ -98,5 +98,8 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "overrides": {
+    "ramda": "0.28.0"
   }
 }
