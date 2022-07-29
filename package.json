@@ -103,7 +103,7 @@
     "ramda": "0.28.0",
     "npm-cli": "8.15.0",
     "find-versions": {
-      "semver-regex": "3.1.4"
+      "semver-regex": "4.0.5"
     }
   }
 }
