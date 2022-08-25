@@ -65,7 +65,7 @@
     "substyle-glamor": "4.1.2",
     "typescript": "4.7.4",
     "vite": "3.0.9",
-    "vite-plugin-istanbul": "3.0.0"
+    "vite-plugin-istanbul": "3.0.1"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
