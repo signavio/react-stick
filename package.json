@@ -42,7 +42,7 @@
     "@commitlint/prompt-cli": "17.2.0",
     "@cypress/code-coverage": "3.10.0",
     "@cypress/react": "7.0.0",
-    "@cypress/vite-dev-server": "3.4.0",
+    "@cypress/vite-dev-server": "4.0.0",
     "@testing-library/cypress": "8.0.3",
     "@types/react": "16.14.34",
     "@types/react-dom": "16.9.17",
