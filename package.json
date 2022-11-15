@@ -42,7 +42,7 @@
     "@cypress/code-coverage": "3.10.0",
     "@cypress/react": "7.0.1",
     "@cypress/vite-dev-server": "4.0.1",
-    "@testing-library/cypress": "8.0.3",
+    "@testing-library/cypress": "8.0.7",
     "@types/react": "16.14.34",
     "@types/react-dom": "16.9.17",
     "@vitejs/plugin-react": "2.2.0",
