@@ -44,7 +44,7 @@
     "@cypress/vite-dev-server": "5.0.1",
     "@testing-library/cypress": "8.0.7",
     "@types/react": "16.14.34",
-    "@types/react-dom": "16.9.17",
+    "@types/react-dom": "18.0.10",
     "@vitejs/plugin-react": "2.2.0",
     "condition-circle": "2.0.2",
     "core-js": "3.26.1",
