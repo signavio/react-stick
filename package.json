@@ -100,7 +100,7 @@
   },
   "overrides": {
     "ramda": "0.28.0",
-    "npm": "8.19.1",
+    "npm": "8.19.4",
     "find-versions": {
       "semver-regex": "3.1.4"
     }
