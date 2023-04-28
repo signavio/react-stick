@@ -44,7 +44,7 @@ references:
   defaults: &defaults
     working_directory: ~/repo
     docker:
-      - image: cimg/node:18.8-browsers
+      - image: cimg/node:20.0-browsers
 
   restore_cache: &restore_cache
     restore_cache:
