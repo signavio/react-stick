@@ -1,5 +1,5 @@
 # react-stick
-
+[![REUSE status](https://api.reuse.software/badge/github.com/signavio/react-stick)](https://api.reuse.software/info/github.com/signavio/react-stick)
 [![CircleCI][build-badge]][build]
 [![codecov][codecov-badge]][codecov]
 [![npm package][npm-badge]][npm]
