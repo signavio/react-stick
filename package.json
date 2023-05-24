@@ -59,7 +59,7 @@
     "prettier": "2.8.8",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "rimraf": "5.0.0",
+    "rimraf": "5.0.1",
     "semantic-release": "21.0.1",
     "substyle-glamor": "4.1.2",
     "typescript": "5.0.4",
