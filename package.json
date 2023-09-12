@@ -49,7 +49,7 @@
     "condition-circle": "2.0.2",
     "core-js": "3.32.2",
     "cypress": "11.2.0",
-    "eslint": "8.48.0",
+    "eslint": "8.49.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-plugin-prettier": "4.2.1",
