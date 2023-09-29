@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3     # Checks out our code into github runner.
+        uses: actions/checkout@v4     # Checks out our code into github runner.
 
       - name: Mirror Repository
         uses: signavio/manser-repo-mirror-action@v1     # Our custom Action
