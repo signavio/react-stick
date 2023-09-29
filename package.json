@@ -58,7 +58,7 @@
     "glamor": "2.20.40",
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
-    "prettier": "2.8.8",
+    "prettier": "3.0.3",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "regenerator-runtime": "0.14.1",
