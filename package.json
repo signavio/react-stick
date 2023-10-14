@@ -36,9 +36,9 @@
     "substyle": "^9.4.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.7.2",
-    "@commitlint/config-conventional": "17.7.0",
-    "@commitlint/prompt-cli": "17.7.2",
+    "@commitlint/cli": "17.8.0",
+    "@commitlint/config-conventional": "17.8.0",
+    "@commitlint/prompt-cli": "17.8.0",
     "@cypress/code-coverage": "3.12.3",
     "@cypress/react": "8.0.0",
     "@cypress/vite-dev-server": "5.0.6",
