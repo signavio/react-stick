@@ -55,7 +55,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "glamor": "2.20.40",
     "husky": "8.0.3",
-    "lint-staged": "15.0.0",
+    "lint-staged": "15.0.1",
     "prettier": "2.8.8",
     "react": "16.14.0",
     "react-dom": "16.14.0",
