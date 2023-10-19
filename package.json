@@ -48,7 +48,7 @@
     "@vitejs/plugin-react": "2.2.0",
     "condition-circle": "2.0.2",
     "core-js": "3.33.0",
-    "cypress": "11.2.0",
+    "cypress": "13.3.0",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-react-app": "7.0.1",
