@@ -39,7 +39,7 @@
     "@commitlint/cli": "18.4.2",
     "@commitlint/config-conventional": "18.4.2",
     "@commitlint/prompt-cli": "18.4.2",
-    "@cypress/code-coverage": "3.12.10",
+    "@cypress/code-coverage": "3.12.11",
     "@cypress/react": "8.0.0",
     "@cypress/vite-dev-server": "5.0.6",
     "@testing-library/cypress": "8.0.7",
