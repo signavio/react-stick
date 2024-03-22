@@ -2,13 +2,13 @@ version: 2.1
 
 orbs:
   fortify: signavio/fortify@2.0.0
-  blackduck: signavio/blackduck@1.16.2
+  blackduck: signavio/blackduck@1.16.4
   codecov: codecov/codecov@3.3.0
 
 executors:
   fortify:
     machine:
-      image: ubuntu-2004:202010-01
+      image: &ubuntu "ubuntu-2204:current"
     resource_class: medium
 
 commands:
@@ -44,7 +44,7 @@ references:
   defaults: &defaults
     working_directory: ~/repo
     docker:
-      - image: cimg/node:20.7-browsers
+      - image: cimg/node:20.11-browsers
 
   restore_cache: &restore_cache
     restore_cache:
