@@ -12,6 +12,16 @@ executors:
     resource_class: medium
 
 commands:
+
+  install_tools:
+    steps:
+      - run:
+          name: "Install tools"
+          command: | 
+            apt-get -y update && apt-get install -y git curl gpg
+            # cypress requirements
+            apt-get -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
   fortify_scan:
     parameters:
       build_id:
@@ -44,7 +54,8 @@ references:
   defaults: &defaults
     working_directory: ~/repo
     docker:
-      - image: cimg/node:20.11-browsers
+      # use SAP Approved Build Container for gradle / jdk
+      - image: node:20-slim
 
   restore_cache: &restore_cache
     restore_cache:
@@ -59,6 +70,7 @@ jobs:
 
     steps:
       - checkout
+      - install_tools
 
       - *restore_cache
 
@@ -75,6 +87,7 @@ jobs:
 
     steps:
       - checkout
+      - install_tools
 
       - *restore_cache
 
@@ -86,6 +99,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - install_tools
 
       - *restore_cache
 
@@ -97,6 +111,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - install_tools
       - *restore_cache
       - run:
           name: Fix host authenticity for github.com
@@ -120,6 +135,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - install_tools
       - *restore_cache
       - run:
           name: Define environment variable with lastest commit's message
