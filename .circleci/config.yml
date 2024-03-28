@@ -18,7 +18,7 @@ commands:
       - run:
           name: "Install tools"
           command: | 
-            apt-get -y update && apt-get install -y git curl
+            apt-get -y update && apt-get install -y git curl gpg
             # cypress requirements
             apt-get -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
