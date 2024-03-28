@@ -44,7 +44,8 @@ references:
   defaults: &defaults
     working_directory: ~/repo
     docker:
-      - image: cimg/node:20.11-browsers
+      # use SAP Approved Build Container for gradle / jdk
+      - image: node:20-slim
 
   restore_cache: &restore_cache
     restore_cache:
