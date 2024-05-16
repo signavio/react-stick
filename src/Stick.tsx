@@ -99,7 +99,7 @@ function Stick({
 
       const { target } = ev
       if (
-        target instanceof window.HTMLElement &&
+        target instanceof window.Element &&
         isOutside(anchorRef, containerRef, target)
       ) {
         onClickOutside(ev)
@@ -219,7 +219,7 @@ function Stick({
 function isOutside(
   anchorRef: MutableRefObject<HTMLElement | undefined>,
   containerRef: MutableRefObject<HTMLElement | undefined>,
-  target: HTMLElement
+  target: Element
 ) {
   if (anchorRef.current && anchorRef.current.contains(target)) {
     return false
