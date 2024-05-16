@@ -8,3 +8,6 @@ npm-debug.log*
 /tests/coverage
 /tests/.nyc_output
 cypress
+pnpm-lock.yaml
+yarn.lock
+/.vscode
