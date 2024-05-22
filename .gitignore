@@ -5,9 +5,9 @@
 npm-debug.log*
 /build
 .DS_Store
-/tests/coverage
 /tests/.nyc_output
 cypress
 pnpm-lock.yaml
 yarn.lock
 /.vscode
+coverage
