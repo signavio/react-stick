@@ -12,14 +12,18 @@ executors:
     resource_class: medium
 
 commands:
-
-  install_tools:
+  install-codecov-requirements:
     steps:
       - run:
-          name: "Install tools"
-          command: | 
+          name: "Install codecov requirements"
+          command: |
             apt-get -y update && apt-get install -y git curl gpg
-            # cypress requirements
+
+  install-cypress-requirements:
+    steps:
+      - run:
+          name: "Install cypress requirements"
+          command: |
             apt-get -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
   fortify_scan:
@@ -70,7 +74,6 @@ jobs:
 
     steps:
       - checkout
-      - install_tools
 
       - *restore_cache
 
@@ -87,7 +90,6 @@ jobs:
 
     steps:
       - checkout
-      - install_tools
 
       - *restore_cache
 
@@ -99,7 +101,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - install_tools
+      - install-codecov-requirements
+      - install-cypress-requirements
 
       - *restore_cache
 
@@ -107,11 +110,23 @@ jobs:
           name: Test
           command: npm run test
 
+  test-ssr:
+    <<: *defaults
+    steps:
+      - checkout
+      - install-codecov-requirements
+
+      - *restore_cache
+
+      - run:
+          name: Test SSR
+          command: npm run test:ssr -- --coverage
+
   release:
     <<: *defaults
     steps:
       - checkout
-      - install_tools
+      - install-codecov-requirements
       - *restore_cache
       - run:
           name: Fix host authenticity for github.com
@@ -135,7 +150,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - install_tools
+      - install-codecov-requirements
       - *restore_cache
       - run:
           name: Define environment variable with lastest commit's message
@@ -163,6 +178,17 @@ workflows:
           post-steps:
             - codecov/upload:
               file: tests/coverage/clover.xml
+              flags: e2e
+      - test-ssr:
+          requires:
+            - install
+          filters:
+            branches:
+              ignore: master
+          post-steps:
+            - codecov/upload:
+              file: coverage/clover.xml
+              flags: ssr
       - lint_commit_message:
           requires:
             - install
