@@ -178,6 +178,7 @@ workflows:
           post-steps:
             - codecov/upload:
               file: tests/coverage/clover.xml
+              flags: e2e
       - test-ssr:
           requires:
             - install
@@ -187,6 +188,7 @@ workflows:
           post-steps:
             - codecov/upload:
               file: coverage/clover.xml
+              flags: ssr
       - lint_commit_message:
           requires:
             - install
