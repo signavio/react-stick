@@ -193,7 +193,7 @@ workflows:
           requires:
             - install
       - release:
-          context: NPM
+          context: NPM_AUTOMATION
           requires:
             - install
             - lint_commit_message
