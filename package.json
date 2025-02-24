@@ -47,7 +47,7 @@
     "@types/react": "16.14.60",
     "@types/react-dom": "16.9.24",
     "@vitejs/plugin-react": "2.2.0",
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "1.6.0",
     "condition-circle": "2.0.2",
     "core-js": "3.37.1",
     "cypress": "11.2.0",
@@ -67,7 +67,7 @@
     "typescript": "5.4.5",
     "vite": "3.2.10",
     "vite-plugin-istanbul": "5.0.0",
-    "vitest": "^1.6.0"
+    "vitest": "1.6.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
