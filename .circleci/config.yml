@@ -218,6 +218,7 @@ workflows:
           blackduck-project-group: SAP_Signavio_Process_Governance
           blackduck-project-name: react-stick
           blackduck-project-path: /home/circleci/project
+          npm-types-excluded: DEV
           requires:
             - install
 
