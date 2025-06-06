@@ -3,6 +3,7 @@
   "compilerOptions": {
     // "allowJs": true,
     "rootDir": ".",
+    "inlineSources": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
