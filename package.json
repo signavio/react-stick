@@ -61,6 +61,7 @@
     "prettier": "2.8.8",
     "react": "16.14.0",
     "react-dom": "16.14.0",
+    "regenerator-runtime": "0.14.1",
     "rimraf": "5.0.7",
     "semantic-release": "23.0.8",
     "substyle-glamor": "4.1.2",
@@ -105,6 +106,7 @@
     "ramda": "0.29.1",
     "npm": "10.5.0",
     "semver": "7.6.2",
+    "@babel/runtime": "7.27.6",
     "find-versions": {
       "semver-regex": "3.1.4"
     }
