@@ -2,9 +2,8 @@ version: 2.1
 
 orbs:
   fortify: signavio/fortify@2.0.0
-  blackduck: signavio/blackduck@1.16.4
+  blackduck: signavio/blackduck@2.1.0
   codecov: codecov/codecov@4.1.0
-
 executors:
   fortify:
     machine:
@@ -218,6 +217,7 @@ workflows:
           blackduck-project-group: SAP_Signavio_Process_Governance
           blackduck-project-name: react-stick
           blackduck-project-path: /home/circleci/project
+          npm-types-excluded: DEV
           requires:
             - install
 
