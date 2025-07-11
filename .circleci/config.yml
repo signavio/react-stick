@@ -3,8 +3,7 @@ version: 2.1
 orbs:
   fortify: signavio/fortify@2.0.0
   blackduck: signavio/blackduck@2.1.0
-  codecov: codecov/codecov@3.3.0
-
+  codecov: codecov/codecov@4.1.0
 executors:
   fortify:
     machine:
