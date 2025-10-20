@@ -1,15 +1,13 @@
 {
   "extends": "../tsconfig.base.json",
+  // Note: This error is due to outdated Cypress and should be fixed once it's updated
   "compilerOptions": {
     // "allowJs": true,
     "rootDir": ".",
     "sourceMap": true,
     "inlineSources": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-  ],
+  "include": ["**/*.ts", "**/*.tsx"]
 }

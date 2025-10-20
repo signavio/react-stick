@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["cypress", "@testing-library/cypress"]
-  },
+  // Note: This error is due to outdated Cypress and should be fixed once it's updated
+  "compilerOptions": { "types": ["cypress", "@testing-library/cypress"] },
   "include": ["**/*.ts", "**/*.tsx"]
 }
