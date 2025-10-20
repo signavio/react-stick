@@ -53,9 +53,9 @@ function Stick({
     .filter((key) => !!key)
     .join('_')
 
-  const anchorRef = useRef<HTMLElement>(undefined)
+  const anchorRef = useRef<HTMLElement>()
   const nodeRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLElement>(undefined)
+  const containerRef = useRef<HTMLElement>()
 
   const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
     autoFlipHorizontally,

@@ -37,7 +37,7 @@ const StickPortal = forwardRef<
   }: StickPortalPropsT,
   ref
 ) {
-  const nodeRef = useRef<HTMLElement>(undefined)
+  const nodeRef = useRef<HTMLElement>()
   const [top, setTop] = useState<number | null>(null)
   const [left, setLeft] = useState<number | null>(null)
   const [visible, setVisible] = useState(!!node)
