@@ -6,7 +6,7 @@ import { StylesAsDataAttributes } from 'substyle-glamor'
 
 import Demo from './Demo'
 
-const root = createRoot(document.querySelector('#demo'))
+const root = createRoot(document.querySelector('#demo')!)
 
 root.render(
   <StylesAsDataAttributes>
