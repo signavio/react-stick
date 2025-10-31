@@ -39,7 +39,7 @@ const useAutoFlip = (
   }, [initialAlign, initialPosition])
 
   const checkAlignment = useCallback(
-    (nodeRef, anchorRef) => {
+    (nodeRef: HTMLElement, anchorRef: HTMLElement) => {
       const [horizontalPosition, horizontalAlign] = autoFlipHorizontally(
         nodeRef,
         anchorRef,
