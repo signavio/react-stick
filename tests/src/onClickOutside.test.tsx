@@ -24,7 +24,9 @@ describe('`onClickOutside` event', () => {
 
     cy.get('body').click({ force: true })
 
-    cy.get('@spy').should('have.been.called')
+    cy.get('@spy')
+      .should('have.been.called')
+      .then(() => spy.reset())
   })
 
   it('should call `onClickOutside` on click on SVGElement outside of the stick node an anchor element', () => {
@@ -53,7 +55,9 @@ describe('`onClickOutside` event', () => {
 
     cy.get('body').click({ force: true })
 
-    cy.get('@spy').should('have.been.called')
+    cy.get('@spy')
+      .should('have.been.called')
+      .then(() => spy.reset())
   })
 
   it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
@@ -70,7 +74,9 @@ describe('`onClickOutside` event', () => {
       .then(() => spy.reset())
 
     cy.findByTestId('node').click({ force: true })
-    cy.get('@spy').should('not.have.been.called')
+    cy.get('@spy')
+      .should('not.have.been.called')
+      .then(() => spy.reset())
   })
 
   const inlineOptions = [false, true]
@@ -99,7 +105,9 @@ describe('`onClickOutside` event', () => {
           )
 
           cy.findByTestId('nested-node').click({ force: true })
-          cy.get('@spy').should('not.have.been.called')
+          cy.get('@spy')
+            .should('not.have.been.called')
+            .then(() => spy.reset())
         })
       })
     })
