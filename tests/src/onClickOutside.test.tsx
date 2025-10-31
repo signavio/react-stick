@@ -8,7 +8,7 @@ describe('`onClickOutside` event', () => {
   const node = <div data-testid="node" />
 
   it('should call `onClickOutside` on click on any element outside of the stick node an anchor element', () => {
-    const spy = cy.stub().as('spy1')
+    const spy = cy.stub().as('spy')
     mount(
       <div data-testid="container">
         <Stick onClickOutside={spy} node={node}>
@@ -18,17 +18,17 @@ describe('`onClickOutside` event', () => {
     )
 
     cy.findByTestId('container').click({ force: true })
-    cy.get('@spy1')
+    cy.get('@spy', { timeout: 2000 })
       .should('have.been.called')
       .then(() => spy.reset())
 
     cy.get('body').click({ force: true })
 
-    cy.get('@spy1').should('have.been.called')
+    cy.get('@spy', { timeout: 2000 }).should('have.been.called')
   })
 
   it('should call `onClickOutside` on click on SVGElement outside of the stick node an anchor element', () => {
-    const spy = cy.stub().as('spy2')
+    const spy = cy.stub().as('spy')
     mount(
       <div data-testid="container">
         <Stick onClickOutside={spy} node={node}>
@@ -47,17 +47,17 @@ describe('`onClickOutside` event', () => {
     )
 
     cy.findByTestId('svg-element').click({ force: true })
-    cy.get('@spy2')
+    cy.get('@spy')
       .should('have.been.called')
       .then(() => spy.reset())
 
     cy.get('body').click({ force: true })
 
-    cy.get('@spy2').should('have.been.called')
+    cy.get('@spy').should('have.been.called')
   })
 
   it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
-    const spy = cy.stub().as('spy3')
+    const spy = cy.stub().as('spy')
 
     mount(
       <Stick onClickOutside={spy} node={node}>
@@ -65,12 +65,12 @@ describe('`onClickOutside` event', () => {
       </Stick>
     )
     cy.findByTestId('anchor').click({ force: true })
-    cy.get('@spy3')
+    cy.get('@spy')
       .should('not.have.been.called')
       .then(() => spy.reset())
 
     cy.findByTestId('node').click({ force: true })
-    cy.get('@spy3').should('not.have.been.called')
+    cy.get('@spy').should('not.have.been.called')
   })
 
   const inlineOptions = [false, true]
@@ -80,7 +80,7 @@ describe('`onClickOutside` event', () => {
         outerInline ? 'inline ' : ''
       }/>`, () => {
         it('should not call `onClickOutside` on click on the nested stick node', () => {
-          const spy = cy.stub().as('spy4')
+          const spy = cy.stub().as('spy')
           mount(
             <Stick
               inline={outerInline}
@@ -99,7 +99,7 @@ describe('`onClickOutside` event', () => {
           )
 
           cy.findByTestId('nested-node').click({ force: true })
-          cy.get('@spy4').should('not.have.been.called')
+          cy.get('@spy').should('not.have.been.called')
         })
       })
     })
