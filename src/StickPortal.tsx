@@ -8,7 +8,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react'
@@ -22,7 +21,7 @@ import { scrollX, scrollY } from './utils'
 const StickPortal = forwardRef<
   HTMLElement | undefined | null,
   StickPortalPropsT
->(function (
+>(function StickPortal(
   {
     children,
     component,
@@ -38,7 +37,7 @@ const StickPortal = forwardRef<
   }: StickPortalPropsT,
   ref
 ) {
-  const nodeRef = useRef<HTMLElement>()
+  const nodeRef = useRef<HTMLElement>(undefined)
   const [top, setTop] = useState<number | null>(null)
   const [left, setLeft] = useState<number | null>(null)
   const [visible, setVisible] = useState(!!node)
@@ -55,7 +54,11 @@ const StickPortal = forwardRef<
     setVisible(!!node)
   }, [node])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (hostParent == null || host == null) {
+      return
+    }
+
     if (visible) {
       hostParent.appendChild(host)
 
@@ -68,7 +71,7 @@ const StickPortal = forwardRef<
   const measure = useCallback(() => {
     const node = nodeRef.current
 
-    if (!node || !visible) {
+    if (!node || !visible || host == null) {
       return
     }
 
@@ -87,6 +90,7 @@ const StickPortal = forwardRef<
   useWatcher(measure, { updateOnAnimationFrame, enabled: visible })
 
   const Component: any = component || 'div'
+
   return (
     <Component
       {...rest}
@@ -103,9 +107,9 @@ const StickPortal = forwardRef<
     >
       {children}
 
-      {top != null && left != null && (
+      {top != null && left != null && host != null && (
         <PortalContext.Provider
-          value={(host.parentNode || defaultRoot) as HTMLElement}
+          value={(host.parentNode || document.body) as HTMLElement}
         >
           {createPortal(
             <div
@@ -127,20 +131,26 @@ const StickPortal = forwardRef<
   )
 })
 
-invariant(document.body, 'Stick can only be used in a browser environment.')
-
-const defaultRoot = document.body
-
-export const PortalContext = createContext<HTMLElement>(defaultRoot)
+export const PortalContext = createContext<HTMLElement | null>(null)
 
 export default StickPortal
 
 function useHost(transportTo?: HTMLElement | null) {
-  const [host] = useState(() => document.createElement('div'))
+  const [host] = useState<HTMLDivElement | null>(() => {
+    if (typeof document === 'undefined') {
+      return null
+    }
+
+    return document.createElement('div')
+  })
 
   const portalHost = useContext(PortalContext)
 
-  const hostParent = transportTo || portalHost
+  if (host == null) {
+    return [null, null]
+  }
+
+  const hostParent = transportTo || portalHost || document.body
 
   invariant(hostParent, 'Could not determine a parent for the host node.')
 

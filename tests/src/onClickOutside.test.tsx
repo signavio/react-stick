@@ -27,6 +27,35 @@ describe('`onClickOutside` event', () => {
     cy.get('@spy').should('have.been.called')
   })
 
+  it('should call `onClickOutside` on click on SVGElement outside of the stick node an anchor element', () => {
+    const spy = cy.stub().as('spy')
+    mount(
+      <div data-testid="container">
+        <Stick onClickOutside={spy} node={node}>
+          {anchor}
+        </Stick>
+        <svg
+          viewBox="0 0 300 100"
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="red"
+          fill="grey"
+          data-testid="svg-element"
+        >
+          <circle cx="50" cy="50" r="40" />
+        </svg>
+      </div>
+    )
+
+    cy.findByTestId('svg-element').click({ force: true })
+    cy.get('@spy')
+      .should('have.been.called')
+      .then(() => spy.reset())
+
+    cy.get('body').click({ force: true })
+
+    cy.get('@spy').should('have.been.called')
+  })
+
   it('should not call `onClickOutside` on click on the anchor element or stick node', () => {
     const spy = cy.stub().as('spy')
 

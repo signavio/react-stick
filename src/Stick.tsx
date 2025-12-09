@@ -53,9 +53,9 @@ function Stick({
     .filter((key) => !!key)
     .join('_')
 
-  const anchorRef = useRef<HTMLElement>()
+  const anchorRef = useRef<HTMLElement>(undefined)
   const nodeRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLElement>()
+  const containerRef = useRef<HTMLElement>(undefined)
 
   const [resolvedPosition, resolvedAlign, checkAlignment] = useAutoFlip(
     autoFlipHorizontally,
@@ -99,7 +99,7 @@ function Stick({
 
       const { target } = ev
       if (
-        target instanceof window.HTMLElement &&
+        target instanceof window.Element &&
         isOutside(anchorRef, containerRef, target)
       ) {
         onClickOutside(ev)
@@ -219,7 +219,7 @@ function Stick({
 function isOutside(
   anchorRef: MutableRefObject<HTMLElement | undefined>,
   containerRef: MutableRefObject<HTMLElement | undefined>,
-  target: HTMLElement
+  target: Element
 ) {
   if (anchorRef.current && anchorRef.current.contains(target)) {
     return false

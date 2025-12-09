@@ -2,16 +2,29 @@ version: 2.1
 
 orbs:
   fortify: signavio/fortify@2.0.0
-  blackduck: signavio/blackduck@1.16.2
-  codecov: codecov/codecov@3.2.4
-
+  blackduck: signavio/blackduck@2.1.0
+  codecov: codecov/codecov@4.1.0
 executors:
   fortify:
     machine:
-      image: ubuntu-2004:202010-01
+      image: &ubuntu "ubuntu-2204:current"
     resource_class: medium
 
 commands:
+  install-codecov-requirements:
+    steps:
+      - run:
+          name: "Install codecov requirements"
+          command: |
+            apt-get -y update && apt-get install -y git curl gpg
+
+  install-cypress-requirements:
+    steps:
+      - run:
+          name: "Install cypress requirements"
+          command: |
+            apt-get -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
   fortify_scan:
     parameters:
       build_id:
@@ -44,7 +57,8 @@ references:
   defaults: &defaults
     working_directory: ~/repo
     docker:
-      - image: cimg/node:20.0-browsers
+      # use SAP Approved Build Container for gradle / jdk
+      - image: node:20-slim
 
   restore_cache: &restore_cache
     restore_cache:
@@ -86,6 +100,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - install-codecov-requirements
+      - install-cypress-requirements
 
       - *restore_cache
 
@@ -93,10 +109,23 @@ jobs:
           name: Test
           command: npm run test
 
+  test-ssr:
+    <<: *defaults
+    steps:
+      - checkout
+      - install-codecov-requirements
+
+      - *restore_cache
+
+      - run:
+          name: Test SSR
+          command: npm run test:ssr -- --coverage
+
   release:
     <<: *defaults
     steps:
       - checkout
+      - install-codecov-requirements
       - *restore_cache
       - run:
           name: Fix host authenticity for github.com
@@ -120,6 +149,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - install-codecov-requirements
       - *restore_cache
       - run:
           name: Define environment variable with lastest commit's message
@@ -147,11 +177,22 @@ workflows:
           post-steps:
             - codecov/upload:
               file: tests/coverage/clover.xml
+              flags: e2e
+      - test-ssr:
+          requires:
+            - install
+          filters:
+            branches:
+              ignore: master
+          post-steps:
+            - codecov/upload:
+              file: coverage/clover.xml
+              flags: ssr
       - lint_commit_message:
           requires:
             - install
       - release:
-          context: NPM
+          context: NPM_AUTOMATION
           requires:
             - install
             - lint_commit_message
@@ -176,6 +217,7 @@ workflows:
           blackduck-project-group: SAP_Signavio_Process_Governance
           blackduck-project-name: react-stick
           blackduck-project-path: /home/circleci/project
+          npm-types-excluded: DEV
           requires:
             - install
 
