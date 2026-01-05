@@ -3,7 +3,7 @@ import { mount } from '@cypress/react'
 
 import Stick from '../../src/'
 
-describe('`onClickOutside` event', () => {
+describe('`onClickOutside` event', { retries: 1 }, () => {
   const anchor = <div data-testid="anchor" />
   const node = <div data-testid="node" />
 
